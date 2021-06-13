@@ -28,6 +28,6 @@ public class User {
   @Column(name = "password_hash")
   private String passwordHash;
 
-  @Column(name="points")
+  @Column(name = "points")
   private Integer points;
 }

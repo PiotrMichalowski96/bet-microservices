@@ -8,9 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class UserDTO {
+public class MatchDTO {
 
   private Long id;
-  private String username;
-  private Integer points;
+
 }

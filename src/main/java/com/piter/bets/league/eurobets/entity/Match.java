@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,18 +23,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Match {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "home_team")
-  private String homeTeam;
+    @Column(name = "home_team")
+    private String homeTeam;
 
-  @Column(name = "away_team")
-  private String awayTeam;
+    @Column(name = "away_team")
+    private String awayTeam;
 
-  @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
-  @PrimaryKeyJoinColumn
-  private MatchResult matchResult;
+    @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private MatchResult matchResult;
 }

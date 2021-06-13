@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
     List<User> users = userRepository.findAll(sort);
 
     return users.stream()
-            .map(userMapper::toUserDTO)
-            .collect(Collectors.toList());
+        .map(userMapper::toUserDTO)
+        .collect(Collectors.toList());
   }
 
   @Override

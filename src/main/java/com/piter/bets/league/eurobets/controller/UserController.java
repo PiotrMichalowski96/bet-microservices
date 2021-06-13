@@ -16,21 +16,21 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping("/{id}")
-    public UserDTO findById(@PathVariable Long id) throws UserNotFoundException {
-        UserDTO user = userService.findById(id);
-        logger.info("Find by id " + user.toString());
-        return user;
-    }
+  @GetMapping("/{id}")
+  public UserDTO findById(@PathVariable Long id) throws UserNotFoundException {
+    UserDTO user = userService.findById(id);
+    logger.info("Find by id " + user.toString());
+    return user;
+  }
 
-    @GetMapping
-    public List<UserDTO> findAll() {
-        return userService.findAll();
-    }
+  @GetMapping
+  public List<UserDTO> findAll() {
+    return userService.findAll();
+  }
 }
