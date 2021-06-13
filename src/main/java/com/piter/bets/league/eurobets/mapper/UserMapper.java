@@ -5,11 +5,8 @@ import com.piter.bets.league.eurobets.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
-//  @Mapping(target = "id", source = "id")
-//  @Mapping(target = "username", source = "username")
-//  @Mapping(target = "points", source = "points")
   UserDTO toUserDTO(User user);
 }
