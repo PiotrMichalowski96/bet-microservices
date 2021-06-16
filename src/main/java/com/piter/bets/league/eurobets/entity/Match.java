@@ -1,5 +1,6 @@
 package com.piter.bets.league.eurobets.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "matches")
+@Table(name = "Matches")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -33,6 +34,9 @@ public class Match {
 
     @Column(name = "away_team")
     private String awayTeam;
+
+    @Column(name = "match_start_time")
+    private LocalDateTime matchStartTime;
 
     @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

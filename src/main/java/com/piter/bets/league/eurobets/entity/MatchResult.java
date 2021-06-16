@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "match_results")
+@Table(name = "Match_results")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,13 +26,13 @@ public class MatchResult {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
-  private int id;
+  private Long id;
 
   @Column(name = "home_team_goals")
-  private int homeTeamGoals;
+  private Integer homeTeamGoals;
 
   @Column(name = "away_team_goals")
-  private int awayTeamGoals;
+  private Integer awayTeamGoals;
 
   @OneToOne
   @MapsId
