@@ -13,6 +13,7 @@ public interface MatchMapper {
 
   @Mapping(target = "homeTeamGoals", source = "matchResult.homeTeamGoals")
   @Mapping(target = "awayTeamGoals", source = "matchResult.awayTeamGoals")
+  @Mapping(target = "matchRoundId", source = "matchRound.id")
   MatchDTO toMatchDTO(Match match);
 
   Match toMatch(MatchDTO matchDTO);

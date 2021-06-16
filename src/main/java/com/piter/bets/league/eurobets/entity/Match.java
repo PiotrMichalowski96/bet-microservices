@@ -1,5 +1,6 @@
 package com.piter.bets.league.eurobets.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -41,4 +44,9 @@ public class Match {
     @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private MatchResult matchResult;
+
+    @ManyToOne
+    @JoinColumn(name = "match_round_id")
+    @JsonBackReference
+    private MatchRound matchRound;
 }

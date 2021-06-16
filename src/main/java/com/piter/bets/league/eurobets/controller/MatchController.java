@@ -2,6 +2,7 @@ package com.piter.bets.league.eurobets.controller;
 
 import com.piter.bets.league.eurobets.dto.MatchDTO;
 import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
+import com.piter.bets.league.eurobets.exception.MatchRoundNotFoundException;
 import com.piter.bets.league.eurobets.service.MatchService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +38,14 @@ public class MatchController {
     if(orderBy.equals("startTime")) {
       return matchService.findAllByMatchStartTime(pageNumber);
     } else if (orderBy.equals("round")) {
-      //TODO: add find with sort by round
+      return matchService.findAllByMatchRound(pageNumber);
     }
     return matchService.findAll(pageNumber);
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public MatchDTO saveMatch(@RequestBody MatchDTO matchDTO) {
+  public MatchDTO saveMatch(@RequestBody MatchDTO matchDTO) throws MatchRoundNotFoundException {
     return matchService.save(matchDTO);
   }
 

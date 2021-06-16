@@ -15,6 +15,8 @@ import lombok.*;
 public class MatchDTO {
 
   private Long id;
+  @NonNull
+  private Long matchRoundId;
   @NotBlank
   private String homeTeam;
   @NotBlank
@@ -23,7 +25,4 @@ public class MatchDTO {
   private LocalDateTime matchStartTime;
   private Integer homeTeamGoals;
   private Integer awayTeamGoals;
-//  private String roundName;
-//  @JsonSerialize(using = ToStringSerializer.class)
-//  private LocalDateTime roundStartTime;
 }

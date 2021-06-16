@@ -3,9 +3,12 @@ package com.piter.bets.league.eurobets.service;
 import com.piter.bets.league.eurobets.config.PageDetails;
 import com.piter.bets.league.eurobets.dto.MatchDTO;
 import com.piter.bets.league.eurobets.entity.Match;
+import com.piter.bets.league.eurobets.entity.MatchRound;
 import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
+import com.piter.bets.league.eurobets.exception.MatchRoundNotFoundException;
 import com.piter.bets.league.eurobets.mapper.MatchMapper;
 import com.piter.bets.league.eurobets.repository.MatchRepository;
+import com.piter.bets.league.eurobets.repository.MatchRoundRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +22,23 @@ import org.springframework.stereotype.Service;
 public class MatchServiceImpl implements MatchService {
 
   private final MatchRepository matchRepository;
+  private final MatchRoundRepository matchRoundRepository;
   private final MatchMapper matchMapper;
 
   @Override
   public List<MatchDTO> findAllByMatchStartTime(Integer pageNumber) {
     Pageable pageable = PageRequest.of(pageNumber, PageDetails.SIZE);
     List<Match> matches = matchRepository.findAllByOrderByMatchStartTimeDesc(pageable);
+
+    return matches.stream()
+        .map(matchMapper::toMatchDTO)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<MatchDTO> findAllByMatchRound(Integer pageNumber) {
+    Pageable pageable = PageRequest.of(pageNumber, PageDetails.SIZE);
+    List<Match> matches = matchRepository.findTAllByOrderByMatchRoundStartTimeDesc(pageable);
 
     return matches.stream()
         .map(matchMapper::toMatchDTO)
@@ -50,8 +64,14 @@ public class MatchServiceImpl implements MatchService {
   }
 
   @Override
-  public MatchDTO save(MatchDTO matchDTO) {
+  public MatchDTO save(MatchDTO matchDTO) throws MatchRoundNotFoundException {
     Match match = matchMapper.toMatch(matchDTO);
+    Long matchRoundId = matchDTO.getMatchRoundId();
+    MatchRound matchRound = matchRoundRepository.findById(matchRoundId)
+        .orElseThrow(() -> new MatchRoundNotFoundException(
+            "Cannot find match round with id: " + matchRoundId));
+
+    match.setMatchRound(matchRound);
     return matchMapper.toMatchDTO(matchRepository.save(match));
   }
 
