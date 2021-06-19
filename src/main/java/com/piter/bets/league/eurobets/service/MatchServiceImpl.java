@@ -11,13 +11,16 @@ import com.piter.bets.league.eurobets.repository.MatchRepository;
 import com.piter.bets.league.eurobets.repository.MatchRoundRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MatchServiceImpl implements MatchService {
 
@@ -48,7 +51,8 @@ public class MatchServiceImpl implements MatchService {
   @Override
   public List<MatchDTO> findAll(Integer pageNumber) {
     Sort sort = Sort.by(Sort.Direction.ASC, "id");
-    List<Match> matches = matchRepository.findAll(sort);
+    Pageable pageable = PageRequest.of(pageNumber, PageDetails.SIZE, sort);
+    Page<Match> matches = matchRepository.findAll(pageable);
 
     return matches.stream()
         .map(matchMapper::toMatchDTO)

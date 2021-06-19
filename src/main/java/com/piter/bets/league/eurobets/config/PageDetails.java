@@ -4,5 +4,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class PageDetails {
-    public static final int SIZE = 10;
+
+  public static final int SIZE = 20;
 }
