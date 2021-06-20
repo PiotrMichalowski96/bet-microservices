@@ -12,4 +12,6 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
   List<Bet> findByUserId(Long userId, Pageable pageable);
 
   List<Bet> findByUserIdAndMatchId(Long userId, Long matchId);
+
+  List<Bet> findByMatchId(Long matchId);
 }

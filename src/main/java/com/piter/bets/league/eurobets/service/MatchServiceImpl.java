@@ -2,13 +2,17 @@ package com.piter.bets.league.eurobets.service;
 
 import com.piter.bets.league.eurobets.config.PageDetails;
 import com.piter.bets.league.eurobets.dto.MatchDTO;
+import com.piter.bets.league.eurobets.entity.Bet;
 import com.piter.bets.league.eurobets.entity.Match;
+import com.piter.bets.league.eurobets.entity.MatchResult;
 import com.piter.bets.league.eurobets.entity.MatchRound;
 import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
 import com.piter.bets.league.eurobets.exception.MatchRoundNotFoundException;
 import com.piter.bets.league.eurobets.mapper.MatchMapper;
+import com.piter.bets.league.eurobets.repository.BetRepository;
 import com.piter.bets.league.eurobets.repository.MatchRepository;
 import com.piter.bets.league.eurobets.repository.MatchRoundRepository;
+import com.piter.bets.league.eurobets.util.BetRules;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -26,6 +30,7 @@ public class MatchServiceImpl implements MatchService {
 
   private final MatchRepository matchRepository;
   private final MatchRoundRepository matchRoundRepository;
+  private final BetRepository betRepository;
   private final MatchMapper matchMapper;
 
   @Override
@@ -75,6 +80,11 @@ public class MatchServiceImpl implements MatchService {
         .orElseThrow(() -> new MatchRoundNotFoundException(
             "Cannot find match round with id: " + matchRoundId));
 
+    if(checkIfContainMatchResult(match)) {
+       addBetResults(match);
+       calculatePointsForAllUsers();
+    }
+
     match.setMatchRound(matchRound);
     return matchMapper.toMatchDTO(matchRepository.save(match));
   }
@@ -85,5 +95,26 @@ public class MatchServiceImpl implements MatchService {
         .orElseThrow(() -> new MatchNotFoundException("Cannot find match with id: " + id));
 
     matchRepository.delete(match);
+  }
+
+  private boolean checkIfContainMatchResult(Match match) {
+    MatchResult matchResult = match.getMatchResult();
+    return matchResult.getHomeTeamGoals() != null && matchResult.getAwayTeamGoals() != null;
+  }
+
+  private void addBetResults(Match match) {
+    List<Bet> bets = betRepository.findByMatchId(match.getId());
+
+    MatchResult matchResult = match.getMatchResult();
+
+    List<Bet> betsWithResults = bets.stream()
+        .map(bet -> BetRules.getBetWithResult(bet, matchResult))
+        .collect(Collectors.toList());
+
+    betRepository.saveAll(betsWithResults);
+  }
+
+  private void calculatePointsForAllUsers() {
+    //TODO: implementation
   }
 }

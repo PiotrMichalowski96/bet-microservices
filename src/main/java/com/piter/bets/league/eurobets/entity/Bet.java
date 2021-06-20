@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Bet {
 
   @Id
@@ -31,10 +33,10 @@ public class Bet {
   private Long id;
 
   @Column(name = "home_team_goal_bet")
-  private Long homeTeamGoalBet;
+  private Integer homeTeamGoalBet;
 
   @Column(name = "away_team_goal_bet")
-  private Long awayTeamGoalBet;
+  private Integer awayTeamGoalBet;
 
   @ManyToOne
   @JoinColumn(name = "match_id")
@@ -45,4 +47,8 @@ public class Bet {
   @JoinColumn(name = "user_id")
   @JsonBackReference
   private User user;
+
+  @OneToOne(mappedBy = "bet", cascade = CascadeType.ALL)
+  @PrimaryKeyJoinColumn
+  private BetResults betResults;
 }

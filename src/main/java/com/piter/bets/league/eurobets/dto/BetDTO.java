@@ -1,5 +1,6 @@
 package com.piter.bets.league.eurobets.dto;
 
+import com.piter.bets.league.eurobets.entity.common.HomeTeamResult;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,4 +21,6 @@ public class BetDTO {
   private Long userId;
   private Long homeTeamGoalBet;
   private Long awayTeamGoalBet;
+  private HomeTeamResult homeTeamResult;
+  private Long points;
 }
