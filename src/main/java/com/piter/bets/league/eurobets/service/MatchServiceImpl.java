@@ -102,6 +102,8 @@ public class MatchServiceImpl implements MatchService {
         .orElseThrow(() -> new MatchNotFoundException("Cannot find match with id: " + id));
 
     matchRepository.delete(match);
+    betRepository.deleteByMatchId(match.getId());
+    calculatePointsForAllUsers();
   }
 
   private boolean checkIfContainMatchResult(Match match) {
