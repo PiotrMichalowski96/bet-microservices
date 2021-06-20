@@ -3,6 +3,7 @@ package com.piter.bets.league.eurobets.mapper;
 import com.piter.bets.league.eurobets.dto.MatchDTO;
 import com.piter.bets.league.eurobets.entity.Match;
 import com.piter.bets.league.eurobets.entity.MatchResult;
+import java.util.Objects;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,7 +25,11 @@ public interface MatchMapper {
   @AfterMapping
   default void callToMatch(@MappingTarget Match match, MatchDTO matchDTO) {
     MatchResult matchResult = toMatchResult(matchDTO);
-    matchResult.setMatch(match);
-    match.setMatchResult(matchResult);
+    if (!Objects.isNull(matchDTO.getAwayTeamGoals()) && !Objects.isNull(matchDTO.getHomeTeamGoals())) {
+      matchResult.setMatch(match);
+      match.setMatchResult(matchResult);
+    } else {
+      match.setMatchResult(null);
+    }
   }
 }

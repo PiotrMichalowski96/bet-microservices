@@ -6,14 +6,19 @@ import com.piter.bets.league.eurobets.entity.Bet;
 import com.piter.bets.league.eurobets.entity.Match;
 import com.piter.bets.league.eurobets.entity.MatchResult;
 import com.piter.bets.league.eurobets.entity.MatchRound;
+import com.piter.bets.league.eurobets.entity.User;
 import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
 import com.piter.bets.league.eurobets.exception.MatchRoundNotFoundException;
 import com.piter.bets.league.eurobets.mapper.MatchMapper;
 import com.piter.bets.league.eurobets.repository.BetRepository;
+import com.piter.bets.league.eurobets.repository.BetResultsRepository;
 import com.piter.bets.league.eurobets.repository.MatchRepository;
 import com.piter.bets.league.eurobets.repository.MatchRoundRepository;
+import com.piter.bets.league.eurobets.repository.UserRepository;
+import com.piter.bets.league.eurobets.repository.projection.UserPoints;
 import com.piter.bets.league.eurobets.util.BetRules;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,8 @@ public class MatchServiceImpl implements MatchService {
   private final MatchRepository matchRepository;
   private final MatchRoundRepository matchRoundRepository;
   private final BetRepository betRepository;
+  private final BetResultsRepository betResultsRepository;
+  private final UserRepository userRepository;
   private final MatchMapper matchMapper;
 
   @Override
@@ -99,7 +106,11 @@ public class MatchServiceImpl implements MatchService {
 
   private boolean checkIfContainMatchResult(Match match) {
     MatchResult matchResult = match.getMatchResult();
-    return matchResult.getHomeTeamGoals() != null && matchResult.getAwayTeamGoals() != null;
+    if(Objects.isNull(matchResult)) {
+      return false;
+    } else {
+      return matchResult.getHomeTeamGoals() != null && matchResult.getAwayTeamGoals() != null;
+    }
   }
 
   private void addBetResults(Match match) {
@@ -115,6 +126,18 @@ public class MatchServiceImpl implements MatchService {
   }
 
   private void calculatePointsForAllUsers() {
-    //TODO: implementation
+
+    List<UserPoints> userPointsList = betResultsRepository.sumTotalPointsForUsers();
+
+    List<User> updatedUsers = userPointsList.stream()
+        .map(userPoints -> {
+          User user = userPoints.getUser();
+          Long points = userPoints.getPoints();
+          user.setPoints(points);
+          return user;
+        })
+        .collect(Collectors.toList());
+
+    userRepository.saveAll(updatedUsers);
   }
 }

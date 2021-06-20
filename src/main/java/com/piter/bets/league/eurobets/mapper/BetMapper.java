@@ -10,7 +10,6 @@ public interface BetMapper {
 
   @Mapping(target = "matchId", source = "match.id")
   @Mapping(target = "userId", source = "user.id")
-  @Mapping(target = "homeTeamResult", source = "betResults.homeTeamResult")
   @Mapping(target = "points", source = "betResults.points")
   BetDTO toBetDTO(Bet bet);
 

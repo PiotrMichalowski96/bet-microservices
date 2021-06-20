@@ -32,7 +32,7 @@ public class User {
   private String passwordHash;
 
   @Column(name = "points")
-  private Integer points;
+  private Long points;
 
   @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
   private Set<Bet> bets;

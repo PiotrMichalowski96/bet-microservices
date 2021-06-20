@@ -1,10 +1,7 @@
 package com.piter.bets.league.eurobets.entity;
 
-import com.piter.bets.league.eurobets.entity.common.HomeTeamResult;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,11 +28,6 @@ public class BetResults {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
-
-  @Column(name = "home_team_result", columnDefinition = "ENUM('WIN', 'DRAW', 'LOSE')")
-//  @Column(columnDefinition = "ENUM('WIN', 'DRAW', 'LOSE')")
-  @Enumerated(EnumType.STRING)
-  private HomeTeamResult homeTeamResult;
 
   @Column(name = "points")
   private Long points;

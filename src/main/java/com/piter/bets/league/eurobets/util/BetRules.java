@@ -3,7 +3,6 @@ package com.piter.bets.league.eurobets.util;
 import com.piter.bets.league.eurobets.entity.Bet;
 import com.piter.bets.league.eurobets.entity.BetResults;
 import com.piter.bets.league.eurobets.entity.MatchResult;
-import com.piter.bets.league.eurobets.entity.common.HomeTeamResult;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import lombok.Getter;
@@ -37,11 +36,7 @@ public enum BetRules {
 
     Long calculatedPoints = calculatePointsForBet(bet, matchResult);
 
-    HomeTeamResult homeTeamResultFromBet = BetHomeTeamResult.getResult(bet.getHomeTeamGoalBet(),
-        bet.getAwayTeamGoalBet());
-
     BetResults betResults = BetResults.builder()
-        .homeTeamResult(homeTeamResultFromBet)
         .points(calculatedPoints)
         .bet(bet)
         .build();
@@ -51,10 +46,10 @@ public enum BetRules {
   }
 
   private static Long calculatePointsForBet(Bet bet, MatchResult matchResult) {
-    HomeTeamResult homeTeamResultFromBet = BetHomeTeamResult.getResult(bet.getHomeTeamGoalBet(),
+    HomeTeamResult homeTeamResultFromBet = HomeTeamResult.getResult(bet.getHomeTeamGoalBet(),
         bet.getAwayTeamGoalBet());
 
-    HomeTeamResult correctHomeTeamResult = BetHomeTeamResult.getResult(
+    HomeTeamResult correctHomeTeamResult = HomeTeamResult.getResult(
         matchResult.getHomeTeamGoals(), matchResult.getAwayTeamGoals());
 
     // betting correct match result (win, draw, lose) is necessary condition to score points
