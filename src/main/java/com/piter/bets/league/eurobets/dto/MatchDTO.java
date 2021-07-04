@@ -11,6 +11,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 public class MatchDTO {
 
