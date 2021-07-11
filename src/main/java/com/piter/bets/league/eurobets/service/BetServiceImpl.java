@@ -40,30 +40,24 @@ public class BetServiceImpl implements BetService {
   @Override
   public List<BetDTO> findAllByUserId(Integer pageNumber, Long userId, Long myUserId) {
     Pageable pageable = PageRequest.of(pageNumber, PageDetails.SIZE);
-    List<Bet> bets = betRepository.findByUserId(userId, pageable);
-
-    return bets.stream()
-        .filter(getIsVisiblePredicate(userId))
+    return betRepository.findByUserId(userId, pageable).stream()
+        .filter(getIsVisiblePredicate(myUserId))
         .map(betMapper::toBetDTO)
         .collect(Collectors.toList());
   }
 
   @Override
   public BetDTO findById(Long betId, Long myUserId) throws BetNotFoundException {
-    Bet bet = betRepository.findById(betId)
+    return betRepository.findById(betId)
         .filter(getIsVisiblePredicate(myUserId))
-        .orElseThrow(() -> new BetNotFoundException("Cannot find bet with id: " + betId));
-
-    return betMapper.toBetDTO(bet);
+        .map(betMapper::toBetDTO)
+        .orElseThrow(() -> new BetNotFoundException("Bet doesnt exist or it is not visible for you. Bet id: " + betId));
   }
 
   @Override
-  public List<BetDTO> findAllThatShouldBeVisible(Integer pageNumber, Long userId) {
-    List<Bet> bets = betRepository.findAll().stream()
-        .filter(getIsVisiblePredicate(userId))
-        .collect(Collectors.toList());
-
-    return bets.stream()
+  public List<BetDTO> findAllThatShouldBeVisible(Integer pageNumber, Long myUserId) {
+    return betRepository.findAll().stream()
+        .filter(getIsVisiblePredicate(myUserId))
         .map(betMapper::toBetDTO)
         .collect(Collectors.toList());
   }
