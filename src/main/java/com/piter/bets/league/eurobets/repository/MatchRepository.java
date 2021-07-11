@@ -13,5 +13,5 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
   List<Match> findAllByOrderByMatchStartTimeDesc(Pageable pageable);
 
   @Query("SELECT m FROM Match m INNER JOIN m.matchRound mr ORDER BY mr.startRoundTime DESC")
-  List<Match> findTAllByOrderByMatchRoundStartTimeDesc(Pageable pageable);
+  List<Match> findAllByOrderByMatchRoundStartTimeDesc(Pageable pageable);
 }

@@ -53,7 +53,7 @@ public class MatchServiceImpl implements MatchService {
   @Override
   public List<MatchDTO> findAllByMatchRound(Integer pageNumber) {
     Pageable pageable = PageRequest.of(pageNumber, PageDetails.SIZE);
-    List<Match> matches = matchRepository.findTAllByOrderByMatchRoundStartTimeDesc(pageable);
+    List<Match> matches = matchRepository.findAllByOrderByMatchRoundStartTimeDesc(pageable);
 
     return matches.stream()
         .map(matchMapper::toMatchDTO)
