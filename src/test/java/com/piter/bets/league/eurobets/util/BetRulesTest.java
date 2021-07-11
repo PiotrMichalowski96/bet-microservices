@@ -47,4 +47,5 @@ public class BetRulesTest {
         Arguments.of(1, 0, 1, 3, 0L), //bet wrong win / draw / lose - 0 points
         Arguments.of(1, 0, 0, 3, 0L)  //bet wrong win / draw / lose - 0 points
     );
-  }}
+  }
+}
