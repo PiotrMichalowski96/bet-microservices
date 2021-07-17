@@ -4,13 +4,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.piter.bets.league.eurobets.dto.BetDTO;
 import com.piter.bets.league.eurobets.entity.Bet;
+import com.piter.bets.league.eurobets.entity.Match;
 import com.piter.bets.league.eurobets.entity.MatchRound;
 import com.piter.bets.league.eurobets.entity.User;
 import com.piter.bets.league.eurobets.exception.BetNotFoundException;
+import com.piter.bets.league.eurobets.exception.BettingRulesException;
+import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
+import com.piter.bets.league.eurobets.exception.UnauthorizedUserException;
+import com.piter.bets.league.eurobets.exception.UserNotFoundException;
 import com.piter.bets.league.eurobets.mapper.BetMapper;
 import com.piter.bets.league.eurobets.mapper.BetMapperImpl;
 import com.piter.bets.league.eurobets.repository.BetRepository;
@@ -18,6 +24,7 @@ import com.piter.bets.league.eurobets.repository.MatchRepository;
 import com.piter.bets.league.eurobets.repository.UserRepository;
 import com.piter.bets.league.eurobets.util.TestDataUtils;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,8 +35,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +61,9 @@ public class BetServiceTest {
 
   @Spy
   private final BetMapper betMapper = new BetMapperImpl();
+
+  @Captor
+  private ArgumentCaptor<Bet> betCaptor;
 
   @ParameterizedTest
   @MethodSource("provideBetsAndUserId")
@@ -184,6 +197,190 @@ public class BetServiceTest {
 
     //then
     assertThat(actualBetDTOs).isEmpty();
+  }
+
+  @Test
+  public void shouldSaveBetThrowErrorBecauseWrongMatchId() {
+    //given
+    BetDTO betDTO = TestDataUtils.generateBetDTO(1L);
+    Long matchId = 1L;
+
+    when(matchRepository.findById(matchId)).thenReturn(Optional.empty());
+
+    String expectedErrorMessage = String.format("Cannot find match with id: %d", matchId);
+
+    //whenThen
+    assertThatThrownBy(() -> betService.save(1L, matchId, betDTO))
+        .isInstanceOf(MatchNotFoundException.class)
+        .hasMessage(expectedErrorMessage);
+  }
+
+  @Test
+  public void shouldSaveBetThrowErrorBecauseMatchRoundTimePassed() {
+    //given
+    BetDTO betDTO = TestDataUtils.generateBetDTO(1L);
+
+    Long matchId = 1L;
+    Match matchWithEarlyStartRoundTime = TestDataUtils.generateMatch(matchId);
+    matchWithEarlyStartRoundTime.getMatchRound().setStartRoundTime(LocalDateTime.MIN);
+
+    when(matchRepository.findById(matchId)).thenReturn(Optional.of(matchWithEarlyStartRoundTime));
+
+    String expectedErrorMessage = "You can only bet until match round is not started";
+
+    //whenThen
+    assertThatThrownBy(() -> betService.save(1L, matchId, betDTO))
+        .isInstanceOf(BettingRulesException.class)
+        .hasMessage(expectedErrorMessage);
+  }
+
+  @Test
+  public void shouldSaveBetThrowErrorBecauseManyBetsForOneMatchByOneUser() {
+    //given
+    Long matchId = 1L;
+    mockSaveBetWithCorrectMatch(matchId);
+
+    List<Bet> bets = Stream.generate(() -> TestDataUtils.generateBet(RandomUtils.nextLong(0L, 10L)))
+        .limit(3)
+        .collect(Collectors.toList());
+
+    Long userId = 1L;
+    when(betRepository.findByUserIdAndMatchId(userId, matchId)).thenReturn(bets);
+
+    BetDTO betDTO = TestDataUtils.generateBetDTO(1L);
+    String expectedErrorMessage = String.format("User id: %d has more than one bet for the match id: %d", userId, matchId);
+
+    //whenThen
+    assertThatThrownBy(() -> betService.save(userId, matchId, betDTO))
+        .isInstanceOf(BettingRulesException.class)
+        .hasMessage(expectedErrorMessage);
+  }
+
+  @Test
+  public void shouldSaveBetThrowErrorBecauseWrongUserId() {
+    //given
+    Long matchId = 1L;
+    mockSaveBetWithCorrectMatch(matchId);
+
+    List<Bet> bets = Collections.singletonList(TestDataUtils.generateBet(1L));
+    Long userId = 1L;
+    when(betRepository.findByUserIdAndMatchId(userId, matchId)).thenReturn(bets);
+    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+    BetDTO betDTO = TestDataUtils.generateBetDTO(1L);
+    String expectedErrorMessage = String.format("Cannot find user with id: %d", userId);
+
+    //whenThen
+    assertThatThrownBy(() -> betService.save(userId, matchId, betDTO))
+        .isInstanceOf(UserNotFoundException.class)
+        .hasMessage(expectedErrorMessage);
+  }
+
+  @Test
+  public void shouldSaveNewBet()
+      throws UserNotFoundException, BettingRulesException, MatchNotFoundException {
+    //given
+    Long userId = 1L;
+    Long matchId = 1L;
+    List<Bet> emptyBetList = Collections.emptyList();
+    mockSaveBet(userId, matchId, emptyBetList);
+
+    BetDTO betDTO = BetDTO.builder()
+        .matchId(matchId)
+        .awayTeamGoalBet(10L)
+        .homeTeamGoalBet(10L)
+        .userId(userId)
+        .build();
+
+    //when
+    betService.save(userId, matchId, betDTO);
+
+    //then
+    verify(betRepository, Mockito.times(1)).save(betCaptor.capture());
+
+    Bet actualSaveBet = betCaptor.getValue();
+    BetDTO actualSaveBetDTO = betMapper.toBetDTO(actualSaveBet);
+    assertThat(actualSaveBetDTO).usingRecursiveComparison()
+        .ignoringFields("points")
+        .isEqualTo(betDTO);
+  }
+
+  @Test
+  public void shouldSaveBetByReplacingOldOne()
+      throws UserNotFoundException, BettingRulesException, MatchNotFoundException {
+    //given
+    Long userId = 1L;
+    Long matchId = 1L;
+    Long betId = 1L;
+    List<Bet> betList = Collections.singletonList(TestDataUtils.generateBet(betId));
+    mockSaveBet(userId, matchId, betList);
+
+    BetDTO betDTO = BetDTO.builder()
+        .id(betId)
+        .matchId(matchId)
+        .awayTeamGoalBet(10L)
+        .homeTeamGoalBet(10L)
+        .userId(userId)
+        .build();
+
+    //when
+    betService.save(userId, matchId, betDTO);
+
+    //then
+    verify(betRepository, Mockito.times(1)).save(betCaptor.capture());
+
+    Bet actualSaveBet = betCaptor.getValue();
+    BetDTO actualSaveBetDTO = betMapper.toBetDTO(actualSaveBet);
+    assertThat(actualSaveBetDTO).usingRecursiveComparison()
+        .ignoringFields("points")
+        .isEqualTo(betDTO);
+  }
+
+  @Test
+  public void shouldDeleteBetThrowErrorBecauseWrongUserId() {
+    //given
+    Long betId = 1L;
+    Long userId = 1L;
+
+    Bet betWithDifferentUserId = TestDataUtils.generateBet(betId);
+    betWithDifferentUserId.getUser().setId(2L);
+    when(betRepository.findById(betId)).thenReturn(Optional.of(betWithDifferentUserId));
+
+    String expectedErrorMessage = "You are not the owner of the bet";
+
+    //whenThen
+    assertThatThrownBy(() -> betService.delete(betId, userId))
+        .isInstanceOf(UnauthorizedUserException.class)
+        .hasMessage(expectedErrorMessage);
+  }
+
+  @Test
+  public void shouldDeleteBet() throws UnauthorizedUserException {
+    //given
+    Long betId = 1L;
+    Long userId = 1L;
+
+    Bet betWithSameUserId = TestDataUtils.generateBet(betId);
+    betWithSameUserId.getUser().setId(userId);
+    when(betRepository.findById(betId)).thenReturn(Optional.of(betWithSameUserId));
+
+    //when
+    betService.delete(betId, userId);
+
+    //then
+    verify(betRepository, Mockito.times(1)).delete(betWithSameUserId);
+  }
+
+  private void mockSaveBetWithCorrectMatch(Long matchId) {
+    Match matchWithRoundTimeNotPassed = TestDataUtils.generateMatch(matchId);
+    matchWithRoundTimeNotPassed.getMatchRound().setStartRoundTime(LocalDateTime.MAX);
+    when(matchRepository.findById(matchId)).thenReturn(Optional.of(matchWithRoundTimeNotPassed));
+  }
+
+  private void mockSaveBet(Long userId, Long matchId, List<Bet> bets) {
+    mockSaveBetWithCorrectMatch(matchId);
+    when(betRepository.findByUserIdAndMatchId(userId, matchId)).thenReturn(bets);
+    when(userRepository.findById(userId)).thenReturn(Optional.of(TestDataUtils.generateUser(userId)));
   }
 
   private static Stream<Arguments> provideBetsAndUserId() {
