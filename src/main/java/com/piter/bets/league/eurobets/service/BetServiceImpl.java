@@ -76,8 +76,7 @@ public class BetServiceImpl implements BetService {
     List<Bet> bets = betRepository.findByUserIdAndMatchId(userId, matchId);
 
     if (checkIfThereIsMoreThanOneBetForMatch(bets)) {
-      String message = String
-          .format("User id: %d has more than one bet for the match id: %d", userId, matchId);
+      String message = String.format("User id: %d has more than one bet for the match id: %d", userId, matchId);
       throw new BettingRulesException(message);
     }
 

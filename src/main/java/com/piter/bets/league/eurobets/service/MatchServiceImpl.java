@@ -84,8 +84,7 @@ public class MatchServiceImpl implements MatchService {
     Match match = matchMapper.toMatch(matchDTO);
     Long matchRoundId = matchDTO.getMatchRoundId();
     MatchRound matchRound = matchRoundRepository.findById(matchRoundId)
-        .orElseThrow(() -> new MatchRoundNotFoundException(
-            "Cannot find match round with id: " + matchRoundId));
+        .orElseThrow(() -> new MatchRoundNotFoundException("Cannot find match round with id: " + matchRoundId));
 
     if(checkIfContainMatchResult(match)) {
        addBetResults(match);
