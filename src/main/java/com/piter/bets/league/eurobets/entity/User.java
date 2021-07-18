@@ -4,6 +4,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,4 +38,7 @@ public class User {
 
   @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
   private Set<Bet> bets;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<Authorities> authorities;
 }
