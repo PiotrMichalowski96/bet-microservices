@@ -1,4 +1,4 @@
-package com.piter.bets.league.eurobets.controllers;
+package com.piter.bets.league.eurobets.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
