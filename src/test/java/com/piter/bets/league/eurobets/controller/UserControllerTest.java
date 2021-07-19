@@ -1,4 +1,4 @@
-package com.piter.bets.league.eurobets.controllers;
+package com.piter.bets.league.eurobets.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -29,6 +30,7 @@ public class UserControllerTest {
   @MockBean
   private UserService userService;
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnUserWithGivenId() throws Exception {
     //given
@@ -44,6 +46,7 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.points", is(user.getPoints())));
   }
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnBadRequestForNotExistingId() throws Exception {
     //given
@@ -62,6 +65,7 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.message", is(message)));
   }
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnUserList() throws Exception {
     //given

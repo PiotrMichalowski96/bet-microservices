@@ -6,12 +6,14 @@ import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
 import com.piter.bets.league.eurobets.exception.BettingRulesException;
 import com.piter.bets.league.eurobets.exception.UnauthorizedUserException;
 import com.piter.bets.league.eurobets.exception.UserNotFoundException;
+import com.piter.bets.league.eurobets.security.UserPrincipal;
 import com.piter.bets.league.eurobets.service.BetService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,40 +33,45 @@ public class BetController {
   private final BetService betService;
 
   @GetMapping("/{betId}")
-  public BetDTO findById(@PathVariable Long betId) throws BetNotFoundException {
+  public BetDTO findById(@PathVariable Long betId,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws BetNotFoundException {
 
-    Long myUserId = 1L; //TODO: change this hard code
-    return betService.findById(betId, myUserId);
+    Long currentUserId = userPrincipal.getUser().getId();
+    return betService.findById(betId, currentUserId);
   }
 
   @GetMapping("/user/{userId}")
-  public List<BetDTO> findAllByUserId(@PathVariable Long userId, @RequestParam Integer pageNumber) {
+  public List<BetDTO> findAllByUserId(@PathVariable Long userId, @RequestParam Integer pageNumber,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-    Long myUserId = 1L; //TODO: change this hard code
-    return betService.findAllByUserId(pageNumber, userId, myUserId);
+    Long currentUserId = userPrincipal.getUser().getId();
+    return betService.findAllByUserId(pageNumber, userId, currentUserId);
   }
 
   @GetMapping
-  public List<BetDTO> findAllVisible(@RequestParam Integer pageNumber) {
+  public List<BetDTO> findAllVisible(@RequestParam Integer pageNumber,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-    Long userId = 1L; //TODO: change this hard code
-    return betService.findAllThatShouldBeVisible(pageNumber, userId);
+    Long currentUserId = userPrincipal.getUser().getId();
+    return betService.findAllThatShouldBeVisible(pageNumber, currentUserId);
   }
 
   @PostMapping("/match/{matchId}")
   @ResponseStatus(HttpStatus.CREATED)
-  public BetDTO saveBet(@PathVariable Long matchId, @Valid @RequestBody BetDTO betDTO)
+  public BetDTO saveBet(@PathVariable Long matchId, @Valid @RequestBody BetDTO betDTO,
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws MatchNotFoundException, BettingRulesException, UserNotFoundException {
 
-    Long userId = 1L; //TODO: change this hard code
-    return betService.save(userId, matchId, betDTO);
+    Long currentUserId = userPrincipal.getUser().getId();
+    return betService.save(currentUserId, matchId, betDTO);
   }
 
   @DeleteMapping("/{betId}")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public void deleteBet(@PathVariable Long betId) throws UnauthorizedUserException {
+  public void deleteBet(@PathVariable Long betId,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws UnauthorizedUserException {
 
-    Long userId = 1L; //TODO: change this hard code
-    betService.delete(betId, userId);
+    Long currentUserId = userPrincipal.getUser().getId();
+    betService.delete(betId, currentUserId);
   }
 }

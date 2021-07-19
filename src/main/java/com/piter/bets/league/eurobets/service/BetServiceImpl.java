@@ -98,14 +98,14 @@ public class BetServiceImpl implements BetService {
 
   @Override
   public void delete(Long betId, Long userId) throws UnauthorizedUserException {
-    Optional<Bet> betOptional = betRepository.findById(betId);
-    if (betOptional.isPresent()) {
-      Long betUserId = betOptional.get().getUser().getId();
-      if (betUserId.equals(userId)) {
-        betRepository.delete(betOptional.get());
-      } else {
-        throw new UnauthorizedUserException("You are not the owner of the bet");
-      }
+    Optional<Bet> betOptional = betRepository.findById(betId)
+        .filter(bet -> checkIfUserOwnsBet(userId, bet))
+        .filter(bet -> Objects.isNull(bet.getBetResults())); //checking if bet doesnt contain result
+
+    if(betOptional.isPresent()) {
+      betRepository.delete(betOptional.get());
+    } else {
+      throw new UnauthorizedUserException("You are not the owner of the bet or bet contains result");
     }
   }
 
@@ -139,5 +139,10 @@ public class BetServiceImpl implements BetService {
    */
   private boolean checkIfThereIsMoreThanOneBetForMatch(List<Bet> bets) {
     return bets.size() > 1;
+  }
+
+  private boolean checkIfUserOwnsBet(Long userId, Bet bet) {
+    Long ownerBetId = bet.getUser().getId();
+    return Objects.equals(userId, ownerBetId);
   }
 }

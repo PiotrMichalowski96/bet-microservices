@@ -38,4 +38,9 @@ public class UserServiceImpl implements UserService {
 
     return userMapper.toUserDTO(user);
   }
+
+  @Override
+  public UserDTO getUserDetails(User user) {
+    return userMapper.toUserDTO(user);
+  }
 }

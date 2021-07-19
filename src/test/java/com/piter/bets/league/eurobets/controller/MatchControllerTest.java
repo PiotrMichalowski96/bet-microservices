@@ -1,5 +1,7 @@
-package com.piter.bets.league.eurobets.controllers;
+package com.piter.bets.league.eurobets.controller;
 
+import static com.piter.bets.league.eurobets.util.TestConvertionUtils.convertToJsonString;
+import static com.piter.bets.league.eurobets.util.TestDataUtils.generateMatchDTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -10,22 +12,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.piter.bets.league.eurobets.dto.MatchDTO;
 import com.piter.bets.league.eurobets.exception.MatchNotFoundException;
 import com.piter.bets.league.eurobets.service.MatchService;
-import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -38,10 +35,11 @@ public class MatchControllerTest {
   @MockBean
   private MatchService matchService;
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnMatchWithGivenId() throws Exception {
     //given
-    MatchDTO match = generateMatch(1L);
+    MatchDTO match = generateMatchDTO(1L);
 
     when(matchService.findById(1L)).thenReturn(match);
 
@@ -56,10 +54,11 @@ public class MatchControllerTest {
         .andExpect(jsonPath("$.matchStartTime", is(match.getMatchStartTime().toString())));
   }
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnBadRequestForNotExistingId() throws Exception {
     //given
-    MatchDTO match = generateMatch(1L);
+    MatchDTO match = generateMatchDTO(1L);
     int notExistingId = 2;
 
     String message = String.format("Cannot find match with id: %d", notExistingId);
@@ -74,11 +73,12 @@ public class MatchControllerTest {
         .andExpect(jsonPath("$.message", is(message)));
   }
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnMatchListOrderedByStartTime() throws Exception {
     //given
-    MatchDTO firstMatch = generateMatch(1L);
-    MatchDTO secondMatch = generateMatch(2L);
+    MatchDTO firstMatch = generateMatchDTO(1L);
+    MatchDTO secondMatch = generateMatchDTO(2L);
 
     List<MatchDTO> matches = List.of(firstMatch, secondMatch);
 
@@ -103,11 +103,12 @@ public class MatchControllerTest {
         .andExpect(jsonPath("$[1].matchStartTime", is(secondMatch.getMatchStartTime().toString())));
   }
 
+  @WithUserDetails(value = "user")
   @Test
   public void shouldReturnMatchListOrderedByRound() throws Exception {
     //given
-    MatchDTO firstMatch = generateMatch(1L);
-    MatchDTO secondMatch = generateMatch(2L);
+    MatchDTO firstMatch = generateMatchDTO(1L);
+    MatchDTO secondMatch = generateMatchDTO(2L);
 
     List<MatchDTO> matches = List.of(firstMatch, secondMatch);
 
@@ -132,10 +133,11 @@ public class MatchControllerTest {
         .andExpect(jsonPath("$[1].matchStartTime", is(secondMatch.getMatchStartTime().toString())));
   }
 
+  @WithUserDetails(value = "admin")
   @Test
   public void shouldSaveAnswer() throws Exception {
     //given
-    MatchDTO match = generateMatch(1L);
+    MatchDTO match = generateMatchDTO(1L);
 
     //whenThen
     mockMvc.perform(post("/matches")
@@ -147,28 +149,11 @@ public class MatchControllerTest {
         .andExpect(status().isCreated());
   }
 
+  @WithUserDetails(value = "admin")
   @Test
   public void shouldDeleteMatch() throws Exception {
     mockMvc.perform(delete("/matches/1")
         .with(csrf()))
         .andExpect(status().isAccepted());
-  }
-
-  private String convertToJsonString(Object object) {
-    try {
-      return new ObjectMapper().writeValueAsString(object);
-    } catch (JsonProcessingException e) {
-      return StringUtils.EMPTY;
-    }
-  }
-
-  private MatchDTO generateMatch(Long matchId) {
-    return MatchDTO.builder()
-        .id(matchId)
-        .matchRoundId(RandomUtils.nextLong(1, 11))
-        .awayTeam(RandomStringUtils.randomAlphabetic(10))
-        .homeTeam(RandomStringUtils.randomAlphabetic(10))
-        .matchStartTime(LocalDateTime.now())
-        .build();
   }
 }
