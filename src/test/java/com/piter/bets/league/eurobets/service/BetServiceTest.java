@@ -346,12 +346,33 @@ public class BetServiceTest {
     betWithDifferentUserId.getUser().setId(2L);
     when(betRepository.findById(betId)).thenReturn(Optional.of(betWithDifferentUserId));
 
-    String expectedErrorMessage = "You are not the owner of the bet";
+    //whenThen
+    assertBetDeleteThrowsError(betId, userId);
+  }
+
+  @Test
+  public void shouldDeleteBetThrowErrorBecauseItContainsResult() {
+    //given
+    Long betId = 1L;
+    Long userId = 1L;
+
+    Bet betWithResult = TestDataUtils.generateBet(betId);
+    when(betRepository.findById(betId)).thenReturn(Optional.of(betWithResult));
 
     //whenThen
-    assertThatThrownBy(() -> betService.delete(betId, userId))
-        .isInstanceOf(UnauthorizedUserException.class)
-        .hasMessage(expectedErrorMessage);
+    assertBetDeleteThrowsError(betId, userId);
+  }
+
+  @Test
+  public void shouldDeleteBetThrowErrorBecauseBetDoesntExists() {
+    //given
+    Long betId = 1L;
+    Long userId = 1L;
+
+    when(betRepository.findById(betId)).thenReturn(Optional.empty());
+
+    //whenThen
+    assertBetDeleteThrowsError(betId, userId);
   }
 
   @Test
@@ -360,15 +381,22 @@ public class BetServiceTest {
     Long betId = 1L;
     Long userId = 1L;
 
-    Bet betWithSameUserId = TestDataUtils.generateBet(betId);
-    betWithSameUserId.getUser().setId(userId);
-    when(betRepository.findById(betId)).thenReturn(Optional.of(betWithSameUserId));
+    Bet betWithSameUserIdAndWithoutResult = TestDataUtils.generateBet(betId);
+    betWithSameUserIdAndWithoutResult.setBetResults(null);
+    betWithSameUserIdAndWithoutResult.getUser().setId(userId);
+    when(betRepository.findById(betId)).thenReturn(Optional.of(betWithSameUserIdAndWithoutResult));
 
     //when
     betService.delete(betId, userId);
 
     //then
-    verify(betRepository, Mockito.times(1)).delete(betWithSameUserId);
+    verify(betRepository, Mockito.times(1)).delete(betWithSameUserIdAndWithoutResult);
+  }
+
+  private void assertBetDeleteThrowsError(Long betId, Long userId) {
+    assertThatThrownBy(() -> betService.delete(betId, userId))
+        .isInstanceOf(UnauthorizedUserException.class)
+        .hasMessage("You are not the owner of the bet or bet contains result");
   }
 
   private void mockSaveBetWithCorrectMatch(Long matchId) {
