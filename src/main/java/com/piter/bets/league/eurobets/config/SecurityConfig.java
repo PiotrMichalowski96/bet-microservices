@@ -2,6 +2,7 @@ package com.piter.bets.league.eurobets.config;
 
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -79,9 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         .passwordEncoder(getEncoder());
   }
 
-//TODO: below bean for front-end app
-
-//  @Bean
+  @Bean
+  @ConditionalOnProperty(value = "frontend.app.enabled", havingValue = "true")
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
