@@ -1,46 +1,66 @@
 {
-	"variables": [],
 	"info": {
+		"_postman_id": "dd69c273-8aef-4850-88b6-aed62587d10a",
 		"name": "EuroBet",
-		"_postman_id": "9141b425-721b-c265-e919-e8f7edf216cd",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "User",
-			"description": "",
 			"item": [
 				{
 					"name": "Get users",
 					"request": {
-						"url": "localhost:8080/users",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get user by id",
 					"request": {
-						"url": "localhost:8080/users/1",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get current user",
 					"request": {
-						"url": "localhost:8080/users/currentUser",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/users/currentUser",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"currentUser"
+							]
+						}
 					},
 					"response": []
 				}
@@ -48,11 +68,12 @@
 		},
 		{
 			"name": "Match",
-			"description": "",
 			"item": [
 				{
 					"name": "Get all matches order by startTime",
 					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/matches?orderBy=startTime&pageNumber=0",
 							"host": [
@@ -65,29 +86,22 @@
 							"query": [
 								{
 									"key": "orderBy",
-									"value": "startTime",
-									"equals": true,
-									"description": ""
+									"value": "startTime"
 								},
 								{
 									"key": "pageNumber",
-									"value": "0",
-									"equals": true,
-									"description": ""
+									"value": "0"
 								}
-							],
-							"variable": []
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get all matches order by round",
 					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/matches?orderBy=round&pageNumber=0",
 							"host": [
@@ -100,29 +114,22 @@
 							"query": [
 								{
 									"key": "orderBy",
-									"value": "round",
-									"equals": true,
-									"description": ""
+									"value": "round"
 								},
 								{
 									"key": "pageNumber",
-									"value": "0",
-									"equals": true,
-									"description": ""
+									"value": "0"
 								}
-							],
-							"variable": []
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get all matches",
 					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/matches?orderBy=&pageNumber=0",
 							"host": [
@@ -135,94 +142,130 @@
 							"query": [
 								{
 									"key": "orderBy",
-									"value": "",
-									"equals": true,
-									"description": ""
+									"value": ""
 								},
 								{
 									"key": "pageNumber",
-									"value": "0",
-									"equals": true,
-									"description": ""
+									"value": "0"
 								}
-							],
-							"variable": []
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get match by id",
 					"request": {
-						"url": "localhost:8080/matches/1",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/matches/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"matches",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Add match without result",
 					"request": {
-						"url": "localhost:8080/matches",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"matchRoundId\": 2,\n    \"homeTeam\": \"Finlandia\",\n    \"awayTeam\": \"Rosja\",\n    \"matchStartTime\": \"2021-06-16T15:00\"\n}"
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/matches",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"matches"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Add match with result",
 					"request": {
-						"url": "localhost:8080/matches",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n\t\"id\": 29,\n    \"matchRoundId\": 2,\n    \"homeTeam\": \"Finlandia\",\n    \"awayTeam\": \"Rosja\",\n    \"matchStartTime\": \"2021-06-16T15:00\",\n    \"homeTeamGoals\": 0,\n    \"awayTeamGoals\": 1\n}"
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/matches",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"matches"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Delete match and bets with that match",
 					"request": {
-						"url": "localhost:8080/matches/29",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n\t\"id\": 29,\n    \"matchRoundId\": 2,\n    \"homeTeam\": \"Finlandia\",\n    \"awayTeam\": \"Rosja\",\n    \"matchStartTime\": \"2021-06-16T15:00\",\n    \"homeTeamGoals\": 0,\n    \"awayTeamGoals\": 1\n}"
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/matches/29",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"matches",
+								"29"
+							]
+						}
 					},
 					"response": []
 				}
@@ -230,22 +273,31 @@
 		},
 		{
 			"name": "Bet",
-			"description": "",
 			"item": [
 				{
 					"name": "Get bet by id",
 					"request": {
-						"url": "localhost:8080/bets/1",
 						"method": "GET",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/bets/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bets",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get bet by user id",
 					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/bets/user/1?pageNumber=0",
 							"host": [
@@ -260,23 +312,18 @@
 							"query": [
 								{
 									"key": "pageNumber",
-									"value": "0",
-									"equals": true,
-									"description": ""
+									"value": "0"
 								}
-							],
-							"variable": []
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get all visible bets",
 					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:8080/bets?pageNumber=0",
 							"host": [
@@ -289,57 +336,77 @@
 							"query": [
 								{
 									"key": "pageNumber",
-									"value": "0",
-									"equals": true,
-									"description": ""
+									"value": "0"
 								}
-							],
-							"variable": []
-						},
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Add bet",
 					"request": {
-						"url": "localhost:8080/bets/match/25",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"matchId\": 25,\n    \"homeTeamGoalBet\": 0,\n    \"awayTeamGoalBet\": 2\n}"
+							"raw": "{\n    \"matchId\": 1,\n    \"homeTeamGoalBet\": 1,\n    \"awayTeamGoalBet\": 3\n}"
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/bets/match/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bets",
+								"match",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Delete bet",
 					"request": {
-						"url": "localhost:8080/bets/27",
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"matchId\": 25,\n    \"homeTeamGoalBet\": 0,\n    \"awayTeamGoalBet\": 2\n}"
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/bets/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bets",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -347,18 +414,54 @@
 		},
 		{
 			"name": "Login",
-			"description": "",
 			"item": [
+				{
+					"name": "Initial Get XSRF token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.environment.set(\"xsrf-token\", decodeURIComponent(pm.cookies.get(\"XSRF-TOKEN\")));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/matches?orderBy=&pageNumber=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"matches"
+							],
+							"query": [
+								{
+									"key": "orderBy",
+									"value": ""
+								},
+								{
+									"key": "pageNumber",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Login Piter",
 					"request": {
-						"url": "localhost:8080/login",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"description": ""
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -367,42 +470,54 @@
 								{
 									"key": "username",
 									"value": "Piter",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "Piotrek1996",
-									"description": "",
 									"type": "text"
 								}
 							]
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Logout",
 					"request": {
-						"url": "localhost:8080/logout",
 						"method": "POST",
 						"header": [],
-						"body": {},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"logout"
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Login Admin",
 					"request": {
-						"url": "localhost:8080/login",
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"description": ""
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -411,18 +526,25 @@
 								{
 									"key": "username",
 									"value": "Admin",
-									"description": "",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "admin",
-									"description": "",
 									"type": "text"
 								}
 							]
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
 					},
 					"response": []
 				}
