@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
       MatchNotFoundException.class,
       MatchRoundNotFoundException.class,
       UserNotFoundException.class,
+      UnauthorizedUserException.class,
       MethodArgumentTypeMismatchException.class,
       MissingServletRequestParameterException.class,
       MethodArgumentNotValidException.class
