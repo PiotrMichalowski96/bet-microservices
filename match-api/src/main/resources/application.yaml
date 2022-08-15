@@ -24,6 +24,13 @@ info:
     author.name: Piter
 
 ########################
+# Swagger
+########################
+springdoc:
+  swagger-ui.path: /swagger-doc/swagger-ui.html
+  api-docs.path: /swagger-doc/v3/api-docs
+
+########################
 # Logging
 ########################
 logging.level:

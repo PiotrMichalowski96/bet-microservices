@@ -13,7 +13,7 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
     return http.authorizeExchange()
-        .pathMatchers("/actuator/**", "/match/**").permitAll()
+        .pathMatchers("/actuator/**", "/match/**", "/swagger-doc/**").permitAll()
         .anyExchange().authenticated()
         .and().build();
   }
