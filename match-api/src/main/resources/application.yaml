@@ -5,6 +5,27 @@ spring:
       port: 27017
       host: localhost
 
+########################
+# Actuator
+########################
+management:
+  endpoints.web.exposure.include: health, info
+  info:
+    env.enabled: true
+    build.enabled: true
+    git:
+      enabled: true
+      mode: full
+
+info:
+  application:
+    name: Match API
+    description: Match API microservice for betting
+    author.name: Piter
+
+########################
+# Logging
+########################
 logging.level:
   org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
   org.springframework.cache: TRACE
