@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Profile;
 @Profile("local-discovery")
 @EnableDiscoveryClient
 @Configuration
-public class LocalDiscovery {
+public class EurekaDiscoveryConfig {
 
 }

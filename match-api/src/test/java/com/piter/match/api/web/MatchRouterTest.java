@@ -3,6 +3,7 @@ package com.piter.match.api.web;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import com.piter.match.api.config.SecurityConfig;
 import com.piter.match.api.domain.Match;
 import com.piter.match.api.domain.MatchResult;
 import com.piter.match.api.domain.MatchRound;
@@ -26,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 @WebFluxTest(controllers = MatchRouterConfig.class)
 @ExtendWith(SpringExtension.class)
-@Import({MatchServiceImpl.class, MatchWebHandlerImpl.class})
+@Import({MatchServiceImpl.class, MatchWebHandlerImpl.class, SecurityConfig.class})
 class MatchRouterTest {
 
   private static final List<Match> MATCHES = List.of(
