@@ -5,6 +5,7 @@ import com.piter.match.api.repository.MatchRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +34,8 @@ public class MatchServiceImpl implements MatchService {
   }
 
   @Override
+  @Cacheable("matches")
   public Mono<Match> findById(Long id) {
-    return matchRepository.findById(id);
+    return matchRepository.findById(id).cache();
   }
 }
