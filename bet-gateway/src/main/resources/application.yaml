@@ -1,0 +1,4 @@
+spring.application.name: bet-gateway
+server.port: 9090
+
+logging.level.org.springframework.cloud.gateway: debug

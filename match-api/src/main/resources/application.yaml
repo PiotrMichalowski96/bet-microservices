@@ -1,4 +1,5 @@
 spring:
+  application.name: match-api
   data:
     mongodb:
       port: 27017
