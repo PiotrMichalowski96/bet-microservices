@@ -5,6 +5,9 @@ spring:
       port: 27017
       host: localhost
 
+cache:
+  expiry-in-hours: 2
+
 ########################
 # Actuator
 ########################
