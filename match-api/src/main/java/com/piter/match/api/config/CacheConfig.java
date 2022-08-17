@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableCaching
 @Configuration
-public class CachingConfig {
+public class CacheConfig {
 
   @Value("${cache.expiry-in-hours}")
   private Integer expiryTimeInHours;
