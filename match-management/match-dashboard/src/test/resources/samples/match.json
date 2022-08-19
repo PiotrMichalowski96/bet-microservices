@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "homeTeam": "FC Barcelona",
+  "awayTeam": "Real Madrid",
+  "startTime": "2022-02-17T21:00:00",
+  "result": {
+    "homeTeamGoals": 4,
+    "awayTeamGoals": 0
+  },
+  "round": {
+    "roundName": "LaLiga round 30",
+    "startTime": "2022-02-14T21:00:00"
+  }
+}

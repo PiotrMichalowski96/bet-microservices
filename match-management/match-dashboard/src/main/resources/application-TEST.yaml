@@ -30,7 +30,7 @@ cache:
 match.producer.binding: producer-match-0
 
 match-api:
-  port: 9090
+  port: 9651
   url: localhost:${match-api.port}
 
 
