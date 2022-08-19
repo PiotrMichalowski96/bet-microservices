@@ -1,5 +1,5 @@
 ########################
-# Cloud
+# Cloud stream
 ########################
 spring.cloud.stream:
   kafka:
@@ -14,29 +14,7 @@ spring.cloud.stream:
     producer-match-0:
       destination: sample-match-topic
 
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic
-
-cache:
-  expiry-in-hours: 2
-
 ########################
-# Match service
+# Kafka Match producer
 ########################
 match.producer.binding: producer-match-0
-
-match-api:
-  port: 9090
-  url: localhost:${match-api.port}
-
-
-########################
-# Logging
-########################
-logging.level:
-  com.piter.match.service: DEBUG

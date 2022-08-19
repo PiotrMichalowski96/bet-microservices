@@ -9,8 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @EnableFeignClients(basePackages = "com.piter.match.service.rest")
 @Import({CacheConfig.class, FeignDateFormatConfig.class})
-@PropertySource(value = "classpath:default-match-service.yaml", factory = YamlPropertySourceFactory.class)
-@ComponentScan(basePackages = "com.piter.match.service")
-public class MatchServiceConfig {
+@PropertySource(value = "classpath:default-feign-match.yaml", factory = YamlPropertySourceFactory.class)
+@ComponentScan(basePackages = "com.piter.match.service.rest")
+public class MatchFeignConfig {
 
 }
