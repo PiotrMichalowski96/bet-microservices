@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <artifactId>match-management</artifactId>
     <groupId>com.piter</groupId>
+    <artifactId>match-management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
@@ -13,5 +13,29 @@
 
   <artifactId>match-dashboard</artifactId>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.piter</groupId>
+      <artifactId>match-service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

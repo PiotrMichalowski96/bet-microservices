@@ -29,7 +29,9 @@ cache:
 ########################
 match.producer.binding: producer-match-0
 
-match-api.url: localhost:9090
+match-api:
+  port: 9090
+  url: localhost:${match-api.port}
 
 
 ########################

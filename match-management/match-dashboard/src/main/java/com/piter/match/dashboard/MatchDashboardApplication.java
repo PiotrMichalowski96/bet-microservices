@@ -1,5 +1,6 @@
-package com.piter.match.service;
+package com.piter.match.dashboard;
 
+import com.piter.match.service.config.MatchServiceConfig;
 import com.piter.match.service.domain.Match;
 import com.piter.match.service.domain.MatchResult;
 import com.piter.match.service.domain.MatchRound;
@@ -11,19 +12,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 
 @Slf4j
-@EnableFeignClients
 @RequiredArgsConstructor
+@Import(MatchServiceConfig.class)
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class MatchDashboardApplication implements CommandLineRunner {
 
   private final MatchProducer matchProducer;
   private final HandledMatchService matchHandler;
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    SpringApplication.run(MatchDashboardApplication.class, args);
   }
 
   @Override
@@ -43,8 +44,14 @@ public class Application implements CommandLineRunner {
         .homeTeam("FC Barcelona")
         .awayTeam("PSG")
         .startTime(LocalDateTime.of(2022, 2, 17, 21, 0, 0))
-        .result(new MatchResult(3, 1))
-        .round(new MatchRound("Champions League Semi-Finals", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
+        .result(MatchResult.builder()
+            .awayTeamGoals(1)
+            .homeTeamGoals(2)
+            .build())
+        .round(MatchRound.builder()
+            .roundName("Champions League Semi-Finals")
+            .startTime(LocalDateTime.of(2022, 2, 14, 21, 0, 0))
+            .build())
         .build();
 
     matchProducer.sendMatch(match);
