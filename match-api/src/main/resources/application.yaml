@@ -5,6 +5,29 @@ spring:
       port: 27017
       host: localhost
 
+security.mode: false
+
+########################
+# Cloud stream
+########################
+spring.cloud.stream:
+  kafka:
+    bindings:
+      producer-match-0:
+        producer:
+          configuration:
+            key.serializer: org.apache.kafka.common.serialization.LongSerializer
+    binder:
+      brokers: localhost:9092
+  bindings:
+    producer-match-0:
+      destination: sample-match-topic
+
+########################
+# Kafka Match producer
+########################
+match.producer.binding: producer-match-0
+
 cache:
   expiry-in-hours: 2
 
@@ -39,3 +62,4 @@ springdoc:
 logging.level:
   org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
   org.springframework.cache: TRACE
+  com.piter.match.api: DEBUG

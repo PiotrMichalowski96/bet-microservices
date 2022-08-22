@@ -1,5 +1,6 @@
 package com.piter.match.api.web;
 
+import com.piter.match.api.domain.Match;
 import com.piter.match.api.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -40,5 +41,21 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
     return matchService.findById(id)
         .flatMap(match -> ServerResponse.ok().bodyValue(match))
         .switchIfEmpty(ServerResponse.notFound().build());
+  }
+
+  @Override
+  public Mono<ServerResponse> saveStock(ServerRequest request) {
+    return request.bodyToMono(Match.class)
+        .flatMap(matchService::saveMatch)
+        .flatMap(match -> ServerResponse.ok().bodyValue(match));
+  }
+
+  @Override
+  public Mono<ServerResponse> deleteStock(ServerRequest request) {
+    var id = Long.valueOf(request.pathVariable("id"));
+    return matchService.findById(id)
+        .flatMap(matchService::deleteMatch)
+        .flatMap(value -> ServerResponse.ok().build())
+        .switchIfEmpty(ServerResponse.badRequest().build());
   }
 }
