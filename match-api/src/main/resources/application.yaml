@@ -12,21 +12,27 @@ security.mode: false
 ########################
 spring.cloud.stream:
   kafka:
+    binder:
+      brokers: localhost:9092
     bindings:
-      producer-match-0:
+      matches-out-0:
         producer:
           configuration:
             key.serializer: org.apache.kafka.common.serialization.LongSerializer
-    binder:
-      brokers: localhost:9092
+      matches-in-0:
+        consumer:
+          configuration:
+            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
   bindings:
-    producer-match-0:
-      destination: sample-match-topic
+    matches-out-0:
+      destination: sample-match-topic-2
+    matches-in-0:
+      destination: sample-match-topic-2
 
 ########################
 # Kafka Match producer
 ########################
-match.producer.binding: producer-match-0
+match.producer.binding: matches-out-0
 
 cache:
   expiry-in-hours: 2
@@ -61,5 +67,6 @@ springdoc:
 ########################
 logging.level:
   org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
+  org.springframework.data.mongodb.repository.support: DEBUG
   org.springframework.cache: TRACE
   com.piter.match.api: DEBUG
