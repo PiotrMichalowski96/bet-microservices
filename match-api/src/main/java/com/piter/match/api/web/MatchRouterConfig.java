@@ -68,6 +68,8 @@ public class MatchRouterConfig {
         .GET(MATCH_URL, queryParam(ORDER_BY_PARAM, ROUND_TIME_PARAM_VALUE::equals), matchWebHandler::findAllByOrderByMatchRoundStartTime)
         .GET(MATCH_URL, accept(APPLICATION_JSON), matchWebHandler::findAll)
         .GET(MATCH_ID_URL, accept(APPLICATION_JSON), matchWebHandler::findById)
+        .POST(MATCH_URL, accept(APPLICATION_JSON), matchWebHandler::saveStock)
+        .DELETE(MATCH_ID_URL, matchWebHandler::deleteStock)
         .build();
   }
 }

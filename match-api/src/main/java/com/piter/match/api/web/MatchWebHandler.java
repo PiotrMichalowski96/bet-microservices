@@ -13,4 +13,8 @@ public interface MatchWebHandler {
   Mono<ServerResponse> findAllByOrderByMatchRoundStartTime(ServerRequest request);
 
   Mono<ServerResponse> findById(ServerRequest request);
+
+  Mono<ServerResponse> saveStock(ServerRequest request);
+
+  Mono<ServerResponse> deleteStock(ServerRequest request);
 }

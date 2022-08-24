@@ -1,4 +1,4 @@
-package com.piter.match.api.config;
+package com.piter.match.service.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableCaching
 @Configuration
-public class CachingConfig {
+public class CacheConfig {
 
   @Value("${cache.expiry-in-hours}")
   private Integer expiryTimeInHours;

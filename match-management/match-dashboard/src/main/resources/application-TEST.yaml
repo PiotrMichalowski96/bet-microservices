@@ -1,0 +1,41 @@
+server.port: 8081
+
+spring.cloud.stream:
+      kafka:
+        bindings:
+          producer-match-0:
+            producer:
+              configuration:
+                key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        binder:
+          brokers: localhost:9092
+      bindings:
+        producer-match-0:
+          destination: sample-match-topic
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+cache:
+  expiry-in-hours: 2
+
+########################
+# Match service
+########################
+match.producer.binding: producer-match-0
+
+match-api:
+  port: 9651
+  url: localhost:${match-api.port}
+
+
+########################
+# Logging
+########################
+logging.level:
+  com.piter.match.service: DEBUG

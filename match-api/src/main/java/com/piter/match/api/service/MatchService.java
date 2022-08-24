@@ -13,4 +13,8 @@ public interface MatchService {
   Mono<List<Match>> findAllByOrderByMatchRoundStartTime();
 
   Mono<Match> findById(Long id);
+
+  Mono<Match> saveMatch(Match match);
+
+  Mono<Void> deleteMatch(Match match);
 }
