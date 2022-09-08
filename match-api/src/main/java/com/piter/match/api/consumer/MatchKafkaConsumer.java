@@ -1,9 +1,11 @@
 package com.piter.match.api.consumer;
 
 import com.piter.match.api.domain.Match;
+import com.piter.match.api.exception.MatchKafkaException;
 import com.piter.match.api.repository.MatchRepository;
+import com.piter.match.api.service.SequenceGeneratorService;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,21 +19,26 @@ public class MatchKafkaConsumer {
 
   private final Map<EventType, Consumer<Message<?>>> eventTypeProcessor;
 
-  public MatchKafkaConsumer(MatchRepository matchRepository) {
+  public MatchKafkaConsumer(MatchRepository matchRepository,
+      SequenceGeneratorService sequenceGeneratorService) {
+
     eventTypeProcessor = Map.of(
         EventType.INSERT, message -> {
           Match match = (Match) message.getPayload();
-          matchRepository.save(match).subscribe();
-          logger.debug("Inserted match: {}", match);
+          sequenceGeneratorService.generateSequence(Match.SEQUENCE_NAME)
+              .map(id -> map(match, id))
+              .subscribe(matchWithId -> matchRepository.save(matchWithId)
+                  .subscribe(savedMatch -> logger.debug("Inserted match: {}", savedMatch)));
         },
         EventType.UPDATE, message -> {
           Match match = (Match) message.getPayload();
-          matchRepository.save(match).subscribe();
-          logger.debug("Updated match: {}", match);
+          matchRepository.save(match)
+              .subscribe(savedMatch -> logger.debug("Updated match: {}", savedMatch));
         },
         EventType.DELETE, message -> {
-          Long id = message.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class);
-          matchRepository.deleteById(Objects.requireNonNull(id)).subscribe();
+          Long id = Optional.ofNullable( message.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class))
+              .orElseThrow(() -> new MatchKafkaException("Delete event does not have Kafka key ID"));
+          matchRepository.deleteById(id).subscribe();
           logger.debug("Deleted match id: {}", id);
         }
     );
@@ -43,5 +50,16 @@ public class MatchKafkaConsumer {
       EventType eventType = EventType.getEventType(matchMessage);
       eventTypeProcessor.get(eventType).accept(matchMessage);
     };
+  }
+
+  private Match map(Match match, Long id) {
+    return Match.builder()
+        .id(id)
+        .homeTeam(match.getHomeTeam())
+        .awayTeam(match.getAwayTeam())
+        .startTime(match.getStartTime())
+        .result(match.getResult())
+        .round(match.getRound())
+        .build();
   }
 }
