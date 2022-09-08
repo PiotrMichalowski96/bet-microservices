@@ -30,7 +30,7 @@ public class MatchKafkaConsumer {
           logger.debug("Updated match: {}", match);
         },
         EventType.DELETE, message -> {
-          Long id = message.getHeaders().get(KafkaHeaders.MESSAGE_KEY, Long.class);
+          Long id = message.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class);
           matchRepository.deleteById(Objects.requireNonNull(id)).subscribe();
           logger.debug("Deleted match id: {}", id);
         }
