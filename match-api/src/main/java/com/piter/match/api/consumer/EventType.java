@@ -23,7 +23,7 @@ public enum EventType {
   private final Predicate<Message<?>> eventTypePredicate;
 
   private static boolean containsKey(Message<?> message) {
-    return message.getHeaders().containsKey(KafkaHeaders.MESSAGE_KEY);
+    return message.getHeaders().containsKey(KafkaHeaders.RECEIVED_MESSAGE_KEY);
   }
 
   private static boolean hasPayloadType(Message<?> message, Class<?> payloadType) {

@@ -4,6 +4,10 @@ spring:
     mongodb:
       port: 27017
       host: localhost
+  kafka:
+    consumer:
+      properties:
+        spring.json.trusted.packages: "*"
 
 security.mode: false
 
@@ -19,10 +23,12 @@ spring.cloud.stream:
         producer:
           configuration:
             key.serializer: org.apache.kafka.common.serialization.LongSerializer
+            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
       matches-in-0:
         consumer:
           configuration:
             key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+            value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   bindings:
     matches-out-0:
       destination: sample-match-topic-2
