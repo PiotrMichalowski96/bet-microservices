@@ -2,7 +2,7 @@ package com.piter.match.api.consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.match.api.config.MongoTestConfig;
+import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.domain.Match;
 import com.piter.match.api.domain.MatchResult;
 import com.piter.match.api.domain.MatchRound;
@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = MongoTestConfig.class)
+@ContextConfiguration(classes = MatchApiTestConfig.class)
 class MatchKafkaConsumerTest {
 
   @Autowired

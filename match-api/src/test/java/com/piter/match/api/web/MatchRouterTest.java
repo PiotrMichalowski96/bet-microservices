@@ -3,31 +3,28 @@ package com.piter.match.api.web;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.piter.match.api.config.SecurityConfig;
+import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.domain.Match;
 import com.piter.match.api.domain.MatchResult;
 import com.piter.match.api.domain.MatchRound;
 import com.piter.match.api.repository.MatchRepository;
-import com.piter.match.api.service.MatchServiceImpl;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @WebFluxTest(controllers = MatchRouterConfig.class)
-@ExtendWith(SpringExtension.class)
-@Import({MatchServiceImpl.class, MatchWebHandlerImpl.class, SecurityConfig.class})
+@ContextConfiguration(classes = MatchApiTestConfig.class)
 class MatchRouterTest {
 
   private static final List<Match> MATCHES = List.of(
@@ -56,6 +53,9 @@ class MatchRouterTest {
           .round(new MatchRound("LaLiga round 30", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
           .build()
   );
+
+  @MockBean
+  private ReactiveMongoOperations reactiveMongoOperations;
 
   @MockBean
   private MatchRepository matchRepository;
