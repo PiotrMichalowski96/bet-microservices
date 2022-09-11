@@ -10,7 +10,6 @@ import com.piter.match.api.domain.MatchRound;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
 import java.util.function.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@Slf4j
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
@@ -70,7 +68,6 @@ class MatchKafkaConsumerTest {
     var savedMatch = matchRepository.findAll()
         .filter(findMatchPredicate)
         .blockFirst();
-    logger.info("Actual match: {}", savedMatch);
     assertThat(savedMatch).usingRecursiveComparison()
         .ignoringFields("id")
         .isEqualTo(expectedMatch);
@@ -113,7 +110,6 @@ class MatchKafkaConsumerTest {
 
   private void assertSavedMatch(Long id, Match expectedMatch) {
     var savedMatch = matchRepository.findById(id).block();
-    logger.info("Actual match: {}", savedMatch);
     assertThat(savedMatch).isEqualTo(expectedMatch);
   }
 }
