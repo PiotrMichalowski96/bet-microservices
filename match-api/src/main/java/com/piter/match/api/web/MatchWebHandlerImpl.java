@@ -16,23 +16,17 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
 
   @Override
   public Mono<ServerResponse> findAll(ServerRequest request) {
-    return matchService.findAll()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAll(), Match.class);
   }
 
   @Override
   public Mono<ServerResponse> findAllByOrderByMatchStartTime(ServerRequest request) {
-    return matchService.findAllByOrderByMatchStartTime()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAllByOrderByMatchStartTime(), Match.class);
   }
 
   @Override
   public Mono<ServerResponse> findAllByOrderByMatchRoundStartTime(ServerRequest request) {
-    return matchService.findAllByOrderByMatchRoundStartTime()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAllByOrderByMatchRoundStartTime(), Match.class);
   }
 
   @Override

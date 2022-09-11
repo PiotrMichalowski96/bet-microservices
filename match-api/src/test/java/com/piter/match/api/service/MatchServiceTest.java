@@ -17,7 +17,9 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 @DataMongoTest
 @ActiveProfiles("TEST")
@@ -33,7 +35,7 @@ class MatchServiceTest {
 
   @BeforeEach
   void initData() {
-    matchRepository.deleteAll();
+    matchRepository.deleteAll().subscribe();
     List<Match> matches = List.of(
         Match.builder()
             .id(1L)
@@ -60,47 +62,43 @@ class MatchServiceTest {
             .round(new MatchRound("LaLiga round 30", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
             .build()
     );
-    matchRepository.saveAll(matches);
+    matchRepository.saveAll(matches).subscribe();
   }
 
   @Test
   void shouldGetMatchesWithoutOrder() {
-    Mono<List<Match>> matchListMono = matchService.findAll();
-
-    matchListMono.subscribe(matches -> {
-      assertThat(matches.get(0).getId()).isEqualTo(1L);
-      assertThat(matches.get(1).getId()).isEqualTo(2L);
-      assertThat(matches.get(2).getId()).isEqualTo(3L);
-    });
+    Flux<Match> matchFlux = matchService.findAll();
+    StepVerifier.create(matchFlux)
+        .expectNextCount(3)
+        .verifyComplete();
   }
 
   @Test
   void shouldGetMatchesOrderedByRoundTime() {
-    Mono<List<Match>> matchListMono = matchService.findAllByOrderByMatchRoundStartTime();
-
-    matchListMono.subscribe(matches -> {
-      assertThat(matches.get(0).getId()).isEqualTo(1L);
-      assertThat(matches.get(1).getId()).isEqualTo(3L);
-      assertThat(matches.get(2).getId()).isEqualTo(2L);
-    });
+    Flux<Match> matchFlux = matchService.findAllByOrderByMatchRoundStartTime();
+    StepVerifier.create(matchFlux)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(3L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
+        .verifyComplete();
   }
 
   @Test
   void shouldGetMatchesOrderedByMatchTime() {
-    Mono<List<Match>> matchListMono = matchService.findAllByOrderByMatchStartTime();
-
-    matchListMono.subscribe(matches -> {
-      assertThat(matches.get(0).getId()).isEqualTo(1L);
-      assertThat(matches.get(1).getId()).isEqualTo(3L);
-      assertThat(matches.get(2).getId()).isEqualTo(2L);
-    });
+    Flux<Match> matchFlux = matchService.findAllByOrderByMatchStartTime();
+    StepVerifier.create(matchFlux)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(3L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
+        .verifyComplete();
   }
 
   @Test
   void shouldGetMatchById() {
     var id = 2L;
     Mono<Match> matchMono = matchService.findById(id);
-
-    matchMono.subscribe(match -> assertThat(match.getId()).isEqualTo(id));
+    StepVerifier.create(matchMono)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(id))
+        .verifyComplete();
   }
 }
