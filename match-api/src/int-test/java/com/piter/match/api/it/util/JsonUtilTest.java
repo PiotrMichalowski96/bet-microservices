@@ -12,7 +12,7 @@ class JsonUtilTest {
   @Test
   void shouldConvertJson() throws IOException {
     //given
-    String jsonPath = "samples/retrieve_scenario/get_match_by_id.json";
+    String jsonPath = "samples/retrieve_scenario/get_match_by_id_1.json";
 
     //when
     Match match = JsonUtil.readJsonFile(jsonPath, Match.class);

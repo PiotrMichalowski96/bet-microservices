@@ -1,0 +1,14 @@
+{
+  "id": 6,
+  "homeTeam": "Real Sociedad",
+  "awayTeam": "FC Barcelona",
+  "startTime": "2022-08-21T22:00:00",
+  "result": {
+    "homeTeamGoals": 1,
+    "awayTeamGoals": 4
+  },
+  "round": {
+    "roundName": "LaLiga round 2",
+    "startTime": "2022-02-19T21:00:00"
+  }
+}
