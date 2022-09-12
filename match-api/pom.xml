@@ -211,6 +211,20 @@
               </sources>
             </configuration>
           </execution>
+          <execution>
+            <id>add-integration-test-resources</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/int-test/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -267,10 +281,13 @@
             <executions>
               <execution>
                 <goals>
-                  <goal>integration-test</goal>
                   <goal>verify</goal>
+                  <goal>integration-test</goal>
                 </goals>
                 <configuration>
+                  <includes>
+                    <include>**/*IntegrationTest.java</include>
+                  </includes>
                   <argLine>-Dspring.profiles.active=INT-TEST</argLine>
                 </configuration>
               </execution>
