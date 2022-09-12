@@ -16,5 +16,5 @@ public interface MatchService {
 
   Mono<Match> saveMatch(Match match);
 
-  Mono<Void> deleteMatch(Match match);
+  Mono<Void> deleteMatch(Long id);
 }

@@ -1,6 +1,7 @@
 package com.piter.match.api.service;
 
 import com.piter.match.api.domain.Match;
+import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchProducer;
 import com.piter.match.api.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,9 @@ public class MatchServiceImpl implements MatchService {
   @Override
   @Cacheable("matches")
   public Mono<Match> findById(Long id) {
-    return matchRepository.findById(id).cache();
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .cache();
   }
 
   @Override
@@ -43,8 +46,12 @@ public class MatchServiceImpl implements MatchService {
   }
 
   @Override
-  public Mono<Void> deleteMatch(Match match) {
-    matchProducer.sendDeleteMatchEvent(match);
-    return Mono.empty();
+  public Mono<Void> deleteMatch(Long id) {
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .flatMap(match -> {
+          matchProducer.sendDeleteMatchEvent(match);
+          return Mono.empty();
+        });
   }
 }
