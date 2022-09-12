@@ -12,7 +12,7 @@ class JsonUtilTest {
   @Test
   void shouldConvertJson() throws IOException {
     //given
-    String jsonPath = "samples/retrieve_scenario/get_match_by_id_1.json";
+    var jsonPath = "samples/retrieve_scenario/get_match_by_id_1.json";
 
     //when
     Match match = JsonUtil.readJsonFile(jsonPath, Match.class);
@@ -24,7 +24,7 @@ class JsonUtilTest {
   @Test
   void shouldConvertJsonArrayWithManyElements() throws IOException {
     //given
-    String jsonArrayPath = "samples/retrieve_scenario/get_all_matches.json";
+    var jsonArrayPath = "samples/retrieve_scenario/get_all_matches.json";
 
     //when
     List<Match> matches = JsonUtil.readJsonArrayFile(jsonArrayPath, Match.class);

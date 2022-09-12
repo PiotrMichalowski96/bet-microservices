@@ -85,7 +85,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   @Then("returned matches are equal to expected {string}")
   public void matchesAreEqualToExpected(String expectedMatchesPath) throws IOException {
     List<Match> expectedMatches = readJsonArrayFile(expectedMatchesPath, Match.class);
-    String matchesJson = response.getBody().asString();
+    var matchesJson = response.getBody().asString();
     List<Match> actualMatches = convertJsonArray(matchesJson, Match.class);
     assertThat(actualMatches).hasSameSizeAs(expectedMatches);
     assertThat(actualMatches).hasSameElementsAs(expectedMatches);
@@ -94,7 +94,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   @Then("returned match is equal to expected {string}")
   public void matchIsEqualToExpected(String expectedMatchPath) throws IOException {
     Match expectedMatch = readJsonFile(expectedMatchPath, Match.class);
-    String matchJson = response.getBody().asString();
+    var matchJson = response.getBody().asString();
     Match actualMatch = convertJson(matchJson, Match.class);
     assertThat(actualMatch).isEqualTo(expectedMatch);
   }

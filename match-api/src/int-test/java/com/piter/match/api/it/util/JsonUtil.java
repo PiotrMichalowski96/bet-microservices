@@ -42,17 +42,17 @@ public class JsonUtil {
   }
 
   public static String readFileAsString(String resourceFilePath) throws IOException {
-    FileInputStream fis = new FileInputStream(RESOURCE_PATH + resourceFilePath);
+    var fis = new FileInputStream(RESOURCE_PATH + resourceFilePath);
     return IOUtils.toString(fis, StandardCharsets.UTF_8);
   }
 
   public static <T> T readJsonFile(String filePath, Class<T> clazz) throws IOException {
-    String json = readFileAsString(filePath);
+    var json = readFileAsString(filePath);
     return convertJson(json, clazz);
   }
 
   public static <T> List<T> readJsonArrayFile(String filePath, Class<T> clazz) throws IOException {
-    String json = readFileAsString(filePath);
+    var json = readFileAsString(filePath);
     return convertJsonArray(json, clazz);
   }
 }
