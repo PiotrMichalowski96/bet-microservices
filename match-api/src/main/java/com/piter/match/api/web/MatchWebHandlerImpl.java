@@ -5,8 +5,12 @@ import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -14,6 +18,7 @@ import reactor.core.publisher.Mono;
 public class MatchWebHandlerImpl implements MatchWebHandler {
 
   private final MatchService matchService;
+  private final Validator validator;
 
   @Override
   public Mono<ServerResponse> findAll(ServerRequest request) {
@@ -41,8 +46,18 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
   @Override
   public Mono<ServerResponse> saveStock(ServerRequest request) {
     return request.bodyToMono(Match.class)
+        .doOnNext(this::validate)
         .flatMap(matchService::saveMatch)
         .flatMap(match -> ServerResponse.ok().bodyValue(match));
+  }
+
+  private void validate(Match match) {
+    Errors errors = new BeanPropertyBindingResult(match, "match");
+    validator.validate(match, errors);
+
+    if(errors.hasErrors()){
+      throw new ServerWebInputException(errors.toString());
+    }
   }
 
   @Override
