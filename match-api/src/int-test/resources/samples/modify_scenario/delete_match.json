@@ -1,0 +1,14 @@
+{
+  "id": 19,
+  "homeTeam": "Osasuna",
+  "awayTeam": "Almeria",
+  "startTime": "2022-09-12T21:00:00",
+  "result": {
+    "homeTeamGoals": 2,
+    "awayTeamGoals": 2
+  },
+  "round": {
+    "roundName": "LaLiga round 6",
+    "startTime": "2022-09-09T21:00:00"
+  }
+}
