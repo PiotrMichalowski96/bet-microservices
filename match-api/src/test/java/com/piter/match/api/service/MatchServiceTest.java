@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,7 +26,8 @@ import reactor.test.StepVerifier;
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = MatchApiTestConfig.class)
+@Import(MatchApiTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class MatchServiceTest {
 
   @Autowired
@@ -34,8 +37,16 @@ class MatchServiceTest {
   private MatchService matchService;
 
   @BeforeEach
-  void initData() {
-    matchRepository.deleteAll().subscribe();
+  void fillDatabaseIfEmpty() {
+    List<Match> existingMatches = matchRepository.findAll()
+        .collectList()
+        .block();
+    if (existingMatches == null || existingMatches.isEmpty()) {
+      fillDatabase();
+    }
+  }
+
+  private void fillDatabase() {
     List<Match> matches = List.of(
         Match.builder()
             .id(1L)
@@ -62,7 +73,7 @@ class MatchServiceTest {
             .round(new MatchRound("LaLiga round 30", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
             .build()
     );
-    matchRepository.saveAll(matches).subscribe();
+    matches.forEach(match -> matchRepository.save(match).block());
   }
 
   @Test

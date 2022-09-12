@@ -16,16 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = MatchApiTestConfig.class)
+@Import(MatchApiTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class MatchKafkaConsumerTest {
 
   @Autowired

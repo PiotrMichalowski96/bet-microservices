@@ -17,14 +17,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @WebFluxTest(controllers = MatchRouterConfig.class)
-@ContextConfiguration(classes = MatchApiTestConfig.class)
+@Import(MatchApiTestConfig.class)
 class MatchRouterTest {
 
   private static final List<Match> MATCHES = List.of(
@@ -64,10 +64,32 @@ class MatchRouterTest {
   private WebTestClient webClient;
 
   @BeforeEach
-  void initData() {
+  void initMocks() {
     mockFindAll();
     mockFindOrderedByRoundTime();
     mockFindOrderedByMatchTime();
+  }
+
+  private void mockFindAll() {
+    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(MATCHES));
+  }
+
+  private void mockFindOrderedByRoundTime() {
+    Comparator<Match> roundTimeComparator = Comparator.comparing(
+        match -> match.getRound().getStartTime());
+    List<Match> matchesOrderedByRoundTime = MATCHES.stream()
+        .sorted(roundTimeComparator.reversed())
+        .toList();
+    when(matchRepository.findAllByOrderByRoundStartTimeDesc()).thenReturn(
+        Flux.fromIterable(matchesOrderedByRoundTime));
+  }
+
+  private void mockFindOrderedByMatchTime() {
+    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
+        .sorted(Comparator.comparing(Match::getStartTime).reversed())
+        .toList();
+    when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
+        Flux.fromIterable(matchesOrderedByMatchTime));
   }
 
   @Test
@@ -116,35 +138,12 @@ class MatchRouterTest {
   void shouldGetMatchById() {
     var id = 3L;
     mockFindById(id);
-
     webClient.get()
         .uri("/match/" + id)
         .exchange()
         .expectStatus().isOk()
         .expectBody(Match.class)
         .value(match -> assertThat(match.getId()).isEqualTo(id));
-  }
-
-  private void mockFindAll() {
-    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(MATCHES));
-  }
-
-  private void mockFindOrderedByRoundTime() {
-    Comparator<Match> roundTimeComparator = Comparator.comparing(
-        match -> match.getRound().getStartTime());
-    List<Match> matchesOrderedByRoundTime = MATCHES.stream()
-        .sorted(roundTimeComparator.reversed())
-        .toList();
-    when(matchRepository.findAllByOrderByRoundStartTimeDesc()).thenReturn(
-        Flux.fromIterable(matchesOrderedByRoundTime));
-  }
-
-  private void mockFindOrderedByMatchTime() {
-    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
-        .sorted(Comparator.comparing(Match::getStartTime).reversed())
-        .toList();
-    when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
-        Flux.fromIterable(matchesOrderedByMatchTime));
   }
 
   private void mockFindById(Long id) {
