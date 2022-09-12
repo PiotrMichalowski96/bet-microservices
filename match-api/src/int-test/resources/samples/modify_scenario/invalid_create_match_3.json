@@ -1,0 +1,12 @@
+{
+  "homeTeam": "Valencia",
+  "awayTeam": "Osasuna",
+  "startTime": "2022-10-12T21:00:00",
+  "result": {
+    "awayTeamGoals": 1
+  },
+  "round": {
+    "roundName": "LaLiga round 12",
+    "startTime": "2022-10-11T21:00:00"
+  }
+}

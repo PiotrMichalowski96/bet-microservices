@@ -1,6 +1,9 @@
 package com.piter.match.api.domain;
 
 import java.time.LocalDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.data.annotation.Id;
@@ -17,9 +20,15 @@ public class Match {
 
   @Id
   Long id;
+  @NotBlank
   String homeTeam;
+  @NotBlank
   String awayTeam;
+  @NotNull
   LocalDateTime startTime;
+  @Valid
   MatchResult result;
+  @NotNull
+  @Valid
   MatchRound round;
 }

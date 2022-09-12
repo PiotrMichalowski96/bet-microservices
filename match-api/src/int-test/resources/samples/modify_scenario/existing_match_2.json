@@ -1,0 +1,14 @@
+{
+  "id": 11,
+  "homeTeam": "Getafe",
+  "awayTeam": "Mallorca",
+  "startTime": "2022-09-11T18:30:00",
+  "result": {
+    "homeTeamGoals": 2,
+    "awayTeamGoals": 1
+  },
+  "round": {
+    "roundName": "LaLiga round 6",
+    "startTime": "2022-09-09T21:00:00"
+  }
+}

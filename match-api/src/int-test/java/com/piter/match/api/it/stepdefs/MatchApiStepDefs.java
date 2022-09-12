@@ -154,16 +154,23 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
     assertThat(actualMatch).isEqualTo(expectedMatch);
   }
 
-  @Then("match with ID {long} is not present in service")
-  public void matchIsNotPresentInDb(long id) {
-    assertAsync(() -> assertMatchIsNotPresentInDb(id));
+  @Then("match {string} is not present in service")
+  public void matchIsNotPresentInDb(String matchPath) throws IOException {
+    Match match = readJsonFile(matchPath, Match.class);
+    assertAsync(() -> assertMatchIsNotPresentInDb(match));
   }
 
-  private void assertMatchIsNotPresentInDb(long id) {
-    boolean matchPresent = matchRepository.findById(id)
-        .blockOptional()
-        .isPresent();
-    assertThat(matchPresent).isFalse();
+  private void assertMatchIsNotPresentInDb(Match match) {
+    Match foundMatch = findMatchInDb(match);
+    assertThat(foundMatch).isNull();
+  }
+
+  private Match findMatchInDb(Match searchMatch) {
+    return Optional.ofNullable(searchMatch.getId())
+        .map(id -> matchRepository.findById(id).block())
+        .orElse(matchRepository.findAll()
+            .filter(m -> isSameMatchCompareByTeams(searchMatch, m))
+            .blockFirst());
   }
 
   @Then("match {string} is saved and retrieved in service")
@@ -177,13 +184,5 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
     assertThat(savedMatch).usingRecursiveComparison()
         .ignoringFields("id")
         .isEqualTo(match);
-  }
-
-  private Match findMatchInDb(Match searchMatch) {
-    return Optional.ofNullable(searchMatch.getId())
-        .map(id -> matchRepository.findById(id).block())
-        .orElse(matchRepository.findAll()
-            .filter(m -> isSameMatchCompareByTeams(searchMatch, m))
-            .blockFirst());
   }
 }
