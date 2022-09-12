@@ -1,35 +1,32 @@
 package com.piter.match.api.config;
 
-import com.piter.match.api.domain.Match;
-import com.piter.match.api.producer.MatchKafkaProducer;
+import static org.mockito.Mockito.mock;
+
+import com.piter.match.api.consumer.MatchKafkaConsumer;
 import com.piter.match.api.producer.MatchProducer;
+import com.piter.match.api.service.MatchServiceImpl;
+import com.piter.match.api.service.SequenceGeneratorService;
+import com.piter.match.api.web.MatchRouterConfig;
+import com.piter.match.api.web.MatchWebHandlerImpl;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
-@Configuration
-@ComponentScan(value = "com.piter.match.api", excludeFilters = {
-    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = MatchKafkaProducer.class)
+@TestConfiguration
+@Import({SecurityConfig.class,
+    MatchKafkaConsumer.class,
+    MatchServiceImpl.class,
+    SequenceGeneratorService.class,
+    MatchRouterConfig.class,
+    MatchWebHandlerImpl.class
 })
 public class MatchApiTestConfig {
 
-  //TODO: check if it could be fixed in better way
-  //Empty implementation because we don't use it in tests
+  //Mock because we don't use it in tests - just avoid missing bean errors
   @Bean
   @Primary
   MatchProducer matchProducer() {
-    return new MatchProducer() {
-      @Override
-      public Match sendSaveMatchEvent(Match match) {
-        return null;
-      }
-
-      @Override
-      public void sendDeleteMatchEvent(Match match) {
-
-      }
-    };
+    return mock(MatchProducer.class);
   }
 }

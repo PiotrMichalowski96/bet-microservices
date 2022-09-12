@@ -1,0 +1,14 @@
+{
+  "id": 2,
+  "homeTeam": "Atletico Madrid",
+  "awayTeam": "Betis Sevilla",
+  "startTime": "2022-08-15T18:30:00",
+  "result": {
+    "homeTeamGoals": 1,
+    "awayTeamGoals": 1
+  },
+  "round": {
+    "roundName": "LaLiga round 1",
+    "startTime": "2022-02-06T21:00:00"
+  }
+}

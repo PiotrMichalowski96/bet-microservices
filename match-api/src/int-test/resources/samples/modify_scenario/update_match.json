@@ -1,0 +1,14 @@
+{
+  "id": 17,
+  "homeTeam": "Real Madrid",
+  "awayTeam": "Sevilla",
+  "startTime": "2022-10-19T18:30:00",
+  "result": {
+    "homeTeamGoals": 4,
+    "awayTeamGoals": 2
+  },
+  "round": {
+    "roundName": "LaLiga round 13",
+    "startTime": "2022-10-18T21:00:00"
+  }
+}

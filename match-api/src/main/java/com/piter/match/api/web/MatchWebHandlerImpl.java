@@ -1,6 +1,7 @@
 package com.piter.match.api.web;
 
 import com.piter.match.api.domain.Match;
+import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,23 +17,17 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
 
   @Override
   public Mono<ServerResponse> findAll(ServerRequest request) {
-    return matchService.findAll()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAll(), Match.class);
   }
 
   @Override
   public Mono<ServerResponse> findAllByOrderByMatchStartTime(ServerRequest request) {
-    return matchService.findAllByOrderByMatchStartTime()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAllByOrderByMatchStartTime(), Match.class);
   }
 
   @Override
   public Mono<ServerResponse> findAllByOrderByMatchRoundStartTime(ServerRequest request) {
-    return matchService.findAllByOrderByMatchRoundStartTime()
-        .flatMap(matches -> ServerResponse.ok().bodyValue(matches))
-        .switchIfEmpty(ServerResponse.notFound().build());
+    return ServerResponse.ok().body(matchService.findAllByOrderByMatchRoundStartTime(), Match.class);
   }
 
   @Override
@@ -40,7 +35,7 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
     var id = Long.valueOf(request.pathVariable("id"));
     return matchService.findById(id)
         .flatMap(match -> ServerResponse.ok().bodyValue(match))
-        .switchIfEmpty(ServerResponse.notFound().build());
+        .onErrorResume(e -> e instanceof MatchNotFoundException, e -> ServerResponse.notFound().build());
   }
 
   @Override
@@ -53,9 +48,8 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
   @Override
   public Mono<ServerResponse> deleteStock(ServerRequest request) {
     var id = Long.valueOf(request.pathVariable("id"));
-    return matchService.findById(id)
-        .flatMap(matchService::deleteMatch)
-        .flatMap(value -> ServerResponse.ok().build())
-        .switchIfEmpty(ServerResponse.badRequest().build());
+    return matchService.deleteMatch(id)
+        .flatMap(voidMono -> ServerResponse.ok().build())
+        .onErrorResume(e -> e instanceof MatchNotFoundException, e -> ServerResponse.notFound().build());
   }
 }

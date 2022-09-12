@@ -1,20 +1,20 @@
 package com.piter.match.api.service;
 
 import com.piter.match.api.domain.Match;
-import java.util.List;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface MatchService {
 
-  Mono<List<Match>> findAll();
+  Flux<Match> findAll();
 
-  Mono<List<Match>> findAllByOrderByMatchStartTime();
+  Flux<Match> findAllByOrderByMatchStartTime();
 
-  Mono<List<Match>> findAllByOrderByMatchRoundStartTime();
+  Flux<Match> findAllByOrderByMatchRoundStartTime();
 
   Mono<Match> findById(Long id);
 
   Mono<Match> saveMatch(Match match);
 
-  Mono<Void> deleteMatch(Match match);
+  Mono<Void> deleteMatch(Long id);
 }
