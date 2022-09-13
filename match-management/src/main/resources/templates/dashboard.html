@@ -1,81 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.thymeleaf.org ">
+
+
+<html lang="en" class="light-style  customizer-hide" dir="ltr" data-theme="theme-default"
+      data-assets-path="assets/"
+      data-template="vertical-menu-template-no-customizer" xmlns:th="http://www.thymeleaf.org"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no", name="viewport">
+  <meta charset="utf-8"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+
   <title>Match management dashboard</title>
+
+  <meta name="description" content=""/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}"/>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet">
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}"/>
+  <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}"/>
+  <link rel="stylesheet" th:href="@{/assets/css/demo.css}"/>
 </head>
 
 <body>
-  <div class="container-fluid">
-    <h3>Match management dashboard</h3>
-    <div class="float-left" th:text="'Last load: ' + ${#calendars.format(#calendars.createNow(), 'dd MM yyyy HH:mm:ss')}"/>
-  </div>
 
-  <br/>
+<!-- Content -->
+<div class="container flex-grow-1 container-p-y my-2">
+  <h3>Dashboard to manage matches</h3>
 
-  <table class="table table-bordered table-hover table-sm">
-    <thead class="thead-light">
-      <tr>
-        <th colspan="7" scope="col" class="text-center"><span>Matches</span></th>
-      </tr>
-      <tr>
-        <th scope="col" class="align-middle"><span class="col text-center">Home team</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Away team</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Match start time</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Round name</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Round start time</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Home team goals</span></th>
-        <th scope="col" class="align-middle"><span class="col text-center">Away team goals</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <th:block th:if="not ${matchDetails.getMatches().isEmpty()}">
-        <th:block th:each="match : ${matchDetails.getMatches()}">
+  <!-- Examples -->
+  <div class="row mt-sm-4 mt-3">
 
+    <div class="col-12 mb-3">
+      <div class="card">
+
+        <h5 class="card-header">Matches</h5>
+        <!-- Other Links -->
+        <table class="table">
+          <thead>
           <tr>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getHomeTeam()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getAwayTeam()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getStartTime()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getRound().getRoundName()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getRound().getStartTime()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getResult().getHomeTeamGoals()}" style="font-size: 12px" />
-              </div>
-            </td>
-            <td>
-              <div class="col text-center">
-                <span th:text="${match.getResult().getAwayTeamGoals()}" style="font-size: 12px" />
-              </div>
-            </td>
+            <th scope="col">Home Team</th>
+            <th scope="col">Away Team</th>
+            <th scope="col">Match Start Time</th>
+            <th scope="col">Round Name</th>
+            <th scope="col">Round Start Time</th>
+            <th scope="col">Home Team Goals</th>
+            <th scope="col">Away Team Goals</th>
+            <th></th>
           </tr>
+          </thead>
+          <tbody>
+            <th:block th:if="not ${matchDetails.getMatches().isEmpty()}">
+              <th:block th:each="match : ${matchDetails.getMatches()}">
+                <tr>
+                  <td><span th:text="${match.getHomeTeam()}"/></td>
+                  <td><span th:text="${match.getAwayTeam()}"/></td>
+                  <td><span th:text="${match.getStartTime()}"/></td>
+                  <td><span th:text="${match.getRound().getRoundName()}"/></td>
+                  <td><span th:text="${match.getRound().getStartTime()}"/></td>
+                  <td><span th:text="${match.getResult().getHomeTeamGoals()}"/></td>
+                  <td><span th:text="${match.getResult().getAwayTeamGoals()}"/></td>
+                  <td><a href="http://localhost:8081/dashboard/match/new"
+                         target="_blank"
+                         class="btn btn-danger">Edit</a>
+                  </td>
+                </tr>
+              </th:block>
+            </th:block>
+          </tbody>
+        </table>
+        <!--/ Other Links -->
+      </div>
+    </div>
 
-        </th:block>
-      </th:block>
-    </tbody>
-  </table>
+    <div class="col-12 mb-3">
+      <div class="upgrade-to-pro">
+        <a href="http://localhost:8081/dashboard/match/new"
+           target="_blank"
+           class="btn btn-danger">Add new match</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / Content -->
+
 </body>
 
 </html>
