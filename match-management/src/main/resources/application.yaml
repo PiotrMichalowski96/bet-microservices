@@ -6,6 +6,8 @@ spring:
     mode: HTML
     encoding: UTF-8
 
+mock.enabled: false
+
 ########################
 # Cloud
 ########################
