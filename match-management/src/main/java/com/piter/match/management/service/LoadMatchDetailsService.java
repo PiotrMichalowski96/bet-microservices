@@ -1,9 +1,8 @@
 package com.piter.match.management.service;
 
-import com.piter.match.management.domain.Match;
-import com.piter.match.management.domain.MatchResult;
-import com.piter.match.management.domain.MatchRound;
-import com.piter.match.management.model.view.MatchDashboardDetails;
+import com.piter.match.management.model.Match;
+import com.piter.match.management.model.MatchResult;
+import com.piter.match.management.model.MatchRound;
 import com.piter.match.management.rest.HandledMatchService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,22 +20,15 @@ public class LoadMatchDetailsService {
   private final Boolean mockEnabled;
   private final HandledMatchService handledMatchService;
 
-  public MatchDashboardDetails loadMatchDetails() {
+  public List<Match> loadMatches() {
     if (mockEnabled) {
-      return mockDashboardDetails();
+      return mockMatches();
     }
-
-    List<Match> matches = handledMatchService.getMatchList(ORDER_BY_MATCH_TIME);
-    return MatchDashboardDetails.builder()
-        .currentPage(1)
-        .totalPages(1)
-        .matches(matches)
-        .loadTime(LocalDateTime.now())
-        .build();
+    return handledMatchService.getMatchList(ORDER_BY_MATCH_TIME);
   }
 
-  private MatchDashboardDetails mockDashboardDetails() {
-    List<Match> matches = List.of(
+  private List<Match> mockMatches() {
+    return List.of(
         Match.builder()
             .id(1L)
             .homeTeam("FC Barcelona")
@@ -62,11 +54,5 @@ public class LoadMatchDetailsService {
             .round(new MatchRound("LaLiga round 30", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
             .build()
     );
-    return MatchDashboardDetails.builder()
-        .currentPage(1)
-        .totalPages(10)
-        .matches(matches)
-        .loadTime(LocalDateTime.now())
-        .build();
   }
 }

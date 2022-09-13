@@ -1,4 +1,4 @@
-package com.piter.match.management.domain;
+package com.piter.match.management.model;
 
 import java.time.LocalDateTime;
 import lombok.Builder;

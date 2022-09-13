@@ -35,18 +35,15 @@
 
 <body>
 
-<!-- Content -->
 <div class="container flex-grow-1 container-p-y my-2">
-  <h3>Dashboard to manage matches</h3>
+  <h3>Dashboard matches</h3>
 
-  <!-- Examples -->
   <div class="row mt-sm-4 mt-3">
 
     <div class="col-12 mb-3">
       <div class="card">
 
         <h5 class="card-header">Matches</h5>
-        <!-- Other Links -->
         <table class="table">
           <thead>
           <tr>
@@ -61,14 +58,14 @@
           </tr>
           </thead>
           <tbody>
-            <th:block th:if="not ${matchDetails.getMatches().isEmpty()}">
-              <th:block th:each="match : ${matchDetails.getMatches()}">
+            <th:block th:if="not ${matches.isEmpty()}">
+              <th:block th:each="match : ${matches}">
                 <tr>
                   <td><span th:text="${match.getHomeTeam()}"/></td>
                   <td><span th:text="${match.getAwayTeam()}"/></td>
-                  <td><span th:text="${match.getStartTime()}"/></td>
+                  <td><span th:text="${#temporals.format(match.getStartTime(), 'dd-MM-yyyy HH:mm')}"/></td>
                   <td><span th:text="${match.getRound().getRoundName()}"/></td>
-                  <td><span th:text="${match.getRound().getStartTime()}"/></td>
+                  <td><span th:text="${#temporals.format(match.getRound().getStartTime(), 'dd-MM-yyyy HH:mm')}"/></td>
                   <td><span th:text="${match.getResult().getHomeTeamGoals()}"/></td>
                   <td><span th:text="${match.getResult().getAwayTeamGoals()}"/></td>
                   <td><a href="http://localhost:8081/dashboard/match/new"
@@ -80,7 +77,6 @@
             </th:block>
           </tbody>
         </table>
-        <!--/ Other Links -->
       </div>
     </div>
 
@@ -93,7 +89,6 @@
     </div>
   </div>
 </div>
-<!-- / Content -->
 
 </body>
 

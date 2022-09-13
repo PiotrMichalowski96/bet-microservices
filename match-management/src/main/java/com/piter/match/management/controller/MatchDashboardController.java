@@ -21,7 +21,7 @@ public class MatchDashboardController {
 
     ModelAndView mv = new ModelAndView();
     mv.setViewName(MATCHES_TEMPLATE);
-    mv.addObject("matchDetails", loadMatchDetailsService.loadMatchDetails());
+    mv.addObject("matches", loadMatchDetailsService.loadMatches());
     return mv;
   }
 }

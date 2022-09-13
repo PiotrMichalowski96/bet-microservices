@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import com.piter.match.management.config.WireMockConfig;
-import com.piter.match.management.domain.Match;
+import com.piter.match.management.model.Match;
 import com.piter.match.management.mock.MatchApiMock;
 import com.piter.match.management.util.JsonUtil;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ActiveProfiles("TEST")
-//@EnableAutoConfiguration
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = WireMockConfig.class)
 class MatchServiceTest {

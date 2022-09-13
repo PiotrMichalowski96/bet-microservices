@@ -1,6 +1,6 @@
 package com.piter.match.management.rest;
 
-import com.piter.match.management.domain.Match;
+import com.piter.match.management.model.Match;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
