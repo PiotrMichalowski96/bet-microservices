@@ -1,0 +1,8 @@
+a > span {
+  font-size: 12px;
+}
+
+tr.alarm {
+  color: red;
+  font-weight: 500;
+}

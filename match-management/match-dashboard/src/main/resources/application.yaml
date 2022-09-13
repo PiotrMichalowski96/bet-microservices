@@ -1,7 +1,0 @@
-server.port: 8081
-
-########################
-# Logging
-########################
-logging.level:
-  com.piter.match.service: DEBUG
