@@ -23,7 +23,7 @@ public class MatchDashboardController {
   private final MatchDetailsService matchDetailsService;
 
   @GetMapping(value = "/match")
-  public ModelAndView showMatches() {
+  ModelAndView showMatches() {
     ModelAndView mv = new ModelAndView();
     mv.setViewName(MATCHES_TEMPLATE);
     mv.addObject("matches", matchDetailsService.loadMatches());
@@ -31,23 +31,35 @@ public class MatchDashboardController {
   }
 
   @GetMapping(value = "/match/{id}")
-  public ModelAndView showMatch(@PathVariable Long id) {
+  ModelAndView showMatch(@PathVariable Long id) {
     MatchDetails matchDetails = matchDetailsService.findMatch(id);
     if (matchDetails.getMatch() == null) {
       throw new RuntimeException("Match is not saved");
     }
-    ModelAndView mv = new ModelAndView();
-    mv.setViewName(MATCH_TEMPLATE);
-    mv.addObject("match", matchDetails.getMatch());
-    return mv;
+    Match foundMatch = matchDetails.getMatch();
+    return matchModelAndView(foundMatch);
+  }
+
+
+  @GetMapping(value = "/match/create")
+  ModelAndView showMatchToCreate() {
+    Match emptyMatch = new Match();
+    return matchModelAndView(emptyMatch);
   }
 
   @PostMapping(value = "/match")
-  public ModelAndView saveMatch(@ModelAttribute("match") Match match) {
+  ModelAndView saveMatch(@ModelAttribute("match") Match match) {
     MatchDetails matchDetails = matchDetailsService.saveMatch(match);
     if (matchDetails.getMatch() == null) {
       throw new RuntimeException("Match is not saved");
     }
     return showMatches();
+  }
+
+  private ModelAndView matchModelAndView(Match match) {
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName(MATCH_TEMPLATE);
+    mv.addObject("match", match);
+    return mv;
   }
 }
