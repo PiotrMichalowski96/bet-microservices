@@ -61,15 +61,15 @@
             <th:block th:if="not ${matches.isEmpty()}">
               <th:block th:each="match : ${matches}">
                 <tr>
-                  <td><span th:text="${match.getHomeTeam()}"/></td>
-                  <td><span th:text="${match.getAwayTeam()}"/></td>
-                  <td><span th:text="${#temporals.format(match.getStartTime(), 'dd-MM-yyyy HH:mm')}"/></td>
-                  <td><span th:text="${match.getRound().getRoundName()}"/></td>
-                  <td><span th:text="${#temporals.format(match.getRound().getStartTime(), 'dd-MM-yyyy HH:mm')}"/></td>
-                  <td><span th:text="${match.getResult().getHomeTeamGoals()}"/></td>
-                  <td><span th:text="${match.getResult().getAwayTeamGoals()}"/></td>
+                  <td><span th:text="${match.homeTeam}"/></td>
+                  <td><span th:text="${match.awayTeam}"/></td>
+                  <td><span th:text="${#temporals.format(match.startTime, 'dd-MM-yyyy HH:mm')}"/></td>
+                  <td><span th:text="${match.round.roundName}"/></td>
+                  <td><span th:text="${#temporals.format(match.round.startTime, 'dd-MM-yyyy HH:mm')}"/></td>
+                  <td><span th:text="${match.result?.homeTeamGoals}"/></td>
+                  <td><span th:text="${match.result?.awayTeamGoals}"/></td>
                   <td>
-                    <a th:href="@{'/dashboard/match/' + ${match.getId()}}" target="_blank" class="btn btn-danger">Edit</a>
+                    <a th:href="@{'/dashboard/match/' + ${match.id}}" target="_blank" class="btn btn-danger">Edit</a>
                   </td>
                 </tr>
               </th:block>

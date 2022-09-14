@@ -1,6 +1,7 @@
 package com.piter.match.management.rest;
 
 import com.piter.match.management.domain.Match;
+import com.piter.match.management.domain.MatchResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,21 @@ public class HandledCallerService {
   }
 
   public Optional<Match> saveMatch(Match match) {
-    return callHandled(() -> matchApiService.saveMatch(match));
+    Match validMatch = validateMatchResult(match);
+    return callHandled(() -> matchApiService.saveMatch(validMatch));
+  }
+
+  private Match validateMatchResult(Match match) {
+    if (isValidMatchResult(match)) {
+      return match;
+    }
+    match.setResult(null);
+    return match;
+  }
+
+  private boolean isValidMatchResult(Match match) {
+    MatchResult matchResult = match.getResult();
+    return matchResult.getAwayTeamGoals() != null && matchResult.getHomeTeamGoals() != null;
   }
 
   public List<Match> getMatchList(String order) {
