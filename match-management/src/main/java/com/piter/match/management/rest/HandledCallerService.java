@@ -1,6 +1,6 @@
 package com.piter.match.management.rest;
 
-import com.piter.match.management.model.Match;
+import com.piter.match.management.domain.Match;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HandledMatchService {
+public class HandledCallerService {
 
-  private final CachedMatchService matchApiService;
+  private final CallerService matchApiService;
 
   public Optional<Match> getMatch(Long matchId) {
     return callHandled(() -> matchApiService.callMatch(matchId));
@@ -27,6 +27,10 @@ public class HandledMatchService {
       logger.error("Error during call: {}", e);
       return Optional.empty();
     }
+  }
+
+  public Optional<Match> saveMatch(Match match) {
+    return callHandled(() -> matchApiService.saveMatch(match));
   }
 
   public List<Match> getMatchList(String order) {

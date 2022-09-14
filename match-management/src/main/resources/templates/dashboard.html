@@ -68,9 +68,8 @@
                   <td><span th:text="${#temporals.format(match.getRound().getStartTime(), 'dd-MM-yyyy HH:mm')}"/></td>
                   <td><span th:text="${match.getResult().getHomeTeamGoals()}"/></td>
                   <td><span th:text="${match.getResult().getAwayTeamGoals()}"/></td>
-                  <td><a href="http://localhost:8081/dashboard/match/new"
-                         target="_blank"
-                         class="btn btn-danger">Edit</a>
+                  <td>
+                    <a th:href="@{'/dashboard/match/' + ${match.getId()}}" target="_blank" class="btn btn-danger">Edit</a>
                   </td>
                 </tr>
               </th:block>

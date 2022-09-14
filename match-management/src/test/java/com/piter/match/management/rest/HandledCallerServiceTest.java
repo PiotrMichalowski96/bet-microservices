@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import com.piter.match.management.config.WireMockConfig;
-import com.piter.match.management.model.Match;
+import com.piter.match.management.domain.Match;
 import com.piter.match.management.mock.MatchApiMock;
 import com.piter.match.management.util.JsonUtil;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = WireMockConfig.class)
-class MatchServiceTest {
+class HandledCallerServiceTest {
 
   private static final String MATCH_JSON_PATH = "samples/match.json";
   private static final String MATCHES_JSON_PATH = "samples/matches.json";
@@ -32,7 +32,7 @@ class MatchServiceTest {
   private WireMockServer wireMockServer;
 
   @Autowired
-  private HandledMatchService handledMatchService;
+  private HandledCallerService handledCallerService;
 
   @BeforeEach
   void init() throws IOException {
@@ -51,7 +51,7 @@ class MatchServiceTest {
     Match expectedMatch = JsonUtil.readJsonFile(MATCH_JSON_PATH, Match.class);
 
     //when
-    Match actualMatch = handledMatchService.getMatch(id).get();
+    Match actualMatch = handledCallerService.getMatch(id).get();
 
     //then
     assertThat(actualMatch).isEqualTo(expectedMatch);
@@ -64,7 +64,7 @@ class MatchServiceTest {
     String order = "match-time";
 
     //when
-    List<Match> matches = handledMatchService.getMatchList(order);
+    List<Match> matches = handledCallerService.getMatchList(order);
 
     //then
     assertThat(matches).hasSameElementsAs(expectedMatches);
