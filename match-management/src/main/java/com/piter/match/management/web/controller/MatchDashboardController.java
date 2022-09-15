@@ -29,7 +29,7 @@ public class MatchDashboardController {
   ModelAndView showMatches() {
     List<Match> matches = matchDetailsService.loadMatches();
     if (matches.isEmpty()) {
-      String errorMessage = "Match list is empty.";
+      var errorMessage = "Match list is empty.";
       return errorModelAndView(errorMessage);
     }
     return matchListModelAndView(matches);
@@ -48,7 +48,7 @@ public class MatchDashboardController {
 
   @GetMapping(value = "/match/create")
   ModelAndView showMatchToCreate() {
-    Match emptyMatch = new Match();
+    var emptyMatch = new Match();
     return matchModelAndView(emptyMatch);
   }
 
@@ -63,14 +63,14 @@ public class MatchDashboardController {
   }
 
   private ModelAndView matchListModelAndView(List<Match> matches) {
-    ModelAndView mv = new ModelAndView();
+    var mv = new ModelAndView();
     mv.setViewName(MATCHES_TEMPLATE);
     mv.addObject("matches", matches);
     return mv;
   }
 
   private ModelAndView matchModelAndView(Match match) {
-    ModelAndView mv = new ModelAndView();
+    var mv = new ModelAndView();
     mv.setViewName(MATCH_TEMPLATE);
     mv.addObject("match", match);
     return mv;
@@ -81,7 +81,7 @@ public class MatchDashboardController {
   }
 
   private ModelAndView errorModelAndView(String errorMessage) {
-    ModelAndView mv = new ModelAndView();
+    var mv = new ModelAndView();
     mv.setViewName(ERROR_TEMPLATE);
     mv.addObject("errorMessage", errorMessage);
     return mv;

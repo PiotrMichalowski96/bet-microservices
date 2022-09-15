@@ -20,14 +20,14 @@ public class MatchDetailsService {
   }
 
   public MatchDetails findMatch(Long matchId) {
-    String findErrorMessage = "Can not find match.";
+    var findErrorMessage = "Can not find match.";
     return handledCallerService.getMatch(matchId)
         .map(MatchDetails::new)
         .orElse(new MatchDetails(findErrorMessage));
   }
 
   public MatchDetails saveMatch(Match match) {
-    String saveErrorMessage = "Can not save match.";
+    var saveErrorMessage = "Can not save match.";
     return handledCallerService.saveMatch(match)
         .map(MatchDetails::new)
         .orElse(new MatchDetails(saveErrorMessage));

@@ -36,10 +36,10 @@ class HandledCallerServiceTest {
 
   @BeforeEach
   void init() throws IOException {
-    String matchJson = JsonUtil.readFileAsString(MATCH_JSON_PATH);
-    String matchesJson = JsonUtil.readFileAsString(MATCHES_JSON_PATH);
+    var matchJson = JsonUtil.readFileAsString(MATCH_JSON_PATH);
+    var matchesJson = JsonUtil.readFileAsString(MATCHES_JSON_PATH);
 
-    MatchApiMock matchApiMock = new MatchApiMock(wireMockServer, matchJson, matchesJson);
+    var matchApiMock = new MatchApiMock(wireMockServer, matchJson, matchesJson);
     matchApiMock.mockMatchEndpoint();
     matchApiMock.mockMatchesEndpoint();
   }
@@ -47,7 +47,7 @@ class HandledCallerServiceTest {
   @Test
   void shouldGetMatchById() throws IOException {
     //given
-    Long id = 1L;
+    var id = 1L;
     Match expectedMatch = JsonUtil.readJsonFile(MATCH_JSON_PATH, Match.class);
 
     //when
@@ -61,7 +61,7 @@ class HandledCallerServiceTest {
   void shouldGetMatches() throws IOException {
     //given
     List<Match> expectedMatches = JsonUtil.readJsonArrayFile(MATCHES_JSON_PATH, Match.class);
-    String order = "match-time";
+    var order = "match-time";
 
     //when
     List<Match> matches = handledCallerService.getMatchList(order);
