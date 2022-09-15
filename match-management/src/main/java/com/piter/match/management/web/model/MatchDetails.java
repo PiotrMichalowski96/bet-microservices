@@ -19,4 +19,8 @@ public class MatchDetails {
     this.errorDetails = new ErrorDetails(errorMessage);
     this.match = null;
   }
+
+  public boolean hasErrors() {
+    return errorDetails != null;
+  }
 }
