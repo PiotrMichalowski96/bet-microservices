@@ -1,0 +1,36 @@
+server.port: 8081
+
+spring:
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+
+mock.enabled: false
+
+########################
+# Cloud
+########################
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+cache:
+  expiry-in-hours: 2
+
+########################
+# Match service
+########################
+match-api:
+  port: 9090
+  url: localhost:${match-api.port}
+
+########################
+# Logging
+########################
+logging.level:
+  com.piter.match.service: DEBUG
