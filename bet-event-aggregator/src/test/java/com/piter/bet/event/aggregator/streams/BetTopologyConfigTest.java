@@ -1,15 +1,24 @@
 package com.piter.bet.event.aggregator.streams;
 
+import static com.piter.bet.event.aggregator.util.TestData.createBetRequestWithCorrectPrediction;
+import static com.piter.bet.event.aggregator.util.TestData.createBetRequestWithWrongPrediction;
+import static com.piter.bet.event.aggregator.util.TestData.createBetWithCorrectResult;
+import static com.piter.bet.event.aggregator.util.TestData.createBetWithIncorrectResult;
+import static com.piter.bet.event.aggregator.util.TestData.createBetWithoutResult;
+import static com.piter.bet.event.aggregator.util.TestData.createMatchWithResult;
+import static com.piter.bet.event.aggregator.util.TestData.createMatchWithoutResult;
+import static com.piter.bet.event.aggregator.util.TestData.createSecondBetRequest;
+import static com.piter.bet.event.aggregator.util.TestData.createSecondBetWithoutResult;
+import static com.piter.bet.event.aggregator.util.TestData.createSecondMatchWithoutResult;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
 import com.piter.bet.event.aggregator.domain.Match;
-import com.piter.bet.event.aggregator.domain.MatchRound;
-import com.piter.bet.event.aggregator.domain.User;
 import com.piter.bet.event.aggregator.util.MockProcessor;
 import com.piter.bet.event.aggregator.util.MockProcessorSupplier;
-import java.time.LocalDateTime;
+import com.piter.bet.event.aggregator.util.TestData;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -21,6 +30,10 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 class BetTopologyConfigTest {
@@ -30,43 +43,134 @@ class BetTopologyConfigTest {
 
   private final BetTopologyConfig betTopology = new BetTopologyConfig();
 
-  @Test
-  void shouldCreateBet() {
+  @ParameterizedTest
+  @ValueSource(ints = {1, 5})
+  void shouldProcessBetsWithoutResult(int numberOfBetRequests) {
     //given
-    var match = Match.builder()
-        .id(1L)
-        .homeTeam("FC Barcelona")
-        .awayTeam("Real Madrid")
-        .startTime(LocalDateTime.of(2022, 2, 17, 21, 0, 0))
-        .round(MatchRound.builder()
-            .roundName("LaLiga round 30")
-            .startTime(LocalDateTime.of(2022, 2, 14, 21, 0, 0))
-            .build())
-        .build();
+    var match = createMatchWithoutResult();
+    List<Bet> betRequests = Stream.generate(TestData::createBetRequestWithCorrectPrediction)
+        .limit(numberOfBetRequests)
+        .toList();
 
-    var bet = Bet.builder()
-        .id(1L)
-        .homeTeamGoalBet(1)
-        .awayTeamGoalBet(1)
-        .match(match)
-        .user(User.builder().build())
-        .betResults(BetResults.builder().build())
-        .build();
+    var key = "1";
+    List<Record<String, Bet>> expectedRecords = Stream.generate(TestData::createBetWithoutResult)
+        .limit(numberOfBetRequests)
+        .map(betResult -> new Record<>(key, betResult, 1L))
+        .toList();
 
     //when
     BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
-      matchTopic.pipeInput("1", match);
-      betTopic.pipeInput("1", bet);
+      matchTopic.pipeInput(key, match);
+      betRequests.forEach(bet -> betTopic.pipeInput(key, bet));
     };
 
     //then
     Consumer<MockProcessor<String, Bet, Void, Void>> asserter =
-        processor -> processor.checkAndClearProcessedRecords(new Record<>("1", bet, 1L));
+        processor -> processor.checkAndClearProcessedRecords(expectedRecords);
 
-    testTopology(topicSender, asserter);
+    testAndAssertTopology(topicSender, asserter);
   }
 
-  private void testTopology(
+  @ParameterizedTest
+  @MethodSource("provideBetRequestAndBetResult")
+  void shouldProcessBetWithCorrectResult(Bet betRequestWithPrediction, Bet betWithResult) {
+    //given
+    var matchWithoutResult = createMatchWithoutResult();
+    var matchWithResult = createMatchWithResult();
+
+    var key = "1";
+    var betWithoutResult = createBetWithoutResult();
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      matchTopic.pipeInput(key, matchWithoutResult);
+      betTopic.pipeInput(key, betRequestWithPrediction);
+      matchTopic.pipeInput(key, matchWithResult);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+            new Record<>(key, betWithoutResult, 1L),
+            new Record<>(key, betWithResult, 1L)
+    );
+    testAndAssertTopology(topicSender, asserter);
+  }
+
+  private static Stream<Arguments> provideBetRequestAndBetResult() {
+    return Stream.of(
+        Arguments.of(createBetRequestWithCorrectPrediction(), createBetWithCorrectResult()),
+        Arguments.of(createBetRequestWithWrongPrediction(), createBetWithIncorrectResult())
+    );
+  }
+
+  @Test
+  void shouldNotProcessBetWhenMatchHasAlreadyResult() {
+    //given
+    var matchWithResult = createMatchWithResult();
+    var betRequest = createBetRequestWithCorrectPrediction();
+    var key = "1";
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      matchTopic.pipeInput(key, matchWithResult);
+      betTopic.pipeInput(key, betRequest);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    testAndAssertTopology(topicSender, asserterEmpty);
+  }
+
+  @Test
+  void shouldProcessMultipleBetsAndMatches() {
+    //given
+    var firstMatch = createMatchWithoutResult();
+    var secondMatch = createSecondMatchWithoutResult();
+
+    var firstBetRequest = createBetRequestWithCorrectPrediction();
+    var secondBetRequest = createSecondBetRequest();
+
+    var firstBetResult = createBetWithoutResult();
+    var secondBetResult = createSecondBetWithoutResult();
+
+    var firstKey = "1";
+    var secondKey = "2";
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      matchTopic.pipeInput(firstKey, firstMatch);
+      matchTopic.pipeInput(secondKey, secondMatch);
+      betTopic.pipeInput(firstKey, firstBetRequest);
+      betTopic.pipeInput(secondKey, secondBetRequest);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+        new Record<>(firstKey, firstBetResult, 1L),
+        new Record<>(secondKey, secondBetResult, 1L)
+    );
+    testAndAssertTopology(topicSender, asserter);
+  }
+
+  @Test
+  void shouldNotProcessInvalidBetBecauseOfWrongMatchInBet() {
+    //given
+    var match = createMatchWithoutResult();
+    var invalidBetWithWrongMatch = createSecondBetRequest();
+    var key = "1";
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      matchTopic.pipeInput(key, match);
+      betTopic.pipeInput(key, invalidBetWithWrongMatch);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    testAndAssertTopology(topicSender, asserterEmpty);
+  }
+
+  private void testAndAssertTopology(
       BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender,
       Consumer<MockProcessor<String, Bet, Void, Void>> mockProcessorAsserter) {
 
