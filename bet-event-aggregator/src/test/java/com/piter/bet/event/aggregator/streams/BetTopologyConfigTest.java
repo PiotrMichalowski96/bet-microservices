@@ -1,15 +1,6 @@
 package com.piter.bet.event.aggregator.streams;
 
-import static com.piter.bet.event.aggregator.util.TestData.createBetRequestWithCorrectPrediction;
-import static com.piter.bet.event.aggregator.util.TestData.createBetRequestWithWrongPrediction;
-import static com.piter.bet.event.aggregator.util.TestData.createBetWithCorrectResult;
-import static com.piter.bet.event.aggregator.util.TestData.createBetWithIncorrectResult;
-import static com.piter.bet.event.aggregator.util.TestData.createBetWithoutResult;
-import static com.piter.bet.event.aggregator.util.TestData.createMatchWithResult;
-import static com.piter.bet.event.aggregator.util.TestData.createMatchWithoutResult;
-import static com.piter.bet.event.aggregator.util.TestData.createSecondBetRequest;
-import static com.piter.bet.event.aggregator.util.TestData.createSecondBetWithoutResult;
-import static com.piter.bet.event.aggregator.util.TestData.createSecondMatchWithoutResult;
+import static com.piter.bet.event.aggregator.util.TestData.*;
 
 import com.piter.bet.event.aggregator.domain.Bet;
 import com.piter.bet.event.aggregator.domain.Match;
@@ -163,6 +154,24 @@ class BetTopologyConfigTest {
     BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
       matchTopic.pipeInput(key, match);
       betTopic.pipeInput(key, invalidBetWithWrongMatch);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    testAndAssertTopology(topicSender, asserterEmpty);
+  }
+
+  @Test
+  void shouldNotProcessBetBecauseMatchAlreadyPassed() {
+    //given
+    var passedMatch = createMatchThatAlreadyPassed();
+    var betRequest = createBetRequestWithCorrectPrediction();
+    var key = "1";
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      matchTopic.pipeInput(key, passedMatch);
+      betTopic.pipeInput(key, betRequest);
     };
 
     //then

@@ -18,10 +18,10 @@ public class TestData {
         .id(1L)
         .homeTeam("FC Barcelona")
         .awayTeam("Real Madrid")
-        .startTime(LocalDateTime.of(2022, 2, 17, 21, 0, 0))
+        .startTime(LocalDateTime.MAX)
         .round(MatchRound.builder()
             .roundName("LaLiga round 30")
-            .startTime(LocalDateTime.of(2022, 2, 14, 21, 0, 0))
+            .startTime(LocalDateTime.MAX)
             .build())
         .build();
   }
@@ -31,13 +31,13 @@ public class TestData {
         .id(1L)
         .homeTeam("FC Barcelona")
         .awayTeam("Real Madrid")
-        .startTime(LocalDateTime.of(2022, 2, 17, 21, 0, 0))
+        .startTime(LocalDateTime.MAX)
         .round(MatchRound.builder()
             .roundName("LaLiga round 30")
-            .startTime(LocalDateTime.of(2022, 2, 14, 21, 0, 0))
+            .startTime(LocalDateTime.MAX)
             .build())
         .result(MatchResult.builder()
-            .awayTeamGoals(1)
+            .awayTeamGoals(2)
             .homeTeamGoals(1)
             .build())
         .build();
@@ -48,10 +48,27 @@ public class TestData {
         .id(2L)
         .homeTeam("Sevilla")
         .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.of(2022, 2, 18, 21, 0, 0))
+        .startTime(LocalDateTime.MAX)
         .round(MatchRound.builder()
             .roundName("LaLiga round 30")
-            .startTime(LocalDateTime.of(2022, 2, 14, 21, 0, 0))
+            .startTime(LocalDateTime.MAX)
+            .build())
+        .build();
+  }
+
+  public Match createMatchThatAlreadyPassed() {
+    return Match.builder()
+        .id(1L)
+        .homeTeam("FC Barcelona")
+        .awayTeam("Real Madrid")
+        .startTime(LocalDateTime.MIN)
+        .round(MatchRound.builder()
+            .roundName("LaLiga round 30")
+            .startTime(LocalDateTime.MIN)
+            .build())
+        .result(MatchResult.builder()
+            .awayTeamGoals(2)
+            .homeTeamGoals(1)
             .build())
         .build();
   }
@@ -59,7 +76,7 @@ public class TestData {
   public Bet createBetRequestWithCorrectPrediction() {
     return Bet.builder()
         .id(1L)
-        .homeTeamGoalBet(1)
+        .homeTeamGoalBet(2)
         .awayTeamGoalBet(1)
         .match(createMatchWithoutResult())
         .user(createUser())
@@ -100,7 +117,7 @@ public class TestData {
   public Bet createBetWithCorrectResult() {
     return Bet.builder()
         .id(1L)
-        .homeTeamGoalBet(1)
+        .homeTeamGoalBet(2)
         .awayTeamGoalBet(1)
         .match(createMatchWithResult())
         .user(createUser())
