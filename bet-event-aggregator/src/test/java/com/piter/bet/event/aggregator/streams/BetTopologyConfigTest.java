@@ -7,9 +7,11 @@ import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.util.MockProcessor;
 import com.piter.bet.event.aggregator.util.MockProcessorSupplier;
 import com.piter.bet.event.aggregator.util.TestData;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import lombok.SneakyThrows;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -164,7 +166,7 @@ class BetTopologyConfigTest {
   @Test
   void shouldNotProcessBetBecauseMatchAlreadyPassed() {
     //given
-    var passedMatch = createMatchThatAlreadyPassed();
+    var passedMatch = createMatchWithTime(LocalDateTime.MIN);
     var betRequest = createBetRequestWithCorrectPrediction();
     var key = "1";
 
@@ -177,6 +179,58 @@ class BetTopologyConfigTest {
     //then
     Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
     testAndAssertTopology(topicSender, asserterEmpty);
+  }
+
+  @Test
+  void shouldProcessOneBetAndRejectSecondBecauseMatchAlreadyStarted() {
+    //given
+    var betRequest = createBetRequestWithCorrectPrediction();
+    var key = "1";
+    var bet = createBetWithoutResult();
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      var startTime = LocalDateTime.now().plusSeconds(5L);
+      var match = createMatchWithTime(startTime);
+      matchTopic.pipeInput(key, match);
+      betTopic.pipeInput(key, betRequest);
+      waitMillis(10L);
+      betTopic.pipeInput(key, betRequest);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+        new Record<>(key, bet, 1L)
+    );
+    testAndAssertTopology(topicSender, asserter);
+  }
+
+  @Test
+  void shouldProcessWithResultOneBetAndRejectSecondBecauseMatchAlreadyStarted() {
+    //given
+    var matchWithResult = createMatchWithResult();
+    var betRequestWithCorrectPrediction = createBetRequestWithCorrectPrediction();
+    var key = "1";
+    var betWithoutResult = createBetWithoutResult();
+    var betWithCorrectResult = createBetWithCorrectResult();
+
+    //when
+    BiConsumer<TestInputTopic<String, Bet>, TestInputTopic<String, Match>> topicSender = (betTopic, matchTopic) -> {
+      var startTime = LocalDateTime.now().plusSeconds(5L);
+      var match = createMatchWithTime(startTime);
+      matchTopic.pipeInput(key, match);
+      betTopic.pipeInput(key, betRequestWithCorrectPrediction);
+      waitMillis(10L);
+      betTopic.pipeInput(key, betRequestWithCorrectPrediction);
+      matchTopic.pipeInput(key, matchWithResult);
+    };
+
+    //then
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+        new Record<>(key, betWithoutResult, 1L),
+        new Record<>(key, betWithCorrectResult, 1L)
+    );
+    testAndAssertTopology(topicSender, asserter);
   }
 
   private void testAndAssertTopology(
@@ -214,5 +268,10 @@ class BetTopologyConfigTest {
 
       mockProcessorAsserter.accept(processor);
     }
+  }
+
+  @SneakyThrows
+  private void waitMillis(long millis) {
+    Thread.sleep(millis);
   }
 }

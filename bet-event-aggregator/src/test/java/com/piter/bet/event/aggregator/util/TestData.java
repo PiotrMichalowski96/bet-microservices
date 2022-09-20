@@ -13,17 +13,21 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestData {
 
-  public Match createMatchWithoutResult() {
+  public Match createMatchWithTime(LocalDateTime startTime) {
     return Match.builder()
         .id(1L)
         .homeTeam("FC Barcelona")
         .awayTeam("Real Madrid")
-        .startTime(LocalDateTime.MAX)
+        .startTime(startTime)
         .round(MatchRound.builder()
             .roundName("LaLiga round 30")
             .startTime(LocalDateTime.MAX)
             .build())
         .build();
+  }
+
+  public Match createMatchWithoutResult() {
+    return createMatchWithTime(LocalDateTime.MAX);
   }
 
   public Match createMatchWithResult() {
