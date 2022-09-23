@@ -1,5 +1,6 @@
 package com.piter.bet.event.aggregator.domain;
 
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -8,8 +9,10 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder
 public class BetResults {
+  @NotNull
   Status status;
-  Long points;
+  @NotNull
+  Integer points;
 
   public enum Status {
     CORRECT, INCORRECT, UNRESOLVED

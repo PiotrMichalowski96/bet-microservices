@@ -1,4 +1,4 @@
-package com.piter.bet.event.aggregator.util;
+package com.piter.bet.event.aggregator.util.kafka;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

@@ -1,4 +1,4 @@
-package com.piter.bet.event.aggregator.util;
+package com.piter.bet.event.aggregator.util.kafka;
 
 import java.util.ArrayList;
 import java.util.Arrays;

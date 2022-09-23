@@ -1,9 +1,11 @@
 package com.piter.bet.event.aggregator.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
@@ -11,12 +13,18 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder
 public class Match {
+  @NotNull
   Long id;
+  @NotBlank
   String homeTeam;
+  @NotBlank
   String awayTeam;
-//  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-//  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @NotNull
   LocalDateTime startTime;
+  @Valid
+  @EqualsAndHashCode.Exclude
   MatchResult result;
+  @NotNull
+  @Valid
   MatchRound round;
 }

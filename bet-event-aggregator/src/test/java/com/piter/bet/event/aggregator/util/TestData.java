@@ -140,7 +140,7 @@ public class TestData {
         .build();
   }
 
-  private User createUser() {
+  public User createUser() {
     return User.builder()
         .firstName("Bob")
         .lastName("Marley")
@@ -148,24 +148,24 @@ public class TestData {
         .build();
   }
 
-  private BetResults createEmptyBetResult() {
+  public BetResults createEmptyBetResult() {
     return BetResults.builder()
         .status(Status.UNRESOLVED)
-        .points(0L)
+        .points(0)
         .build();
   }
 
   private BetResults createCorrectBetResult() {
     return BetResults.builder()
         .status(Status.CORRECT)
-        .points(3L)
+        .points(3)
         .build();
   }
 
   private BetResults createWrongBetResult() {
     return BetResults.builder()
         .status(Status.INCORRECT)
-        .points(3L)
+        .points(3)
         .build();
   }
 }
