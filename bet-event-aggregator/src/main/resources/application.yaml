@@ -1,0 +1,90 @@
+spring.application.name: bet-event-aggregator
+
+#spring.kafka.bootstrap-servers: ${KAFKA_URL}
+
+spring.cloud.stream:
+#  function.definition: bets
+  bindings:
+    bets-in-0.destination: sample-bet-request
+    bets-in-1.destination: sample-match-2
+    bets-out-0.destination: sample-bet
+  kafka:
+    binder:
+      brokers: localhost:9092
+    bindings:
+      bets-in-0:
+        consumer:
+          configuration:
+#            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+            value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      bets-in-1:
+        consumer:
+          configuration:
+#            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+            value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      bets-out-0:
+        producer:
+          configuration:
+#            key.serializer: org.apache.kafka.common.serialization.LongSerializer
+            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    streams.binder:
+      deserializationExceptionHandler: logAndContinue
+      functions.orders.applicationId: bets
+
+##################################################
+# Betting and correct prediction rules and points
+##################################################
+bet.rules:
+  -
+    # Correct result
+    points: 5
+    logicalOperator: and
+    subPredictions:
+      -
+        firstCompare: AWAY_TEAM_PREDICTION
+        secondCompare: AWAY_TEAM_RESULT
+        mathOperator: EQUAL
+      -
+        firstCompare: HOME_TEAM_PREDICTION
+        secondCompare: HOME_TEAM_RESULT
+        mathOperator: EQUAL
+  -
+    # Draw
+    points: 3
+    logicalOperator: AND
+    subPredictions:
+      -
+        firstCompare: AWAY_TEAM_PREDICTION
+        secondCompare: HOME_TEAM_PREDICTION
+        mathOperator: EQUAL
+      -
+        firstCompare: AWAY_TEAM_RESULT
+        secondCompare: HOME_TEAM_RESULT
+        mathOperator: EQUAL
+  -
+    # Correct one team goals
+    points: 3
+    logicalOperator: OR
+    subPredictions:
+      -
+        firstCompare: AWAY_TEAM_PREDICTION
+        secondCompare: AWAY_TEAM_RESULT
+        mathOperator: EQUAL
+      -
+        firstCompare: HOME_TEAM_PREDICTION
+        secondCompare: HOME_TEAM_RESULT
+        mathOperator: EQUAL
+  -
+    # No correct goals
+    points: 1
+    logicalOperator: AND
+    subPredictions:
+      -
+        firstCompare: AWAY_TEAM_PREDICTION
+        secondCompare: AWAY_TEAM_RESULT
+        mathOperator: NOT_EQUAL
+      -
+        firstCompare: HOME_TEAM_PREDICTION
+        secondCompare: HOME_TEAM_RESULT
+        mathOperator: NOT_EQUAL
+
