@@ -34,57 +34,59 @@ spring.cloud.stream:
 ##################################################
 # Betting and correct prediction rules and points
 ##################################################
-bet.rules:
-  -
-    # Correct result
-    points: 5
-    logicalOperator: and
-    subPredictions:
-      -
-        firstCompare: AWAY_TEAM_PREDICTION
-        secondCompare: AWAY_TEAM_RESULT
-        mathOperator: EQUAL
-      -
-        firstCompare: HOME_TEAM_PREDICTION
-        secondCompare: HOME_TEAM_RESULT
-        mathOperator: EQUAL
-  -
-    # Draw
-    points: 3
-    logicalOperator: AND
-    subPredictions:
-      -
-        firstCompare: AWAY_TEAM_PREDICTION
-        secondCompare: HOME_TEAM_PREDICTION
-        mathOperator: EQUAL
-      -
-        firstCompare: AWAY_TEAM_RESULT
-        secondCompare: HOME_TEAM_RESULT
-        mathOperator: EQUAL
-  -
-    # Correct one team goals
-    points: 3
-    logicalOperator: OR
-    subPredictions:
-      -
-        firstCompare: AWAY_TEAM_PREDICTION
-        secondCompare: AWAY_TEAM_RESULT
-        mathOperator: EQUAL
-      -
-        firstCompare: HOME_TEAM_PREDICTION
-        secondCompare: HOME_TEAM_RESULT
-        mathOperator: EQUAL
-  -
-    # No correct goals
-    points: 1
-    logicalOperator: AND
-    subPredictions:
-      -
-        firstCompare: AWAY_TEAM_PREDICTION
-        secondCompare: AWAY_TEAM_RESULT
-        mathOperator: NOT_EQUAL
-      -
-        firstCompare: HOME_TEAM_PREDICTION
-        secondCompare: HOME_TEAM_RESULT
-        mathOperator: NOT_EQUAL
+bet:
+  joining.window.hours: 168 #7 days
+  rules:
+    -
+      # Correct result
+      points: 5
+      logicalOperator: and
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # Draw
+      points: 3
+      logicalOperator: AND
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_PREDICTION
+          mathOperator: EQUAL
+        -
+          firstCompare: AWAY_TEAM_RESULT
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # Correct one team goals
+      points: 3
+      logicalOperator: OR
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # No correct goals
+      points: 1
+      logicalOperator: AND
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: NOT_EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: NOT_EQUAL
 

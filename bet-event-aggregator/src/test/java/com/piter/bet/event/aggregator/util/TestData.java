@@ -41,8 +41,8 @@ public class TestData {
             .startTime(LocalDateTime.MAX)
             .build())
         .result(MatchResult.builder()
-            .awayTeamGoals(2)
-            .homeTeamGoals(1)
+            .homeTeamGoals(2)
+            .awayTeamGoals(1)
             .build())
         .build();
   }
@@ -91,8 +91,8 @@ public class TestData {
   public Bet createBetRequestWithWrongPrediction() {
     return Bet.builder()
         .id(1L)
-        .homeTeamGoalBet(2)
-        .awayTeamGoalBet(0)
+        .homeTeamGoalBet(1)
+        .awayTeamGoalBet(3)
         .match(createMatchWithoutResult())
         .user(createUser())
         .betResults(createEmptyBetResult())
@@ -132,8 +132,8 @@ public class TestData {
   public Bet createBetWithIncorrectResult() {
     return Bet.builder()
         .id(1L)
-        .homeTeamGoalBet(2)
-        .awayTeamGoalBet(0)
+        .homeTeamGoalBet(1)
+        .awayTeamGoalBet(3)
         .match(createMatchWithResult())
         .user(createUser())
         .betResults(createWrongBetResult())
@@ -158,14 +158,14 @@ public class TestData {
   private BetResults createCorrectBetResult() {
     return BetResults.builder()
         .status(Status.CORRECT)
-        .points(3)
+        .points(5)
         .build();
   }
 
   private BetResults createWrongBetResult() {
     return BetResults.builder()
         .status(Status.INCORRECT)
-        .points(3)
+        .points(0)
         .build();
   }
 }

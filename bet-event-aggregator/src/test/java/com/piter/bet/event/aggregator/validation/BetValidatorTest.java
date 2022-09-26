@@ -1,7 +1,6 @@
 package com.piter.bet.event.aggregator.validation;
 
 import static com.piter.bet.event.aggregator.util.TestData.*;
-import static com.piter.bet.event.aggregator.util.WaitUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.bet.event.aggregator.domain.Bet;
@@ -107,6 +106,14 @@ class BetValidatorTest {
 
     //then
     assertThat(isValid).isFalse();
+  }
+
+  private void waitMillis(long millis) {
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Test
