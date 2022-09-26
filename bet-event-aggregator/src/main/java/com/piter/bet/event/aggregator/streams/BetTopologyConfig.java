@@ -10,7 +10,6 @@ import com.piter.bet.event.aggregator.validation.BetValidator;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.kstream.JoinWindows;
@@ -22,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
 public class BetTopologyConfig {
 
   private final Duration windowJoiningTime;
