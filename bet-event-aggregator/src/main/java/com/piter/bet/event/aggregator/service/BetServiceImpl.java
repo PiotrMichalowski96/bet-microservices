@@ -34,7 +34,7 @@ public class BetServiceImpl implements BetService {
   }
 
   private boolean isPredictedMatchResultCorrect(Bet bet) {
-    HomeTeamResult predictedResult = getResult(bet.getHomeTeamGoalBet(), bet.getAwayTeamGoalBet());
+    HomeTeamResult predictedResult = getResult(bet.getMatchPredictedResult());
     HomeTeamResult actualResult = getActualResult(bet.getMatch());
     return predictedResult.equals(actualResult);
   }
@@ -43,15 +43,14 @@ public class BetServiceImpl implements BetService {
     return Optional.ofNullable(match.getResult())
         .filter(matchResult -> Objects.nonNull(matchResult.getHomeTeamGoals()))
         .filter(matchResult -> Objects.nonNull(matchResult.getAwayTeamGoals()))
-        .map(result -> getResult(result.getHomeTeamGoals(), result.getAwayTeamGoals()))
+        .map(HomeTeamResult::getResult)
         .orElseThrow(() -> new RuntimeException("This case is not possible")); //TODO: generic
   }
 
   private Bet mapBet(Bet bet, BetResults betResults) {
     return Bet.builder()
         .id(bet.getId())
-        .homeTeamGoalBet(bet.getHomeTeamGoalBet())
-        .awayTeamGoalBet(bet.getAwayTeamGoalBet())
+        .matchPredictedResult(bet.getMatchPredictedResult())
         .match(bet.getMatch())
         .user(bet.getUser())
         .betResults(betResults)

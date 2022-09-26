@@ -44,13 +44,12 @@ class BetServiceImplTest {
 
   @ParameterizedTest
   @MethodSource("predictionsAndPoints")
-  void pointsBasedOnMatchPrediction(int homeTeamGoalsBet,
-      int awayTeamGoalsBet,
-      MatchResult matchResult,
+  void pointsBasedOnMatchPrediction(MatchResult predictedMatchResult,
+      MatchResult actualMatchResult,
       BetResults expectedBetResult) {
 
     //given
-    Bet bet = createBetWithResults(homeTeamGoalsBet, awayTeamGoalsBet, matchResult);
+    Bet bet = createBetWithResults(predictedMatchResult, actualMatchResult);
 
     //when
     Bet actualBet = betService.fetchBetResult(bet);
@@ -63,7 +62,11 @@ class BetServiceImplTest {
   private static Stream<Arguments> predictionsAndPoints() {
     return Stream.of(
         // Correct result prediction
-        Arguments.of(2, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(2)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
@@ -73,7 +76,11 @@ class BetServiceImplTest {
                 .points(5)
                 .build()),
         // Draw prediction
-        Arguments.of(1, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(1)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(2)
@@ -83,7 +90,11 @@ class BetServiceImplTest {
                 .points(3)
                 .build()),
         // Correct one team goals prediction
-        Arguments.of(4, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(4)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
@@ -93,7 +104,11 @@ class BetServiceImplTest {
                 .points(3)
                 .build()),
         // No correct goals prediction
-        Arguments.of(4, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(4)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(1)
                 .awayTeamGoals(0)
@@ -103,7 +118,11 @@ class BetServiceImplTest {
                 .points(1)
                 .build()),
         // Wrong match result prediction
-        Arguments.of(2, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(2)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(3)
@@ -113,7 +132,11 @@ class BetServiceImplTest {
                 .points(0)
                 .build()),
         // Wrong match result prediction
-        Arguments.of(1, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(1)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(3)
@@ -125,18 +148,14 @@ class BetServiceImplTest {
     );
   }
 
-  private Bet createBetWithResults(
-      int homeTeamGoalBet,
-      int awayTeamGoalBet,
-      MatchResult matchResult) {
+  private Bet createBetWithResults(MatchResult predictedMatchResult, MatchResult actualMatchResult) {
 
     Match match = Match.builder()
-        .result(matchResult)
+        .result(actualMatchResult)
         .build();
 
     return Bet.builder()
-        .homeTeamGoalBet(homeTeamGoalBet)
-        .awayTeamGoalBet(awayTeamGoalBet)
+        .matchPredictedResult(predictedMatchResult)
         .match(match)
         .build();
   }

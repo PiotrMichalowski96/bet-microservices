@@ -13,9 +13,8 @@ public class Bet {
   @NotNull
   Long id;
   @NotNull
-  Integer homeTeamGoalBet;
-  @NotNull
-  Integer awayTeamGoalBet;
+  @Valid
+  MatchResult matchPredictedResult;
   @NotNull
   @Valid
   Match match;

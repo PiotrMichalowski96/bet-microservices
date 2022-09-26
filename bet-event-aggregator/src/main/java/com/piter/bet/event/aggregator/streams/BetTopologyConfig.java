@@ -67,8 +67,7 @@ public class BetTopologyConfig {
   private Bet mapToBetWithMatchResult(Bet bet, Match match) {
     return Bet.builder()
         .id(bet.getId())
-        .homeTeamGoalBet(bet.getHomeTeamGoalBet())
-        .awayTeamGoalBet(bet.getAwayTeamGoalBet())
+        .matchPredictedResult(bet.getMatchPredictedResult())
         .match(match)
         .user(bet.getUser())
         .betResults(bet.getBetResults())

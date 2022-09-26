@@ -40,13 +40,12 @@ class BetPredictionFetcherTest {
 
   @ParameterizedTest
   @MethodSource("predictionsAndPoints")
-  void shouldReturnPointsBasedOnMatchPrediction(int homeTeamGoalsBet,
-      int awayTeamGoalsBet,
-      MatchResult matchResult,
+  void shouldReturnPointsBasedOnMatchPrediction(MatchResult predictedMatchResult,
+      MatchResult actualMatchResult,
       int expectedPoints) {
 
     //given
-    Bet bet = createBetWithResults(homeTeamGoalsBet, awayTeamGoalsBet, matchResult);
+    Bet bet = createBetWithResults(predictedMatchResult, actualMatchResult);
 
     //when
     int actualPoints = betPredictionFetcher.fetchPointsForPrediction(bet);
@@ -58,28 +57,44 @@ class BetPredictionFetcherTest {
   private static Stream<Arguments> predictionsAndPoints() {
     return Stream.of(
         // Correct result prediction
-        Arguments.of(2, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(2)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
                 .build(),
             5),
         // Draw prediction
-        Arguments.of(1, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(1)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(2)
                 .build(),
             3),
         // Correct one team goals prediction
-        Arguments.of(4, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(4)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
                 .build(),
             3),
         // No correct goals prediction
-        Arguments.of(4, 1,
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(4)
+                .awayTeamGoals(1)
+                .build(),
             MatchResult.builder()
                 .homeTeamGoals(1)
                 .awayTeamGoals(0)
@@ -88,18 +103,14 @@ class BetPredictionFetcherTest {
     );
   }
 
-  private Bet createBetWithResults(
-      int homeTeamGoalBet,
-      int awayTeamGoalBet,
-      MatchResult matchResult) {
+  private Bet createBetWithResults(MatchResult predictedMatchResult, MatchResult actualMatchResult) {
 
     Match match = Match.builder()
-        .result(matchResult)
+        .result(actualMatchResult)
         .build();
 
     return Bet.builder()
-        .homeTeamGoalBet(homeTeamGoalBet)
-        .awayTeamGoalBet(awayTeamGoalBet)
+        .matchPredictedResult(predictedMatchResult)
         .match(match)
         .build();
   }

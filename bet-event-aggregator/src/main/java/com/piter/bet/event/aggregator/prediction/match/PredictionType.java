@@ -11,7 +11,8 @@ public enum PredictionType {
     @Override
     public int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getAwayTeamGoalBet)
+          .map(Bet::getMatchPredictedResult)
+          .map(MatchResult::getAwayTeamGoals)
           .orElse(0);
     }
   },
@@ -19,7 +20,8 @@ public enum PredictionType {
     @Override
     public int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getHomeTeamGoalBet)
+          .map(Bet::getMatchPredictedResult)
+          .map(MatchResult::getHomeTeamGoals)
           .orElse(0);
     }
   },

@@ -7,6 +7,7 @@ import com.piter.bet.event.aggregator.domain.Bet;
 import com.piter.bet.event.aggregator.domain.BetResults;
 import com.piter.bet.event.aggregator.domain.BetResults.Status;
 import com.piter.bet.event.aggregator.domain.Match;
+import com.piter.bet.event.aggregator.domain.MatchResult;
 import com.piter.bet.event.aggregator.domain.User;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
@@ -61,7 +62,9 @@ class BetValidatorTest {
         // Missing home team goals prediction
         Arguments.of(Bet.builder()
             .id(1L)
-            .awayTeamGoalBet(1)
+            .matchPredictedResult(MatchResult.builder()
+                .awayTeamGoals(1)
+                .build())
             .match(correctMatch)
             .user(user)
             .betResults(betResult)
@@ -69,8 +72,10 @@ class BetValidatorTest {
         // Invalid match
         Arguments.of(Bet.builder()
             .id(1L)
-            .homeTeamGoalBet(1)
-            .awayTeamGoalBet(1)
+            .matchPredictedResult(MatchResult.builder()
+                .homeTeamGoals(1)
+                .awayTeamGoals(1)
+                .build())
             .match(invalidMatch)
             .user(user)
             .betResults(betResult)
@@ -78,8 +83,10 @@ class BetValidatorTest {
         // Wrong bet result - bet was resolved and result has points
         Arguments.of(Bet.builder()
             .id(1L)
-            .homeTeamGoalBet(1)
-            .awayTeamGoalBet(1)
+            .matchPredictedResult(MatchResult.builder()
+                .homeTeamGoals(1)
+                .awayTeamGoals(1)
+                .build())
             .match(correctMatch)
             .user(user)
             .betResults(invalidBetResult)
@@ -93,8 +100,10 @@ class BetValidatorTest {
     LocalDateTime matchStartTime = LocalDateTime.now();
     Bet invalidBetRequest = Bet.builder()
         .id(1L)
-        .homeTeamGoalBet(1)
-        .awayTeamGoalBet(1)
+        .matchPredictedResult(MatchResult.builder()
+            .homeTeamGoals(1)
+            .awayTeamGoals(1)
+            .build())
         .match(createMatchWithTime(matchStartTime))
         .user(createUser())
         .betResults(createEmptyBetResult())
