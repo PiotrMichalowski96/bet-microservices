@@ -28,6 +28,7 @@ public class BetValidator {
     this.betValidators = List.of(
         this::areRequireFieldsValid,
         this::isMatchNotStarted,
+        this::doesNotHaveMatchResult,
         this::doesNotHaveBetResult
     );
   }
@@ -50,6 +51,12 @@ public class BetValidator {
         .map(Match::getStartTime)
         .map(startTime -> LocalDateTime.now().isBefore(startTime))
         .orElse(false);
+  }
+
+  private boolean doesNotHaveMatchResult(Bet bet) {
+    return Optional.ofNullable(bet.getMatch())
+        .map(Match::getResult)
+        .isEmpty();
   }
 
   private boolean doesNotHaveBetResult(Bet bet) {

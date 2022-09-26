@@ -39,7 +39,7 @@ class BetValidatorTest {
 
   @ParameterizedTest
   @MethodSource("provideInvalidBet")
-  void invalidBetBecauseHomeTeamGoalsPredictionIsMissing(Bet invalidBetRequest) {
+  void invalidBet(Bet invalidBetRequest) {
     //given input
     //when
     boolean isValid = betValidator.validate(invalidBetRequest);
