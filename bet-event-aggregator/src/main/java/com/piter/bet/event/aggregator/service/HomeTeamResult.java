@@ -1,5 +1,7 @@
 package com.piter.bet.event.aggregator.service;
 
+import static com.piter.bet.event.aggregator.exception.BetAggregatorException.cannotRetrieveResultException;
+
 import com.piter.bet.event.aggregator.domain.MatchResult;
 import java.util.stream.Stream;
 import lombok.NonNull;
@@ -31,6 +33,6 @@ public enum HomeTeamResult {
     return Stream.of(HomeTeamResult.values())
         .filter(result -> result.isResult(matchResult))
         .findFirst()
-        .orElseThrow(() -> new RuntimeException("This case is not supported")); //TODO: generic
+        .orElseThrow(() -> cannotRetrieveResultException(matchResult));
   }
 }

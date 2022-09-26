@@ -1,5 +1,6 @@
 package com.piter.bet.event.aggregator.service;
 
+import static com.piter.bet.event.aggregator.exception.BetAggregatorException.cannotRetrieveResultException;
 import static com.piter.bet.event.aggregator.service.HomeTeamResult.getResult;
 
 import com.piter.bet.event.aggregator.domain.Bet;
@@ -44,7 +45,7 @@ public class BetServiceImpl implements BetService {
         .filter(matchResult -> Objects.nonNull(matchResult.getHomeTeamGoals()))
         .filter(matchResult -> Objects.nonNull(matchResult.getAwayTeamGoals()))
         .map(HomeTeamResult::getResult)
-        .orElseThrow(() -> new RuntimeException("This case is not possible")); //TODO: generic
+        .orElseThrow(() -> cannotRetrieveResultException(match));
   }
 
   private Bet mapBet(Bet bet, BetResult betResult) {
