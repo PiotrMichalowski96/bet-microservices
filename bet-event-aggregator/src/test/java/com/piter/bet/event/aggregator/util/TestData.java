@@ -1,8 +1,8 @@
 package com.piter.bet.event.aggregator.util;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
-import com.piter.bet.event.aggregator.domain.BetResults.Status;
+import com.piter.bet.event.aggregator.domain.BetResult;
+import com.piter.bet.event.aggregator.domain.BetResult.Status;
 import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.domain.MatchResult;
 import com.piter.bet.event.aggregator.domain.MatchRound;
@@ -86,7 +86,7 @@ public class TestData {
             .build())
         .match(createMatchWithoutResult())
         .user(createUser())
-        .betResults(createEmptyBetResult())
+        .betResult(createEmptyBetResult())
         .build();
   }
 
@@ -99,7 +99,7 @@ public class TestData {
             .build())
         .match(createMatchWithoutResult())
         .user(createUser())
-        .betResults(createEmptyBetResult())
+        .betResult(createEmptyBetResult())
         .build();
   }
 
@@ -112,7 +112,7 @@ public class TestData {
             .build())
         .match(createSecondMatchWithoutResult())
         .user(createUser())
-        .betResults(createEmptyBetResult())
+        .betResult(createEmptyBetResult())
         .build();
   }
 
@@ -133,7 +133,7 @@ public class TestData {
             .build())
         .match(createMatchWithResult())
         .user(createUser())
-        .betResults(createCorrectBetResult())
+        .betResult(createCorrectBetResult())
         .build();
   }
 
@@ -146,7 +146,7 @@ public class TestData {
             .build())
         .match(createMatchWithResult())
         .user(createUser())
-        .betResults(createWrongBetResult())
+        .betResult(createWrongBetResult())
         .build();
   }
 
@@ -158,22 +158,22 @@ public class TestData {
         .build();
   }
 
-  public BetResults createEmptyBetResult() {
-    return BetResults.builder()
+  public BetResult createEmptyBetResult() {
+    return BetResult.builder()
         .status(Status.UNRESOLVED)
         .points(0)
         .build();
   }
 
-  private BetResults createCorrectBetResult() {
-    return BetResults.builder()
+  private BetResult createCorrectBetResult() {
+    return BetResult.builder()
         .status(Status.CORRECT)
         .points(5)
         .build();
   }
 
-  private BetResults createWrongBetResult() {
-    return BetResults.builder()
+  private BetResult createWrongBetResult() {
+    return BetResult.builder()
         .status(Status.INCORRECT)
         .points(0)
         .build();

@@ -70,7 +70,7 @@ public class BetTopologyConfig {
         .matchPredictedResult(bet.getMatchPredictedResult())
         .match(match)
         .user(bet.getUser())
-        .betResults(bet.getBetResults())
+        .betResult(bet.getBetResult())
         .build();
   }
 

@@ -4,8 +4,8 @@ import static com.piter.bet.event.aggregator.util.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
-import com.piter.bet.event.aggregator.domain.BetResults.Status;
+import com.piter.bet.event.aggregator.domain.BetResult;
+import com.piter.bet.event.aggregator.domain.BetResult.Status;
 import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.domain.MatchResult;
 import com.piter.bet.event.aggregator.domain.User;
@@ -52,8 +52,8 @@ class BetValidatorTest {
     Match correctMatch = createMatchWithoutResult();
     Match invalidMatch = Match.builder().build();
     User user = createUser();
-    BetResults betResult = createEmptyBetResult();
-    BetResults invalidBetResult = BetResults.builder()
+    BetResult betResult = createEmptyBetResult();
+    BetResult invalidBetResult = BetResult.builder()
         .status(Status.CORRECT)
         .points(5)
         .build();
@@ -67,7 +67,7 @@ class BetValidatorTest {
                 .build())
             .match(correctMatch)
             .user(user)
-            .betResults(betResult)
+            .betResult(betResult)
             .build()),
         // Invalid match
         Arguments.of(Bet.builder()
@@ -78,7 +78,7 @@ class BetValidatorTest {
                 .build())
             .match(invalidMatch)
             .user(user)
-            .betResults(betResult)
+            .betResult(betResult)
             .build()),
         // Wrong bet result - bet was resolved and result has points
         Arguments.of(Bet.builder()
@@ -89,7 +89,7 @@ class BetValidatorTest {
                 .build())
             .match(correctMatch)
             .user(user)
-            .betResults(invalidBetResult)
+            .betResult(invalidBetResult)
             .build())
         );
   }
@@ -106,7 +106,7 @@ class BetValidatorTest {
             .build())
         .match(createMatchWithTime(matchStartTime))
         .user(createUser())
-        .betResults(createEmptyBetResult())
+        .betResult(createEmptyBetResult())
         .build();
 
     //when

@@ -23,5 +23,5 @@ public class Bet {
   User user;
   @NotNull
   @Valid
-  BetResults betResults;
+  BetResult betResult;
 }

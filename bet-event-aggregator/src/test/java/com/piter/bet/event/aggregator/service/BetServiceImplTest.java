@@ -3,8 +3,8 @@ package com.piter.bet.event.aggregator.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
-import com.piter.bet.event.aggregator.domain.BetResults.Status;
+import com.piter.bet.event.aggregator.domain.BetResult;
+import com.piter.bet.event.aggregator.domain.BetResult.Status;
 import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.domain.MatchResult;
 import com.piter.bet.event.aggregator.prediction.BetPredictionFetcher;
@@ -46,14 +46,14 @@ class BetServiceImplTest {
   @MethodSource("predictionsAndPoints")
   void pointsBasedOnMatchPrediction(MatchResult predictedMatchResult,
       MatchResult actualMatchResult,
-      BetResults expectedBetResult) {
+      BetResult expectedBetResult) {
 
     //given
     Bet bet = createBetWithResults(predictedMatchResult, actualMatchResult);
 
     //when
     Bet actualBet = betService.fetchBetResult(bet);
-    BetResults actualBetResult = actualBet.getBetResults();
+    BetResult actualBetResult = actualBet.getBetResult();
 
     //then
     assertThat(actualBetResult).isEqualTo(expectedBetResult);
@@ -71,7 +71,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.CORRECT)
                 .points(5)
                 .build()),
@@ -85,7 +85,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(2)
                 .awayTeamGoals(2)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.CORRECT)
                 .points(3)
                 .build()),
@@ -99,7 +99,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(2)
                 .awayTeamGoals(1)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.CORRECT)
                 .points(3)
                 .build()),
@@ -113,7 +113,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(1)
                 .awayTeamGoals(0)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.CORRECT)
                 .points(1)
                 .build()),
@@ -127,7 +127,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(2)
                 .awayTeamGoals(3)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.INCORRECT)
                 .points(0)
                 .build()),
@@ -141,7 +141,7 @@ class BetServiceImplTest {
                 .homeTeamGoals(2)
                 .awayTeamGoals(3)
                 .build(),
-            BetResults.builder()
+            BetResult.builder()
                 .status(Status.INCORRECT)
                 .points(0)
                 .build())

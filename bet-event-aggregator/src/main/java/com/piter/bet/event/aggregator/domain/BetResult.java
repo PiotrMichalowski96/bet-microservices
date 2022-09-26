@@ -8,7 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Value
 @Builder
-public class BetResults {
+public class BetResult {
   @NotNull
   Status status;
   @NotNull

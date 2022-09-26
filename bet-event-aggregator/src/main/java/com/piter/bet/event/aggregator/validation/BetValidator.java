@@ -1,8 +1,8 @@
 package com.piter.bet.event.aggregator.validation;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
-import com.piter.bet.event.aggregator.domain.BetResults.Status;
+import com.piter.bet.event.aggregator.domain.BetResult;
+import com.piter.bet.event.aggregator.domain.BetResult.Status;
 import com.piter.bet.event.aggregator.domain.Match;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.springframework.validation.Validator;
 @Component
 public class BetValidator {
 
-  private static final BetResults UNRESOLVED_BET_RESULTS = BetResults.builder()
+  private static final BetResult UNRESOLVED_BET_RESULTS = BetResult.builder()
       .points(0)
       .status(Status.UNRESOLVED)
       .build();
@@ -60,7 +60,7 @@ public class BetValidator {
   }
 
   private boolean doesNotHaveBetResult(Bet bet) {
-    return UNRESOLVED_BET_RESULTS.equals(bet.getBetResults());
+    return UNRESOLVED_BET_RESULTS.equals(bet.getBetResult());
   }
 
   @FunctionalInterface

@@ -3,8 +3,8 @@ package com.piter.bet.event.aggregator.service;
 import static com.piter.bet.event.aggregator.service.HomeTeamResult.getResult;
 
 import com.piter.bet.event.aggregator.domain.Bet;
-import com.piter.bet.event.aggregator.domain.BetResults;
-import com.piter.bet.event.aggregator.domain.BetResults.Status;
+import com.piter.bet.event.aggregator.domain.BetResult;
+import com.piter.bet.event.aggregator.domain.BetResult.Status;
 import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.prediction.BetPredictionFetcher;
 import java.util.Objects;
@@ -20,17 +20,17 @@ public class BetServiceImpl implements BetService {
 
   @Override
   public Bet fetchBetResult(Bet bet) {
-    BetResults betResults = isPredictedMatchResultCorrect(bet) ?
-        BetResults.builder()
+    BetResult betResult = isPredictedMatchResultCorrect(bet) ?
+        BetResult.builder()
             .points(betPredictionFetcher.fetchPointsForPrediction(bet))
             .status(Status.CORRECT)
             .build() :
-        BetResults.builder()
+        BetResult.builder()
             .points(0)
             .status(Status.INCORRECT)
             .build();
 
-    return mapBet(bet, betResults);
+    return mapBet(bet, betResult);
   }
 
   private boolean isPredictedMatchResultCorrect(Bet bet) {
@@ -47,13 +47,13 @@ public class BetServiceImpl implements BetService {
         .orElseThrow(() -> new RuntimeException("This case is not possible")); //TODO: generic
   }
 
-  private Bet mapBet(Bet bet, BetResults betResults) {
+  private Bet mapBet(Bet bet, BetResult betResult) {
     return Bet.builder()
         .id(bet.getId())
         .matchPredictedResult(bet.getMatchPredictedResult())
         .match(bet.getMatch())
         .user(bet.getUser())
-        .betResults(betResults)
+        .betResult(betResult)
         .build();
   }
 }
