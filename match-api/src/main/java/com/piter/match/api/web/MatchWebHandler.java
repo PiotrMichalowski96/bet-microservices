@@ -14,7 +14,7 @@ public interface MatchWebHandler {
 
   Mono<ServerResponse> findById(ServerRequest request);
 
-  Mono<ServerResponse> saveStock(ServerRequest request);
+  Mono<ServerResponse> saveMatch(ServerRequest request);
 
-  Mono<ServerResponse> deleteStock(ServerRequest request);
+  Mono<ServerResponse> deleteMatch(ServerRequest request);
 }
