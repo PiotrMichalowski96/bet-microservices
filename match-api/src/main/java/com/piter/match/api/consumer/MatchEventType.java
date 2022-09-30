@@ -12,7 +12,7 @@ import org.springframework.messaging.Message;
 
 @Getter
 @RequiredArgsConstructor
-public enum EventType {
+public enum MatchEventType {
 
   INSERT(message -> !containsKey(message) && hasPayloadType(message, Match.class)),
   UPDATE(message -> containsKey(message) && hasPayloadType(message, Match.class)),
@@ -30,9 +30,9 @@ public enum EventType {
     return payloadType.isInstance(message.getPayload());
   }
 
-  public static EventType getEventType(Message<?> message) {
-    return Stream.of(EventType.values())
-        .filter(eventType -> eventType.getEventTypePredicate().test(message))
+  public static MatchEventType getEventType(Message<?> message) {
+    return Stream.of(MatchEventType.values())
+        .filter(matchEventType -> matchEventType.getEventTypePredicate().test(message))
         .findFirst()
         .orElseThrow(MatchKafkaException::eventTypeNotFound);
   }
