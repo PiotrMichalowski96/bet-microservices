@@ -35,21 +35,20 @@ public class BetTopologyConfig {
   }
 
   @Bean
-  public BiFunction<KStream<String, Bet>, KStream<String, Match>, KStream<String, Bet>> bets() {
+  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> bets() {
     return (bets, matches) -> bets
-        .peek((k, bet) -> logger.info("Received bet: {}", bet))
+        .peek((k, bet) -> logger.info("Key: {}, Received bet: {}", k, bet))
         .filter((key, bet) -> betValidator.validate(bet))
-        .peek((k, bet) -> logger.info("Filtered bet: {}", bet))
-        .join(matches,
+        .peek((k, bet) -> logger.info("Key: {}, Filtered bet: {}", k, bet))
+        .join(matches.peek((k, match) -> logger.info("Key: {}, Received match: {}", k, match)),
             this::joinByMatchId,
             JoinWindows.ofTimeDifferenceWithNoGrace(windowJoiningTime),
-            StreamJoined.with(Serdes.String(), BET_JSON_SERDE, MATCH_JSON_SERDE))
-        .peek((k, bet) -> logger.info("Joined bet: {}", bet))
-        .filterNot((k, v) -> v == null)
+            StreamJoined.with(Serdes.Long(), BET_JSON_SERDE, MATCH_JSON_SERDE))
+        .peek((k, bet) -> logger.info("Key: {}, Joined bet: {}", k, bet))
+        .filter((k, v) -> v != null)
         .mapValues(this::fetchBetResult)
-        .peek((k, bet) -> logger.info("Fetched bet: {}", bet));
+        .peek((k, bet) -> logger.info("Key: {}, Fetched bet: {}", k, bet));
   }
-
 
   private Bet joinByMatchId(Bet bet, Match match) {
     Match betMatch = bet.getMatch();
