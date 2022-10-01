@@ -2,18 +2,26 @@ spring.application.name: bet-event-aggregator
 
 spring.kafka.bootstrap-servers: localhost:9092
 
+spring.cloud.stream.function.definition: bets;matches
+
 spring.cloud.stream:
   bindings:
-    bets-in-0.destination: sample-bet-request-topic
+    bets-in-0.destination: sample-bet-request-topic-2
     bets-in-1.destination: sample-match-topic-3
     bets-out-0.destination:  sample-bet-topic
+    matches-in-0.destination: sample-bet-request-topic-2
+    matches-in-1.destination: sample-match-topic-3
+    matches-out-0.destination: sample-bet-topic
   kafka:
-    streams.binder:
-      deserializationExceptionHandler: logAndContinue
-      functions.orders.applicationId: bets
-      configuration:
-        default.key.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
-        spring.json.trusted.packages: "*"
+    streams:
+      binder:
+        deserializationExceptionHandler: logAndContinue
+        functions:
+          bets.application-id: bets
+          matches.application-id: matches
+        configuration:
+          default.key.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+          spring.json.trusted.packages: "*"
 
 ##################################################
 # Betting and correct prediction rules and points
@@ -74,3 +82,8 @@ bet:
           secondCompare: HOME_TEAM_RESULT
           mathOperator: NOT_EQUAL
 
+########################
+# Logging
+########################
+logging.level:
+  com.piter.bet.event.aggregator: DEBUG

@@ -1,9 +1,9 @@
-package com.piter.bet.api.util;
+package com.piter.bet.event.aggregator.util;
 
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.Match;
-import com.piter.bet.api.domain.User;
-import com.piter.bet.api.exception.MissingFieldException;
+import com.piter.bet.event.aggregator.domain.Bet;
+import com.piter.bet.event.aggregator.domain.Match;
+import com.piter.bet.event.aggregator.domain.User;
+import com.piter.bet.event.aggregator.exception.BetAggregatorException;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +19,9 @@ public class BetIdGenerator {
   public BetIdGenerator(Bet bet) {
     this.matchId = Optional.ofNullable(bet.getMatch())
         .map(Match::getId)
-        .orElseThrow(() -> new MissingFieldException("Match ID is missing", bet));
+        .orElseThrow(() -> BetAggregatorException.missingFieldException("Match ID", bet));
     this.user = Optional.ofNullable(bet.getUser())
-        .orElseThrow(() -> new MissingFieldException("User is missing", bet));
+        .orElseThrow(() -> BetAggregatorException.missingFieldException("User", bet));
   }
 
   public Long generateId() {

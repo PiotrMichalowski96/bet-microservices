@@ -1,7 +1,6 @@
 package com.piter.bet.event.aggregator.util.kafka;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +29,11 @@ public class MockProcessor<KIn, VIn, KOut, VOut> implements Processor<KIn, VIn, 
   }
 
   public void checkAndClearProcessedRecords(final Record<KIn, VIn>... expected) {
-    assertThat("the number of outputs:" + processed, processed.size(), is(expected.length));
+    assertThat(processed).hasSize(expected.length);
     for (int i = 0; i < expected.length; i++) {
-      assertThat("key for output[" + i + "]:", processed.get(i).key(), is(expected[i].key()));
-      assertThat("value for output[" + i + "]:", processed.get(i).value(), is(expected[i].value()));
+      assertThat(processed.get(i).value()).usingRecursiveComparison()
+              .ignoringFields("id")
+              .isEqualTo(expected[i].value());
     }
     processed.clear();
   }

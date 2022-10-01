@@ -1,7 +1,5 @@
 package com.piter.bet.event.aggregator.streams;
 
-import static com.piter.bet.event.aggregator.streams.SerdeUtils.BET_JSON_SERDE;
-import static com.piter.bet.event.aggregator.streams.SerdeUtils.MATCH_JSON_SERDE;
 import static com.piter.bet.event.aggregator.util.TestData.*;
 
 import com.piter.bet.event.aggregator.domain.Bet;
@@ -10,22 +8,17 @@ import com.piter.bet.event.aggregator.prediction.BetPredictionFetcher;
 import com.piter.bet.event.aggregator.prediction.config.PredictionProperties;
 import com.piter.bet.event.aggregator.prediction.expression.ExpressionPrediction;
 import com.piter.bet.event.aggregator.service.BetServiceImpl;
+import com.piter.bet.event.aggregator.util.TestData;
 import com.piter.bet.event.aggregator.util.YamlPropertySourceFactory;
 import com.piter.bet.event.aggregator.util.kafka.MockProcessor;
-import com.piter.bet.event.aggregator.util.kafka.MockProcessorSupplier;
-import com.piter.bet.event.aggregator.util.TestData;
 import com.piter.bet.event.aggregator.validation.BetValidator;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TestInputTopic;
-import org.apache.kafka.streams.TopologyTestDriver;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.logging.log4j.util.BiConsumer;
@@ -48,10 +41,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @ContextConfiguration(classes = {PredictionProperties.class, LocalValidatorFactoryBean.class})
 @EnableConfigurationProperties(value = PredictionProperties.class)
 @PropertySource(value = "classpath:application-bet-prediction-rules-test.yaml", factory = YamlPropertySourceFactory.class)
-class BetTopologyConfigTest {
-
-  private static final String BET_REQUEST_TOPIC = "bet-request";
-  private static final String MATCH_TOPIC = "match";
+class BetTopologyConfigTest extends AbstractTopologyTest {
 
   @Autowired
   private Validator validator;
@@ -60,6 +50,11 @@ class BetTopologyConfigTest {
   private PredictionProperties predictionProperties;
 
   private BetTopologyConfig betTopology;
+
+  @Override
+  protected BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> getBetStreamFunction() {
+    return betTopology.bets();
+  }
 
   @BeforeEach
   void init() {
@@ -194,40 +189,5 @@ class BetTopologyConfigTest {
     //then
     Consumer<MockProcessor<Long, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
     testAndAssertTopology(topicSender, asserterEmpty);
-  }
-
-  private void testAndAssertTopology(
-      BiConsumer<TestInputTopic<Long, Bet>, TestInputTopic<Long, Match>> topicSender,
-      Consumer<MockProcessor<Long, Bet, Void, Void>> mockProcessorAsserter) {
-
-    final MockProcessorSupplier<Long, Bet, Void, Void> supplier = new MockProcessorSupplier<>();
-
-    var streamBuilder = new StreamsBuilder();
-
-    Serde<Long> longSerde = Serdes.Long();
-
-    KStream<Long, Bet> betRequestStream = streamBuilder.stream(BET_REQUEST_TOPIC,
-        Consumed.with(longSerde, BET_JSON_SERDE));
-    KStream<Long, Match> matchStream = streamBuilder.stream(MATCH_TOPIC,
-        Consumed.with(longSerde, MATCH_JSON_SERDE));
-
-    KStream<Long, Bet> betStream = betTopology.bets().apply(betRequestStream, matchStream);
-    betStream.process(supplier);
-
-    try (final var testDriver = new TopologyTestDriver(streamBuilder.build())) {
-      TestInputTopic<Long, Bet> inputBetTopic = testDriver.createInputTopic(BET_REQUEST_TOPIC,
-          longSerde.serializer(),
-          BET_JSON_SERDE.serializer());
-
-      TestInputTopic<Long, Match> inputMatchTopic = testDriver.createInputTopic(MATCH_TOPIC,
-          longSerde.serializer(),
-          MATCH_JSON_SERDE.serializer());
-
-      final MockProcessor<Long, Bet, Void, Void> processor = supplier.getProcessor();
-
-      topicSender.accept(inputBetTopic, inputMatchTopic);
-
-      mockProcessorAsserter.accept(processor);
-    }
   }
 }
