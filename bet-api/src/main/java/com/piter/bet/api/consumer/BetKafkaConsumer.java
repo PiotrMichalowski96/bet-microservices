@@ -1,42 +1,51 @@
 package com.piter.bet.api.consumer;
 
 import com.piter.bet.api.domain.Bet;
+import com.piter.bet.api.exception.BetKafkaException;
 import com.piter.bet.api.repository.BetRepository;
-import com.piter.bet.api.util.BetIdGenerator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class BetKafkaConsumer {
 
   private final BetRepository betRepository;
+  private final Map<BetEventType, Consumer<Message<?>>> eventTypeProcessor;
+
+  public BetKafkaConsumer(BetRepository betRepository) {
+    this.betRepository = betRepository;
+    this.eventTypeProcessor = Map.of(
+        BetEventType.SAVE, this::saveBet,
+        BetEventType.DELETE, this::deleteBet
+    );
+  }
 
   @Bean
   public Consumer<Message<Bet>> bets() {
     return betMessage -> {
-      Bet bet = betMessage.getPayload();
-
-      var betIdGenerator = new BetIdGenerator(bet);
-      Long betId = betIdGenerator.generateId();
-
-      Bet betWithId = map(bet, betId);
-      betRepository.save(betWithId);
+      BetEventType betEventType = BetEventType.getEventType(betMessage);
+      eventTypeProcessor.get(betEventType).accept(betMessage);
     };
   }
 
-  private Bet map(Bet bet, Long id) {
-    return Bet.builder()
-        .id(id)
-        .matchPredictedResult(bet.getMatchPredictedResult())
-        .match(bet.getMatch())
-        .user(bet.getUser())
-        .betResult(bet.getBetResult())
-        .build();
+  private void saveBet(Message<?> betMessage) {
+    Bet bet = (Bet) betMessage.getPayload();
+    betRepository.save(bet).subscribe(
+        savedBet -> logger.debug("Saved bet: {}", bet)
+    );
+  }
+
+  private void deleteBet(Message<?> tombstoneMessage) {
+    Long id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class))
+        .orElseThrow(() -> new BetKafkaException("Delete event does not have Kafka key ID"));
+    betRepository.deleteById(id).subscribe();
+    logger.debug("Deleted bet id: {}", id);
   }
 }
