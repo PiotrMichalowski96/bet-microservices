@@ -44,7 +44,7 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
   }
 
   @Override
-  public Mono<ServerResponse> saveStock(ServerRequest request) {
+  public Mono<ServerResponse> saveMatch(ServerRequest request) {
     return request.bodyToMono(Match.class)
         .doOnNext(this::validate)
         .flatMap(matchService::saveMatch)
@@ -61,7 +61,7 @@ public class MatchWebHandlerImpl implements MatchWebHandler {
   }
 
   @Override
-  public Mono<ServerResponse> deleteStock(ServerRequest request) {
+  public Mono<ServerResponse> deleteMatch(ServerRequest request) {
     var id = Long.valueOf(request.pathVariable("id"));
     return matchService.deleteMatch(id)
         .flatMap(voidMono -> ServerResponse.ok().build())

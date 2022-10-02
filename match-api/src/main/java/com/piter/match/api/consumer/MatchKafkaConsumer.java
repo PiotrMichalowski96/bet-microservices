@@ -19,7 +19,7 @@ public class MatchKafkaConsumer {
 
   private final MatchRepository matchRepository;
   private final SequenceGeneratorService sequenceGeneratorService;
-  private final Map<EventType, Consumer<Message<?>>> eventTypeProcessor;
+  private final Map<MatchEventType, Consumer<Message<?>>> eventTypeProcessor;
 
   public MatchKafkaConsumer(MatchRepository matchRepository,
       SequenceGeneratorService sequenceGeneratorService) {
@@ -27,17 +27,17 @@ public class MatchKafkaConsumer {
     this.matchRepository = matchRepository;
     this.sequenceGeneratorService = sequenceGeneratorService;
     this.eventTypeProcessor = Map.of(
-        EventType.INSERT, this::saveMatch,
-        EventType.UPDATE, this::updateMatch,
-        EventType.DELETE, this::deleteMatch
+        MatchEventType.INSERT, this::saveMatch,
+        MatchEventType.UPDATE, this::updateMatch,
+        MatchEventType.DELETE, this::deleteMatch
     );
   }
 
   @Bean
   public Consumer<Message<Match>> matches() {
     return matchMessage -> {
-      EventType eventType = EventType.getEventType(matchMessage);
-      eventTypeProcessor.get(eventType).accept(matchMessage);
+      MatchEventType matchEventType = MatchEventType.getEventType(matchMessage);
+      eventTypeProcessor.get(matchEventType).accept(matchMessage);
     };
   }
 

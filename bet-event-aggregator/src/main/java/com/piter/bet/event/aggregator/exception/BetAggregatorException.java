@@ -24,4 +24,9 @@ public class BetAggregatorException extends RuntimeException {
     var message = String.format("Can not retrieve result from match result: %s", matchResult);
     return new BetAggregatorException(message);
   }
+
+  public static BetAggregatorException missingFieldException(String fieldName, Bet bet) {
+    var message = String.format("%s is missing. Bet: %s", fieldName, bet);
+    return new BetAggregatorException(message);
+  }
 }

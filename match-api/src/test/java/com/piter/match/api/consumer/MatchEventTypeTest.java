@@ -1,6 +1,5 @@
 package com.piter.match.api.consumer;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.match.api.domain.Match;
@@ -13,14 +12,14 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 
-class EventTypeTest {
+class MatchEventTypeTest {
 
   @ParameterizedTest
   @MethodSource("provideMessagesAndEvents")
-  void shouldReturnCorrectEvents(Message<?> message, EventType expectedEvent) {
+  void shouldReturnCorrectEvents(Message<?> message, MatchEventType expectedEvent) {
     //given input
     //when
-    EventType actualEvent = EventType.getEventType(message);
+    MatchEventType actualEvent = MatchEventType.getEventType(message);
 
     //then
     assertThat(actualEvent).isEqualTo(expectedEvent);
@@ -39,9 +38,9 @@ class EventTypeTest {
         .build();
 
     return Stream.of(
-        Arguments.of(matchMessageWithoutHeader, EventType.INSERT),
-        Arguments.of(matchMessageWithHeader, EventType.UPDATE),
-        Arguments.of(tombstoneMessage, EventType.DELETE)
+        Arguments.of(matchMessageWithoutHeader, MatchEventType.INSERT),
+        Arguments.of(matchMessageWithHeader, MatchEventType.UPDATE),
+        Arguments.of(tombstoneMessage, MatchEventType.DELETE)
     );
   }
 }

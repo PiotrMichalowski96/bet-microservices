@@ -1,0 +1,8 @@
+spring:
+  mongodb:
+    embedded:
+      version: 5.0.6
+  data:
+    mongodb:
+      port: 0
+      host: localhost

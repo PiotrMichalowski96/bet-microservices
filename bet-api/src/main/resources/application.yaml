@@ -1,0 +1,49 @@
+server.port: 8083
+spring:
+  application.name: bet-api
+  data:
+    mongodb:
+      port: 27017
+      host: localhost
+  kafka:
+    consumer:
+      properties:
+        spring.json.trusted.packages: "*"
+
+########################
+# Cloud stream
+########################
+spring.cloud.stream:
+  kafka:
+    binder:
+      brokers: localhost:9092
+    bindings:
+      bets-out-0:
+        producer:
+          configuration:
+            key.serializer: org.apache.kafka.common.serialization.LongSerializer
+      bets-in-0:
+        consumer:
+          configuration:
+            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+  bindings:
+    bets-out-0:
+      destination: sample-bet-request-topic-2
+    bets-in-0:
+      destination: sample-bet-topic
+
+########################
+# Kafka Match producer
+########################
+bet.producer.binding: bets-out-0
+
+
+########################
+# Logging
+########################
+logging.level:
+  org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
+  org.springframework.data.mongodb.repository.support: DEBUG
+  org.springframework.cache: TRACE
+  com.piter.bet.api: DEBUG
+

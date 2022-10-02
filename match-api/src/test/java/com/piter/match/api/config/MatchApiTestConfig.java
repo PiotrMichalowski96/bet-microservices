@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.validation.Validator;
 
 @TestConfiguration
 @Import({SecurityConfig.class,
@@ -28,5 +29,11 @@ public class MatchApiTestConfig {
   @Primary
   MatchProducer matchProducer() {
     return mock(MatchProducer.class);
+  }
+
+  @Bean
+  @Primary
+  Validator validator() {
+    return mock(Validator.class);
   }
 }

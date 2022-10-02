@@ -6,6 +6,7 @@ import static com.piter.bet.event.aggregator.streams.SerdeUtils.MATCH_JSON_SERDE
 import com.piter.bet.event.aggregator.domain.Bet;
 import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.service.BetService;
+import com.piter.bet.event.aggregator.util.BetIdGenerator;
 import com.piter.bet.event.aggregator.validation.BetValidator;
 import java.time.Duration;
 import java.util.Optional;
@@ -35,21 +36,21 @@ public class BetTopologyConfig {
   }
 
   @Bean
-  public BiFunction<KStream<String, Bet>, KStream<String, Match>, KStream<String, Bet>> bets() {
+  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> bets() {
     return (bets, matches) -> bets
-        .peek((k, bet) -> logger.info("Received bet: {}", bet))
+        .peek((k, bet) -> logger.debug("Key: {}, Received bet: {}", k, bet))
         .filter((key, bet) -> betValidator.validate(bet))
-        .peek((k, bet) -> logger.info("Filtered bet: {}", bet))
-        .join(matches,
+        .peek((k, bet) -> logger.debug("Key: {}, Filtered bet: {}", k, bet))
+        .join(matches.peek((k, match) -> logger.debug("Key: {}, Received match: {}", k, match)),
             this::joinByMatchId,
             JoinWindows.ofTimeDifferenceWithNoGrace(windowJoiningTime),
-            StreamJoined.with(Serdes.String(), BET_JSON_SERDE, MATCH_JSON_SERDE))
-        .peek((k, bet) -> logger.info("Joined bet: {}", bet))
-        .filterNot((k, v) -> v == null)
+            StreamJoined.with(Serdes.Long(), BET_JSON_SERDE, MATCH_JSON_SERDE))
+        .peek((k, bet) -> logger.debug("Key: {}, Joined bet: {}", k, bet))
+        .filter((k, v) -> v != null)
+        .mapValues(this::mapToBetWithId)
         .mapValues(this::fetchBetResult)
-        .peek((k, bet) -> logger.info("Fetched bet: {}", bet));
+        .peek((k, bet) -> logger.debug("Key: {}, Fetched bet: {}", k, bet));
   }
-
 
   private Bet joinByMatchId(Bet bet, Match match) {
     Match betMatch = bet.getMatch();
@@ -67,6 +68,18 @@ public class BetTopologyConfig {
         .id(bet.getId())
         .matchPredictedResult(bet.getMatchPredictedResult())
         .match(match)
+        .user(bet.getUser())
+        .betResult(bet.getBetResult())
+        .build();
+  }
+
+  private Bet mapToBetWithId(Bet bet) {
+    BetIdGenerator betIdGenerator = new BetIdGenerator(bet);
+    Long id = betIdGenerator.generateId();
+    return Bet.builder()
+        .id(id)
+        .matchPredictedResult(bet.getMatchPredictedResult())
+        .match(bet.getMatch())
         .user(bet.getUser())
         .betResult(bet.getBetResult())
         .build();

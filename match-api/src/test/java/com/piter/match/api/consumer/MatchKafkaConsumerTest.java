@@ -31,6 +31,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class MatchKafkaConsumerTest {
 
+  private static final int TIMEOUT_IN_SECONDS = 20;
+  private static final int POLL_INTERVAL_IN_SECONDS = 2;
+
   @Autowired
   private MatchKafkaConsumer matchKafkaConsumer;
 
@@ -62,8 +65,8 @@ class MatchKafkaConsumerTest {
 
   private void assertAsync(ThrowingRunnable assertion) {
     Awaitility.await()
-        .atMost(20, SECONDS)
-        .pollInterval(2, SECONDS)
+        .atMost(TIMEOUT_IN_SECONDS, SECONDS)
+        .pollInterval(POLL_INTERVAL_IN_SECONDS, SECONDS)
         .untilAsserted(assertion);
   }
 
