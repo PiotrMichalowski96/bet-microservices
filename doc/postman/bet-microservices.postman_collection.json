@@ -1,0 +1,308 @@
+{
+	"info": {
+		"_postman_id": "b9ce8734-5e60-454d-b008-c5b47c7da4f3",
+		"name": "bet-microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Match",
+			"item": [
+				{
+					"name": "Get all matches order by startTime",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/match?order=match-time",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "match-time"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all matches order by round",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/match?order=round-time",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "round-time"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all matches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/match",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save match without result",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 713,\r\n  \"homeTeam\": \"Liverpool\",\r\n  \"awayTeam\": \"FC Barcelona\",\r\n  \"startTime\": \"2022-12-24T22:00:00\",\r\n  \"round\": {\r\n    \"roundName\": \"LaLiga round 2\",\r\n    \"startTime\": \"2022-12-24T22:00:00\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9090/match",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save match with result",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 713,\r\n  \"homeTeam\": \"Liverpool\",\r\n  \"awayTeam\": \"FC Barcelona\",\r\n  \"startTime\": \"2022-12-24T22:00:00\",\r\n  \"result\": {\r\n    \"homeTeamGoals\": 1,\r\n    \"awayTeamGoals\": 4\r\n  },\r\n  \"round\": {\r\n    \"roundName\": \"LaLiga round 2\",\r\n    \"startTime\": \"2022-12-24T22:00:00\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9090/match",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update match",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 99,\r\n    \"homeTeam\": \"Real Sociedad\",\r\n    \"awayTeam\": \"FC Barcelona\",\r\n    \"startTime\": \"2022-08-21T22:00:00\",\r\n    \"result\": {\r\n        \"homeTeamGoals\": 1,\r\n        \"awayTeamGoals\": 4\r\n    },\r\n    \"round\": {\r\n        \"roundName\": \"LaLiga round 2\",\r\n        \"startTime\": \"2022-02-19T21:00:00\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9090/match",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete match",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/match/99",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match",
+								"99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get match by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/match/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"match",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bet",
+			"item": [
+				{
+					"name": "Get all bets",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:9090/bets",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"bets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save bet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 2,\r\n  \"matchPredictedResult\": {\r\n    \"homeTeamGoals\": 1,\r\n    \"awayTeamGoals\": 2\r\n  },\r\n  \"match\": {\r\n    \"id\": 713,\r\n    \"homeTeam\": \"Liverpool\",\r\n    \"awayTeam\": \"FC Barcelona\",\r\n    \"startTime\": \"2022-12-24T22:00:00\",\r\n    \"round\": {\r\n      \"roundName\": \"LaLiga round 2\",\r\n      \"startTime\": \"2022-12-24T22:00:00\"\r\n    }\r\n  },\r\n  \"user\": {\r\n    \"firstName\": \"Seba\",\r\n    \"lastName\": \"W\",\r\n    \"nickname\": \"wierzba\"\r\n  },\r\n  \"betResult\": {\r\n    \"status\": \"UNRESOLVED\",\r\n    \"points\": 0\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9090/bets",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"bets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete bet",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{xsrf-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"matchId\": 25,\n    \"homeTeamGoalBet\": 0,\n    \"awayTeamGoalBet\": 2\n}"
+						},
+						"url": {
+							"raw": "localhost:9090/bets/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"bets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get bet by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/bets/-9189574484313950336",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"bets",
+								"-9189574484313950336"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
