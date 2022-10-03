@@ -1,9 +1,12 @@
 package com.piter.bet.api.web;
 
 import com.piter.bet.api.domain.Bet;
+import com.piter.bet.api.domain.User;
 import com.piter.bet.api.service.BetService;
+import com.piter.bet.api.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -26,25 +29,40 @@ public class BetController {
   private final Validator validator;
 
   @GetMapping("/bets")
-  public Flux<Bet> findAll() {
-    return betService.findAll();
+  public Flux<Bet> findAll(BearerTokenAuthentication token) {
+    User user = TokenUtil.getUserFrom(token);
+    return betService.findAll(user);
   }
 
   @GetMapping("/bets/{id}")
-  public Mono<Bet> findById(@PathVariable("id") Long id) {
-    return betService.findById(id);
+  public Mono<Bet> findById(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+    User user = TokenUtil.getUserFrom(token);
+    return betService.findById(id, user);
   }
 
   @PostMapping("/bets")
-  public Mono<Bet> save(@RequestBody Bet bet) {
+  public Mono<Bet> save(@RequestBody Bet bet, BearerTokenAuthentication token) {
+    User user = TokenUtil.getUserFrom(token);
     return Mono.just(bet)
+        .map(b -> mapWithUser(b, user))
         .doOnNext(this::validate)
         .flatMap(betService::saveBet);
   }
 
   @DeleteMapping("/bets/{id}")
-  public Mono<Void> delete(@PathVariable("id") Long id) {
-    return betService.deleteBet(id);
+  public Mono<Void> delete(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+    User user = TokenUtil.getUserFrom(token);
+    return betService.deleteBet(id, user);
+  }
+
+  private Bet mapWithUser(Bet bet, User user) {
+    return Bet.builder()
+        .id(bet.getId())
+        .matchPredictedResult(bet.getMatchPredictedResult())
+        .match(bet.getMatch())
+        .user(user)
+        .betResult(bet.getBetResult())
+        .build();
   }
 
   private void validate(Bet bet) {

@@ -3,26 +3,34 @@ package com.piter.bet.api.web;
 import static com.piter.bet.api.util.BetTestData.createBetList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 import com.piter.bet.api.config.BetApiTestConfig;
+import com.piter.bet.api.config.SecurityTestConfig;
 import com.piter.bet.api.domain.Bet;
+import com.piter.bet.api.domain.User;
 import com.piter.bet.api.repository.BetRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClientConfigurer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @WebFluxTest(controllers = BetController.class)
-@Import(BetApiTestConfig.class)
+@Import({BetApiTestConfig.class, SecurityTestConfig.class})
 class BetControllerTest {
 
   private static final String BET_USER = "BET_USER";
@@ -65,30 +73,60 @@ class BetControllerTest {
 
   @Test
   @WithMockUser
-  void shouldGetAllBets() {
+  void shouldGetAllVisibleBets() {
+    var user = BETS.get(0).getUser();
     webClient
-        .mutateWith(mockUser().authorities(BET_USER))
+        .mutateWith(mockBearerToken(user))
         .get()
         .uri("/bets")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Bet.class)
-        .value(bets -> assertThat(bets).hasSameElementsAs(BETS));
+        .value(bets -> assertThat(bets).hasSize(2));
+  }
+
+  private WebTestClientConfigurer mockBearerToken(User user) {
+    Consumer<Map<String, Object>> attributesConsumer = attributes -> {
+      attributes.put("name", createFullNameFrom(user));
+      attributes.put("username", user.getNickname());
+    };
+    return mockOpaqueToken()
+        .authorities(new SimpleGrantedAuthority(BET_USER))
+        .attributes(attributesConsumer);
+  }
+
+  private String createFullNameFrom(User user) {
+    return user.getFirstName() + StringUtils.SPACE + user.getLastName();
   }
 
   @Test
   @WithMockUser
   void shouldGetBetById() {
     var id = 2L;
+    var userOwningBet = BETS.get(1).getUser();
     mockFindById(id);
     webClient
-        .mutateWith(mockUser().authorities(BET_USER))
+        .mutateWith(mockBearerToken(userOwningBet))
         .get()
         .uri("/bets/" + id)
         .exchange()
         .expectStatus().isOk()
         .expectBody(Bet.class)
         .value(bet -> assertThat(bet.getId()).isEqualTo(id));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldNotGetBetByIdBecauseUserIsNotBetOwner() {
+    var id = 2L;
+    var userNotOwningBet = BETS.get(0).getUser();
+    mockFindById(id);
+    webClient
+        .mutateWith(mockBearerToken(userNotOwningBet))
+        .get()
+        .uri("/bets/" + id)
+        .exchange()
+        .expectStatus().isNotFound();
   }
 
   private void mockFindById(Long id) {
