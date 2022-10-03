@@ -3,6 +3,7 @@ package com.piter.bet.api.web;
 import static com.piter.bet.api.util.BetTestData.createBetList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 import com.piter.bet.api.config.BetApiTestConfig;
 import com.piter.bet.api.domain.Bet;
@@ -15,14 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(controllers = BetRouterConfig.class)
+@WebFluxTest(controllers = BetController.class)
 @Import(BetApiTestConfig.class)
-class BetRouterTest {
+class BetControllerTest {
 
+  private static final String BET_USER = "BET_USER";
   private static final List<Bet> BETS = createBetList();
 
   @MockBean
@@ -41,8 +44,31 @@ class BetRouterTest {
   }
 
   @Test
+  void shouldReturnUnauthorized() {
+    webClient
+        .get()
+        .uri("/bets")
+        .exchange()
+        .expectStatus().isUnauthorized();
+  }
+
+  @Test
+  @WithMockUser
+  void shouldReturnForbidden() {
+    webClient
+        .mutateWith(mockUser())
+        .get()
+        .uri("/bets")
+        .exchange()
+        .expectStatus().isForbidden();
+  }
+
+  @Test
+  @WithMockUser
   void shouldGetAllBets() {
-    webClient.get()
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
         .uri("/bets")
         .exchange()
         .expectStatus().isOk()
@@ -51,10 +77,13 @@ class BetRouterTest {
   }
 
   @Test
+  @WithMockUser
   void shouldGetBetById() {
     var id = 2L;
     mockFindById(id);
-    webClient.get()
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
         .uri("/bets/" + id)
         .exchange()
         .expectStatus().isOk()

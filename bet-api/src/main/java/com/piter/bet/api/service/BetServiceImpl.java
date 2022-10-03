@@ -23,7 +23,8 @@ public class BetServiceImpl implements BetService {
 
   @Override
   public Mono<Bet> findById(Long id) {
-    return betRepository.findById(id);
+    return betRepository.findById(id)
+        .switchIfEmpty(Mono.error(new BetNotFoundException(id)));
   }
 
   @Override
