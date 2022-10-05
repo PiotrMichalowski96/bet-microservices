@@ -13,7 +13,7 @@ public class LoadBalancedRoutesConfig {
   @Bean
   public RouteLocator loadBalancedRoutes(RouteLocatorBuilder builder){
     return builder.routes()
-        .route(r -> r.path("/match", "/match/*")
+        .route(r -> r.path("/matches", "/matches/*")
             .uri("lb://match-api"))
         .route(r -> r.path("/bets", "/bets/*")
             .uri("lb://bet-api"))

@@ -5,7 +5,6 @@ import com.piter.bet.api.domain.User;
 import com.piter.bet.api.service.BetService;
 import com.piter.bet.api.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -20,7 +19,6 @@ import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class BetController {
@@ -29,19 +27,19 @@ public class BetController {
   private final Validator validator;
 
   @GetMapping("/bets")
-  public Flux<Bet> findAll(BearerTokenAuthentication token) {
+  Flux<Bet> findAll(BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return betService.findAll(user);
   }
 
   @GetMapping("/bets/{id}")
-  public Mono<Bet> findById(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+  Mono<Bet> findById(@PathVariable("id") Long id, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return betService.findById(id, user);
   }
 
   @PostMapping("/bets")
-  public Mono<Bet> save(@RequestBody Bet bet, BearerTokenAuthentication token) {
+  Mono<Bet> save(@RequestBody Bet bet, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return Mono.just(bet)
         .map(b -> mapWithUser(b, user))
@@ -50,7 +48,7 @@ public class BetController {
   }
 
   @DeleteMapping("/bets/{id}")
-  public Mono<Void> delete(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+  Mono<Void> delete(@PathVariable("id") Long id, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return betService.deleteBet(id, user);
   }
