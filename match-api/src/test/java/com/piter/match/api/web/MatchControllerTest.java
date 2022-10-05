@@ -3,8 +3,10 @@ package com.piter.match.api.web;
 import static com.piter.match.api.util.MatchTestData.createMatchList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 import com.piter.match.api.config.MatchApiTestConfig;
+import com.piter.match.api.config.SecurityTestConfig;
 import com.piter.match.api.domain.Match;
 import com.piter.match.api.repository.MatchRepository;
 import java.util.Comparator;
@@ -17,14 +19,16 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(controllers = MatchRouterConfig.class)
-@Import(MatchApiTestConfig.class)
-class MatchRouterTest {
+@WebFluxTest(controllers = MatchController.class)
+@Import({MatchApiTestConfig.class, SecurityTestConfig.class})
+class MatchControllerTest {
 
+  private static final String BET_USER = "BET_USER";
   private static final List<Match> MATCHES = createMatchList();
 
   @MockBean
@@ -66,9 +70,32 @@ class MatchRouterTest {
   }
 
   @Test
+  void shouldReturnUnauthorized() {
+    webClient
+        .get()
+        .uri("/matches")
+        .exchange()
+        .expectStatus().isUnauthorized();
+  }
+
+  @Test
+  @WithMockUser
+  void shouldReturnForbidden() {
+    webClient
+        .mutateWith(mockUser())
+        .get()
+        .uri("/matches")
+        .exchange()
+        .expectStatus().isForbidden();
+  }
+
+  @Test
+  @WithMockUser
   void shouldGetMatchesWithoutOrder() {
-    webClient.get()
-        .uri("/match")
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
+        .uri("/matches")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -81,8 +108,10 @@ class MatchRouterTest {
 
   @Test
   void shouldGetMatchesOrderedByMatchTime() {
-    webClient.get()
-        .uri("/match?order=match-time")
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
+        .uri("/matches?order=match-time")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -95,8 +124,10 @@ class MatchRouterTest {
 
   @Test
   void shouldGetMatchesOrderedByRoundTime() {
-    webClient.get()
-        .uri("/match?order=round-time")
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
+        .uri("/matches?order=round-time")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -111,8 +142,10 @@ class MatchRouterTest {
   void shouldGetMatchById() {
     var id = 3L;
     mockFindById(id);
-    webClient.get()
-        .uri("/match/" + id)
+    webClient
+        .mutateWith(mockUser().authorities(BET_USER))
+        .get()
+        .uri("/matches/" + id)
         .exchange()
         .expectStatus().isOk()
         .expectBody(Match.class)

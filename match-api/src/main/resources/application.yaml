@@ -1,3 +1,4 @@
+server.port: 8082
 spring:
   application.name: match-api
   data:
@@ -9,7 +10,7 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-security.mode: false
+security.mode: true
 
 ########################
 # Cloud stream
@@ -58,6 +59,14 @@ info:
     name: Match API
     description: Match API microservice for betting
     author.name: Piter
+
+########################
+# Security
+########################
+spring.security.oauth2.resourceserver.opaqueToken:
+  introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
+  client-id: bet-login-app
+  client-secret: xXevjTY8vZD242FqapM4MmwkA7xHSCRj
 
 ########################
 # Swagger
