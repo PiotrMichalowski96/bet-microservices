@@ -2,6 +2,7 @@ package com.piter.match.management.rest;
 
 import com.piter.match.management.domain.Match;
 import com.piter.match.management.domain.MatchResult;
+import com.piter.match.management.security.OAuth2AccessTokenRetrievalException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +25,10 @@ public class HandledCallerService {
   private <T> Optional<T> callHandled(Supplier<T> call) {
     try {
       return Optional.of(call.get());
+    } catch (OAuth2AccessTokenRetrievalException e) {
+      throw e;
     } catch (Exception e) {
-      logger.error("Error during call: {}", e);
+      logger.error("Error during call: {}", e.getMessage());
       return Optional.empty();
     }
   }
@@ -55,8 +58,10 @@ public class HandledCallerService {
   private <T> List<T> callListHandled(Supplier<List<T>> call) {
     try {
       return call.get();
+    } catch (OAuth2AccessTokenRetrievalException e) {
+      throw e;
     } catch (Exception e) {
-      logger.error("Error during call: {}", e);
+      logger.error("Error during call: {}", e.getMessage());
       return Collections.emptyList();
     }
   }
