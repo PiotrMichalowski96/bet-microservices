@@ -13,8 +13,8 @@ import org.springframework.http.MediaType;
 @AllArgsConstructor
 public class MatchApiMock {
 
-  private static final String GET_MATCH_BY_ID = "/match/1";
-  private static final String GET_MATCHES = "/match?order=match-time";
+  private static final String GET_MATCH_BY_ID = "/matches/1";
+  private static final String GET_MATCHES = "/matches?order=match-time";
 
   private final WireMockServer mockServer;
   private String matchResponse;
