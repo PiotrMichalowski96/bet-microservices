@@ -12,15 +12,20 @@
 					"name": "Get all matches order by startTime",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/match?order=match-time",
+							"raw": "{{gw-url}}/matches?order=match-time",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							],
 							"query": [
 								{
@@ -36,15 +41,20 @@
 					"name": "Get all matches order by round",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/match?order=round-time",
+							"raw": "{{gw-url}}/matches?order=round-time",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							],
 							"query": [
 								{
@@ -60,15 +70,20 @@
 					"name": "Get all matches",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/match",
+							"raw": "{{gw-url}}/matches",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							]
 						}
 					},
@@ -78,7 +93,13 @@
 					"name": "Save match without result",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"id\": 713,\r\n  \"homeTeam\": \"Liverpool\",\r\n  \"awayTeam\": \"FC Barcelona\",\r\n  \"startTime\": \"2022-12-24T22:00:00\",\r\n  \"round\": {\r\n    \"roundName\": \"LaLiga round 2\",\r\n    \"startTime\": \"2022-12-24T22:00:00\"\r\n  }\r\n}",
@@ -89,13 +110,12 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:9090/match",
+							"raw": "{{gw-url}}/matches",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							]
 						}
 					},
@@ -105,7 +125,13 @@
 					"name": "Save match with result",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"id\": 713,\r\n  \"homeTeam\": \"Liverpool\",\r\n  \"awayTeam\": \"FC Barcelona\",\r\n  \"startTime\": \"2022-12-24T22:00:00\",\r\n  \"result\": {\r\n    \"homeTeamGoals\": 1,\r\n    \"awayTeamGoals\": 4\r\n  },\r\n  \"round\": {\r\n    \"roundName\": \"LaLiga round 2\",\r\n    \"startTime\": \"2022-12-24T22:00:00\"\r\n  }\r\n}",
@@ -116,13 +142,12 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:9090/match",
+							"raw": "{{gw-url}}/matches",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							]
 						}
 					},
@@ -132,7 +157,13 @@
 					"name": "Update match",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"id\": 99,\r\n    \"homeTeam\": \"Real Sociedad\",\r\n    \"awayTeam\": \"FC Barcelona\",\r\n    \"startTime\": \"2022-08-21T22:00:00\",\r\n    \"result\": {\r\n        \"homeTeamGoals\": 1,\r\n        \"awayTeamGoals\": 4\r\n    },\r\n    \"round\": {\r\n        \"roundName\": \"LaLiga round 2\",\r\n        \"startTime\": \"2022-02-19T21:00:00\"\r\n    }\r\n}",
@@ -143,13 +174,12 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:9090/match",
+							"raw": "{{gw-url}}/matches",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match"
+								"matches"
 							]
 						}
 					},
@@ -159,15 +189,20 @@
 					"name": "Delete match",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/match/99",
+							"raw": "{{gw-url}}/matches/99",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match",
+								"matches",
 								"99"
 							]
 						}
@@ -178,15 +213,20 @@
 					"name": "Get match by id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/match/1",
+							"raw": "{{gw-url}}/matches/1",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
-								"match",
+								"matches",
 								"1"
 							]
 						}
@@ -205,17 +245,22 @@
 					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:9090/bets",
+							"raw": "{{gw-url}}/bets",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
 								"bets"
 							]
@@ -227,10 +272,16 @@
 					"name": "Save bet",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 2,\r\n  \"matchPredictedResult\": {\r\n    \"homeTeamGoals\": 1,\r\n    \"awayTeamGoals\": 2\r\n  },\r\n  \"match\": {\r\n    \"id\": 713,\r\n    \"homeTeam\": \"Liverpool\",\r\n    \"awayTeam\": \"FC Barcelona\",\r\n    \"startTime\": \"2022-12-24T22:00:00\",\r\n    \"round\": {\r\n      \"roundName\": \"LaLiga round 2\",\r\n      \"startTime\": \"2022-12-24T22:00:00\"\r\n    }\r\n  },\r\n  \"user\": {\r\n    \"firstName\": \"Seba\",\r\n    \"lastName\": \"W\",\r\n    \"nickname\": \"wierzba\"\r\n  },\r\n  \"betResult\": {\r\n    \"status\": \"UNRESOLVED\",\r\n    \"points\": 0\r\n  }\r\n}",
+							"raw": "{\r\n  \"id\": 2,\r\n  \"matchPredictedResult\": {\r\n    \"homeTeamGoals\": 2,\r\n    \"awayTeamGoals\": 2\r\n  },\r\n  \"match\": {\r\n    \"id\": 713,\r\n    \"homeTeam\": \"Liverpool\",\r\n    \"awayTeam\": \"FC Barcelona\",\r\n    \"startTime\": \"2022-12-24T22:00:00\",\r\n    \"round\": {\r\n      \"roundName\": \"LaLiga round 2\",\r\n      \"startTime\": \"2022-12-24T22:00:00\"\r\n    }\r\n  },\r\n  \"user\": {\r\n    \"firstName\": \"Seba\",\r\n    \"lastName\": \"W\",\r\n    \"nickname\": \"wierzba\"\r\n  },\r\n  \"betResult\": {\r\n    \"status\": \"UNRESOLVED\",\r\n    \"points\": 0\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,11 +289,10 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:9090/bets",
+							"raw": "{{gw-url}}/bets",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
 								"bets"
 							]
@@ -263,6 +313,11 @@
 								"key": "X-XSRF-TOKEN",
 								"value": "{{xsrf-token}}",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -270,14 +325,13 @@
 							"raw": "{\n    \"matchId\": 25,\n    \"homeTeamGoalBet\": 0,\n    \"awayTeamGoalBet\": 2\n}"
 						},
 						"url": {
-							"raw": "localhost:9090/bets/1",
+							"raw": "{{gw-url}}/bets/7001581537355382241",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
 								"bets",
-								"1"
+								"7001581537355382241"
 							]
 						}
 					},
@@ -287,22 +341,95 @@
 					"name": "Get bet by id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:9090/bets/-9189574484313950336",
+							"raw": "{{gw-url}}/bets/7001581537355382241",
 							"host": [
-								"localhost"
+								"{{gw-url}}"
 							],
-							"port": "9090",
 							"path": [
 								"bets",
-								"-9189574484313950336"
+								"7001581537355382241"
 							]
 						}
 					},
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "login Keycloak",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"var accessToken = data.access_token;\r",
+							"postman.setGlobalVariable(\"access-token\", accessToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{client-id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client-secret}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "piter",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "piter",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"realms",
+						"BetSpringBootKeycloak",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
