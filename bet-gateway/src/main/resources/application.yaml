@@ -1,4 +1,12 @@
 spring.application.name: bet-gateway
 server.port: 9090
 
+########################
+# Security
+########################
+spring.security.oauth2.resourceserver.opaquetoken:
+  introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
+  client-id: bet-login-app
+  client-secret: gxFjfVmqSQSLLvufqVpniY0qvfqpEnWt
+
 logging.level.org.springframework.cloud.gateway: debug
