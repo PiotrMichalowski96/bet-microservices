@@ -1,4 +1,4 @@
-package com.piter.match.api.domain;
+package com.piter.api.commons.domain;
 
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;

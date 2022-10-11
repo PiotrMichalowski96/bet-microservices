@@ -1,4 +1,4 @@
-package com.piter.match.api.config;
+package com.piter.api.commons.security;
 
 import java.util.Collection;
 import java.util.Collections;

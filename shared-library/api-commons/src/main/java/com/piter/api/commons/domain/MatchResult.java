@@ -1,4 +1,4 @@
-package com.piter.match.api.domain;
+package com.piter.api.commons.domain;
 
 import javax.validation.constraints.NotNull;
 import lombok.Value;
