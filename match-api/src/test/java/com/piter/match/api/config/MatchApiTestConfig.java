@@ -3,7 +3,7 @@ package com.piter.match.api.config;
 import static org.mockito.Mockito.mock;
 
 import com.piter.match.api.consumer.MatchKafkaConsumer;
-import com.piter.match.api.producer.MatchProducer;
+import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.service.MatchService;
 import com.piter.match.api.service.SequenceGeneratorService;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -22,8 +22,8 @@ public class MatchApiTestConfig {
   //Mock because we don't use it in tests - just avoid missing bean errors
   @Bean
   @Primary
-  MatchProducer matchProducer() {
-    return mock(MatchProducer.class);
+  MatchKafkaProducer matchProducer() {
+    return mock(MatchKafkaProducer.class);
   }
 
   @Bean

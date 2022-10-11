@@ -9,7 +9,7 @@ import static com.piter.match.api.it.util.JsonUtil.readJsonFile;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.match.api.domain.Match;
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.it.docker.AbstractDockerIntegrationTest;
 import com.piter.match.api.repository.MatchRepository;
 import io.cucumber.java.Before;

@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.config.SecurityTestConfig;
-import com.piter.match.api.domain.Match;
 import com.piter.match.api.repository.MatchRepository;
 import java.util.Comparator;
 import java.util.List;

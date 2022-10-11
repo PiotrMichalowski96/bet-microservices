@@ -1,6 +1,6 @@
 package com.piter.match.api.consumer;
 
-import com.piter.match.api.domain.Match;
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.exception.MatchKafkaException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;

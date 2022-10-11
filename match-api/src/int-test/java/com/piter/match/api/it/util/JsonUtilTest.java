@@ -2,7 +2,7 @@ package com.piter.match.api.it.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.match.api.domain.Match;
+import com.piter.api.commons.domain.Match;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
