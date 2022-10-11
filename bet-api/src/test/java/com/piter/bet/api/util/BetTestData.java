@@ -1,12 +1,12 @@
 package com.piter.bet.api.util;
 
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.BetResult;
-import com.piter.bet.api.domain.BetResult.Status;
-import com.piter.bet.api.domain.Match;
-import com.piter.bet.api.domain.MatchResult;
-import com.piter.bet.api.domain.MatchRound;
-import com.piter.bet.api.domain.User;
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.BetResult;
+import com.piter.api.commons.domain.BetResult.Status;
+import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
+import com.piter.api.commons.domain.MatchRound;
+import com.piter.api.commons.domain.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.experimental.UtilityClass;

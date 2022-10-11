@@ -3,9 +3,9 @@ package com.piter.bet.api.service;
 import static com.piter.bet.api.util.BetTestData.createBetList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.User;
 import com.piter.bet.api.config.BetApiTestConfig;
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.User;
 import com.piter.bet.api.exception.BetNotFoundException;
 import com.piter.bet.api.repository.BetRepository;
 import java.util.List;

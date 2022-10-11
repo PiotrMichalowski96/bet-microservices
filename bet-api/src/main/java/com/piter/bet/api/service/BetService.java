@@ -1,8 +1,8 @@
 package com.piter.bet.api.service;
 
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.Match;
-import com.piter.bet.api.domain.User;
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.User;
 import com.piter.bet.api.exception.BetNotFoundException;
 import com.piter.bet.api.producer.BetKafkaProducer;
 import com.piter.bet.api.repository.BetRepository;

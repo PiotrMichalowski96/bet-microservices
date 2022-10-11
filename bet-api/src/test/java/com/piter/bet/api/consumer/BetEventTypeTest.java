@@ -2,7 +2,7 @@ package com.piter.bet.api.consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.bet.api.domain.Bet;
+import com.piter.api.commons.domain.Bet;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

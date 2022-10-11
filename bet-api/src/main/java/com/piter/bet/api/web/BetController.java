@@ -1,7 +1,7 @@
 package com.piter.bet.api.web;
 
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.User;
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.User;
 import com.piter.bet.api.service.BetService;
 import com.piter.bet.api.util.TokenUtil;
 import lombok.RequiredArgsConstructor;

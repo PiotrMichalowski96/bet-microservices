@@ -6,10 +6,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.User;
 import com.piter.bet.api.config.BetApiTestConfig;
 import com.piter.bet.api.config.SecurityTestConfig;
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.User;
 import com.piter.bet.api.repository.BetRepository;
 import java.util.List;
 import java.util.Map;
