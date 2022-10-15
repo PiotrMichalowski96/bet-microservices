@@ -1,4 +1,4 @@
-package com.piter.bet.api.domain;
+package com.piter.api.commons.domain;
 
 import javax.validation.constraints.NotBlank;
 import lombok.Value;

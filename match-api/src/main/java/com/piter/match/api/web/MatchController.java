@@ -1,6 +1,6 @@
 package com.piter.match.api.web;
 
-import com.piter.match.api.domain.Match;
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,4 +1,4 @@
-package com.piter.match.api.domain;
+package com.piter.api.commons.domain;
 
 import lombok.Value;
 import org.springframework.data.annotation.Id;

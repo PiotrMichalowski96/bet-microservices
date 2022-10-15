@@ -1,8 +1,8 @@
 package com.piter.match.api.util;
 
-import com.piter.match.api.domain.Match;
-import com.piter.match.api.domain.MatchResult;
-import com.piter.match.api.domain.MatchRound;
+import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
+import com.piter.api.commons.domain.MatchRound;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.experimental.UtilityClass;

@@ -1,47 +1,29 @@
 package com.piter.match.api.producer;
 
-import com.piter.match.api.domain.Match;
-import lombok.RequiredArgsConstructor;
+import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.producer.KafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.KafkaNull;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class MatchKafkaProducer implements MatchProducer {
+public class MatchKafkaProducer extends KafkaMessageProducer {
 
-  @Value("${match.producer.binding}")
-  private final String matchBinding;
-  private final StreamBridge streamBridge;
+  public MatchKafkaProducer(@Value("${match.producer.binding}") String producerBinding, StreamBridge streamBridge) {
+    super(producerBinding, streamBridge);
+  }
 
-  @Override
   public Match sendSaveMatchEvent(Match match) {
-    Long key = match.getId();
-    Message<Match> matchMessage = MessageBuilder
-        .withPayload(match)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, key)
-        .build();
-
-    streamBridge.send(matchBinding, matchMessage);
+    sendEvent(match::getId, match);
     logger.debug("Sent match to save: {}", match);
     return match;
   }
 
-  @Override
   public void sendDeleteMatchEvent(Match match) {
-    Long key = match.getId();
-    Message<KafkaNull> tombstoneRecord = MessageBuilder
-        .withPayload(KafkaNull.INSTANCE)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, key)
-        .build();
-
-    streamBridge.send(matchBinding, tombstoneRecord);
+    sendEvent(match::getId, KafkaNull.INSTANCE);
     logger.debug("Sent match to delete: {}", match);
   }
 }

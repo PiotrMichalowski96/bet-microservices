@@ -1,6 +1,6 @@
 package com.piter.bet.api.exception;
 
-import com.piter.bet.api.domain.Bet;
+import com.piter.api.commons.domain.Bet;
 
 public class MissingFieldException extends RuntimeException {
 

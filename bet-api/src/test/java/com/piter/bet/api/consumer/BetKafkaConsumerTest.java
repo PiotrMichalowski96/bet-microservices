@@ -3,9 +3,9 @@ package com.piter.bet.api.consumer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.MatchResult;
 import com.piter.bet.api.config.BetApiTestConfig;
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.MatchResult;
 import com.piter.bet.api.repository.BetRepository;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ThrowingRunnable;

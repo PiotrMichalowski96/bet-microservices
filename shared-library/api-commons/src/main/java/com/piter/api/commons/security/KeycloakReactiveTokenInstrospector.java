@@ -1,4 +1,4 @@
-package com.piter.bet.api.config;
+package com.piter.api.commons.security;
 
 import java.util.Collection;
 import java.util.Collections;

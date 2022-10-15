@@ -1,8 +1,8 @@
 package com.piter.match.api.service;
 
-import com.piter.match.api.domain.Match;
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.exception.MatchNotFoundException;
-import com.piter.match.api.producer.MatchProducer;
+import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 public class MatchService {
 
   private final MatchRepository matchRepository;
-  private final MatchProducer matchProducer;
+  private final MatchKafkaProducer matchProducer;
 
   public Flux<Match> findAll() {
     return matchRepository.findAll();

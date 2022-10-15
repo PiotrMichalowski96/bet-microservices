@@ -1,38 +1,29 @@
 package com.piter.bet.api.producer;
 
-import com.piter.bet.api.domain.Bet;
-import com.piter.bet.api.domain.Match;
+import com.piter.api.commons.domain.Bet;
+import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.producer.KafkaMessageProducer;
 import com.piter.bet.api.exception.MissingFieldException;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class BetKafkaProducer {
+public class BetKafkaProducer extends KafkaMessageProducer {
 
-  @Value("${bet.producer.binding}")
-  private final String betBinding;
-  private final StreamBridge streamBridge;
+  public BetKafkaProducer(@Value("${bet.producer.binding}") String betBinding, StreamBridge streamBridge) {
+    super(betBinding, streamBridge);
+  }
 
   public Bet sendSaveBetEvent(Bet bet) {
-    Long key = Optional.ofNullable(bet.getMatch())
+    Supplier<Long> keySupplier = () -> Optional.ofNullable(bet.getMatch())
         .map(Match::getId)
         .orElseThrow(() -> new MissingFieldException("Match ID is missing", bet));
-
-    Message<Bet> betMessage = MessageBuilder
-        .withPayload(bet)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, key)
-        .build();
-
-    streamBridge.send(betBinding, betMessage);
+    sendEvent(keySupplier, bet);
     logger.debug("Sent bet to save: {}", bet);
     return bet;
   }

@@ -21,7 +21,6 @@
   <properties>
     <java.version>17</java.version>
     <project.lombok.version>1.18.24</project.lombok.version>
-    <spring-cloud.version>2021.0.3</spring-cloud.version>
     <spring-doc.version>1.6.11</spring-doc.version>
     <testcontainers.version>1.17.3</testcontainers.version>
     <cucumber.version>7.6.0</cucumber.version>
@@ -29,28 +28,8 @@
     <awaitility.version>4.2.0</awaitility.version>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Spring Boot -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-cache</artifactId>
@@ -60,25 +39,11 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- OAuth2 -->
+    <!-- Bet microservices commons -->
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.nimbusds</groupId>
-      <artifactId>oauth2-oidc-sdk</artifactId>
-      <version>9.43.1</version>
-    </dependency>
-
-    <!-- Spring Cloud -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-stream-kafka</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+      <groupId>com.piter</groupId>
+      <artifactId>api-commons</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <!-- Other -->

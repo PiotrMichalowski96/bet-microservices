@@ -1,4 +1,4 @@
-package com.piter.bet.api.domain;
+package com.piter.api.commons.domain;
 
 import java.time.LocalDateTime;
 import javax.validation.Valid;

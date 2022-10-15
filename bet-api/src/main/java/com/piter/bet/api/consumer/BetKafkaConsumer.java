@@ -1,6 +1,6 @@
 package com.piter.bet.api.consumer;
 
-import com.piter.bet.api.domain.Bet;
+import com.piter.api.commons.domain.Bet;
 import com.piter.bet.api.exception.BetKafkaException;
 import com.piter.bet.api.repository.BetRepository;
 import java.util.Map;

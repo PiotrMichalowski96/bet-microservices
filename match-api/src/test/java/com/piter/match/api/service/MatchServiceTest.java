@@ -3,8 +3,8 @@ package com.piter.match.api.service;
 import static com.piter.match.api.util.MatchTestData.createMatchList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.piter.api.commons.domain.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
-import com.piter.match.api.domain.Match;
 import com.piter.match.api.repository.MatchRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
