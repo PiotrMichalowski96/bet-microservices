@@ -1,0 +1,20 @@
+<div class="slider">
+  <ng-container *ngFor="let item of items; let i = index">
+    <div class="slide" *ngIf="i == currentSlideIndex" @slideFade>
+      <div class="slide-bg">
+        <img class="slide-bg-image" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'" alt=""> <!-- TODO: image source -->
+      </div>
+      <div class="slide-pane">
+        <h2 class="name">{{item.homeTeam}} vs {{item.awayTeam}}</h2>
+        <div class="meta">
+          <div class="info">
+          <span class="match-info">
+            <span class="separated">{{item.round.roundName}}</span>
+            <span class="separated">{{item.startTime | date: 'dd.MM.yyyy hh:mm'}}</span>
+          </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
