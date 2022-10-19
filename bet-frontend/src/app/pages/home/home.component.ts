@@ -8,13 +8,14 @@ import {Match, MatchResult, MatchRound} from "../../model/match";
 })
 export class HomeComponent implements OnInit {
 
-  notFinishedMatches: Match[] = [];
+  upcomingMatches: Match[] = [];
+  finishedMatches: Match[] = [];
 
   constructor() { }
 
   ngOnInit(): void {
     //TODO: hardcoded matches
-    this.notFinishedMatches = [new class implements Match {
+    this.upcomingMatches = [new class implements Match {
       awayTeam: string = 'Arsenal';
       homeTeam: string = 'Leeds United';
       id: number = 1;
@@ -74,10 +75,7 @@ export class HomeComponent implements OnInit {
         awayTeam: string = 'Manchester United';
         homeTeam: string = 'Liverpool';
         id: number = 2;
-        result: MatchResult = new class implements MatchResult {
-          awayTeamGoals: number = 1;
-          homeTeamGoals: number = 1;
-        };
+        result = null;
         round: MatchRound = new class implements MatchRound {
           roundName: string = 'Final';
           startTime: Date = new Date();
@@ -97,8 +95,9 @@ export class HomeComponent implements OnInit {
           startTime: Date = new Date();
         }
         startTime: Date = new Date();
-      }
-      ];
+      }];
+
+    this.finishedMatches = this.upcomingMatches;
   }
 
 }

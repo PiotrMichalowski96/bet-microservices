@@ -3,7 +3,7 @@ export interface Match {
   homeTeam: string;
   awayTeam: string;
   startTime: Date;
-  result: MatchResult;
+  result: MatchResult | null;
   round: MatchRound;
 }
 

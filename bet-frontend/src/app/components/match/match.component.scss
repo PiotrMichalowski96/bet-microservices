@@ -9,10 +9,14 @@
   border: 1px solid $lightGrey;
 
   &-startTime {
+    position: absolute;
     display: flex;
     align-items: center;
-    margin: 0.5rem;
-    height: 20px;
+    top: 10px;
+    left: 10px;
+    background-color: $bgColorLight;
+    border-radius: 5px;
+    padding: 5px 10px;
   }
 
   &-image {
@@ -22,6 +26,17 @@
       height: 275px;
       object-fit: cover;
     }
+  }
+
+  &-result {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 120px;
+    left: 40%;
+    background-color: $bgColorLight;
+    border-radius: 5px;
+    padding: 5px 10px;
   }
 
   &-title {
