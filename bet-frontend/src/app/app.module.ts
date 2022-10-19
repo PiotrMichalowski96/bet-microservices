@@ -11,6 +11,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { MatchBannerComponent } from './components/match-banner/match-banner.component';
 import { MatchComponent } from './components/match/match.component';
 import {HttpClientModule} from "@angular/common/http";
+import { MatchesPageComponent } from './pages/matches-page/matches-page.component';
+import {PaginatorModule} from "primeng/paginator";
 
 @NgModule({
   declarations: [
@@ -20,13 +22,15 @@ import {HttpClientModule} from "@angular/common/http";
     HomeComponent,
     SliderComponent,
     MatchBannerComponent,
-    MatchComponent
+    MatchComponent,
+    MatchesPageComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    PaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]
