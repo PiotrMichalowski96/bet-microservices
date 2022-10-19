@@ -41,7 +41,64 @@ export class HomeComponent implements OnInit {
           startTime: Date = new Date();
         }
         startTime: Date = new Date();
-      }];
+      },
+      new class implements Match {
+        awayTeam: string = 'Manchester United';
+        homeTeam: string = 'Liverpool';
+        id: number = 2;
+        result: MatchResult = new class implements MatchResult {
+          awayTeamGoals: number = 1;
+          homeTeamGoals: number = 1;
+        };
+        round: MatchRound = new class implements MatchRound {
+          roundName: string = 'Final';
+          startTime: Date = new Date();
+        }
+        startTime: Date = new Date();
+      },
+      new class implements Match {
+        awayTeam: string = 'Manchester United';
+        homeTeam: string = 'Liverpool';
+        id: number = 2;
+        result: MatchResult = new class implements MatchResult {
+          awayTeamGoals: number = 1;
+          homeTeamGoals: number = 1;
+        };
+        round: MatchRound = new class implements MatchRound {
+          roundName: string = 'Final';
+          startTime: Date = new Date();
+        }
+        startTime: Date = new Date();
+      },
+      new class implements Match {
+        awayTeam: string = 'Manchester United';
+        homeTeam: string = 'Liverpool';
+        id: number = 2;
+        result: MatchResult = new class implements MatchResult {
+          awayTeamGoals: number = 1;
+          homeTeamGoals: number = 1;
+        };
+        round: MatchRound = new class implements MatchRound {
+          roundName: string = 'Final';
+          startTime: Date = new Date();
+        }
+        startTime: Date = new Date();
+      },
+      new class implements Match {
+        awayTeam: string = 'Manchester United';
+        homeTeam: string = 'Liverpool';
+        id: number = 2;
+        result: MatchResult = new class implements MatchResult {
+          awayTeamGoals: number = 1;
+          homeTeamGoals: number = 1;
+        };
+        round: MatchRound = new class implements MatchRound {
+          roundName: string = 'Final';
+          startTime: Date = new Date();
+        }
+        startTime: Date = new Date();
+      }
+      ];
   }
 
 }

@@ -8,6 +8,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { SliderComponent } from './components/slider/slider.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { MatchBannerComponent } from './components/match-banner/match-banner.component';
+import { MatchComponent } from './components/match/match.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     FooterComponent,
     HeaderComponent,
     HomeComponent,
-    SliderComponent
+    SliderComponent,
+    MatchBannerComponent,
+    MatchComponent
   ],
   imports: [
     BrowserModule,
