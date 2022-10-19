@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Match, MatchResult, MatchRound} from "../../model/match";
+import {Match} from "../../model/match";
+import {MatchesService} from "../../services/matches.service";
 
 @Component({
   selector: 'app-home',
@@ -11,93 +12,15 @@ export class HomeComponent implements OnInit {
   upcomingMatches: Match[] = [];
   finishedMatches: Match[] = [];
 
-  constructor() { }
+  constructor(private matchesService: MatchesService) { }
 
   ngOnInit(): void {
-    //TODO: hardcoded matches
-    this.upcomingMatches = [new class implements Match {
-      awayTeam: string = 'Arsenal';
-      homeTeam: string = 'Leeds United';
-      id: number = 1;
-      result: MatchResult = new class implements MatchResult {
-        awayTeamGoals: number = 1;
-        homeTeamGoals: number = 1;
-      };
-      round: MatchRound = new class implements MatchRound {
-        roundName: string = 'Group Stage';
-        startTime: Date = new Date();
-      }
-      startTime: Date = new Date();
-    },
-      new class implements Match {
-        awayTeam: string = 'Manchester United';
-        homeTeam: string = 'Liverpool';
-        id: number = 2;
-        result: MatchResult = new class implements MatchResult {
-          awayTeamGoals: number = 1;
-          homeTeamGoals: number = 1;
-        };
-        round: MatchRound = new class implements MatchRound {
-          roundName: string = 'Final';
-          startTime: Date = new Date();
-        }
-        startTime: Date = new Date();
-      },
-      new class implements Match {
-        awayTeam: string = 'Manchester United';
-        homeTeam: string = 'Liverpool';
-        id: number = 2;
-        result: MatchResult = new class implements MatchResult {
-          awayTeamGoals: number = 1;
-          homeTeamGoals: number = 1;
-        };
-        round: MatchRound = new class implements MatchRound {
-          roundName: string = 'Final';
-          startTime: Date = new Date();
-        }
-        startTime: Date = new Date();
-      },
-      new class implements Match {
-        awayTeam: string = 'Manchester United';
-        homeTeam: string = 'Liverpool';
-        id: number = 2;
-        result: MatchResult = new class implements MatchResult {
-          awayTeamGoals: number = 1;
-          homeTeamGoals: number = 1;
-        };
-        round: MatchRound = new class implements MatchRound {
-          roundName: string = 'Final';
-          startTime: Date = new Date();
-        }
-        startTime: Date = new Date();
-      },
-      new class implements Match {
-        awayTeam: string = 'Manchester United';
-        homeTeam: string = 'Liverpool';
-        id: number = 2;
-        result = null;
-        round: MatchRound = new class implements MatchRound {
-          roundName: string = 'Final';
-          startTime: Date = new Date();
-        }
-        startTime: Date = new Date();
-      },
-      new class implements Match {
-        awayTeam: string = 'Manchester United';
-        homeTeam: string = 'Liverpool';
-        id: number = 2;
-        result: MatchResult = new class implements MatchResult {
-          awayTeamGoals: number = 1;
-          homeTeamGoals: number = 1;
-        };
-        round: MatchRound = new class implements MatchRound {
-          roundName: string = 'Final';
-          startTime: Date = new Date();
-        }
-        startTime: Date = new Date();
-      }];
-
-    this.finishedMatches = this.upcomingMatches;
+    this.matchesService.getMatches().subscribe((matches: Match[]) => {
+      this.upcomingMatches = matches;
+    });
+    this.matchesService.getMatches().subscribe((matches: Match[]) => {
+      this.finishedMatches = matches;
+    });
   }
 
 }
