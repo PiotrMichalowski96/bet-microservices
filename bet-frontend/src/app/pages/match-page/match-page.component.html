@@ -1,3 +1,37 @@
 <ng-container *ngIf="match">
   <app-slider [items]="[match]" [isBanner]="true"></app-slider>
+  <p-tabView>
+    <p-tabPanel header="Overview">
+      <div class="grid">
+        <div class="col-12 md:col-3 lg:col-3">
+          <img class="poster" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'">
+        </div>
+        <div class="col-12 md:col-9 lg:col-9">
+          <h2>Overview</h2>
+          <p class="overview">{{match.homeTeam}} vs {{match.awayTeam}}</p>
+          <ng-container *ngIf="match.result">
+            <div class="stat">
+              <div class="label">Result:</div>
+              <div class="value">{{match.result.homeTeamGoals}} : {{match.result.awayTeamGoals}}</div>
+            </div>
+          </ng-container>
+          <div class="stat">
+            <div class="label">Start time:</div>
+            <div class="value">{{match.startTime | date: 'hh:mm dd.MM.yyyy'}}</div>
+          </div>
+          <div class="stat">
+            <div class="label">Round:</div>
+            <div class="value">{{match.round.roundName}}</div>
+          </div>
+          <div class="stat">
+            <div class="label">Round start time:</div>
+            <div class="value">{{match.round.startTime | date: 'hh:mm dd.MM.yyyy'}}</div>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Bets">
+      <p>Bets</p>
+    </p-tabPanel>
+  </p-tabView>
 </ng-container>
