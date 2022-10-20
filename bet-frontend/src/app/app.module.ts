@@ -13,6 +13,7 @@ import { MatchComponent } from './components/match/match.component';
 import {HttpClientModule} from "@angular/common/http";
 import { MatchesPageComponent } from './pages/matches-page/matches-page.component';
 import {PaginatorModule} from "primeng/paginator";
+import { MatchPageComponent } from './pages/match-page/match-page.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {PaginatorModule} from "primeng/paginator";
     SliderComponent,
     MatchBannerComponent,
     MatchComponent,
-    MatchesPageComponent
+    MatchesPageComponent,
+    MatchPageComponent
   ],
   imports: [
     BrowserModule,

@@ -22,4 +22,8 @@ export class MatchesService {
         return of(res.slice(countMin, countMax))
       }));
   }
+
+  getMatch(id: number) {
+    return this.http.get<Match>(`${MatchesService.baseUrl}/${id}`);
+  }
 }

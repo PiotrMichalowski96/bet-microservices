@@ -16,12 +16,16 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 export class SliderComponent implements OnInit {
 
   @Input() items: Match[] = [];
+  @Input() isBanner: boolean = false;
 
   currentSlideIndex: number = 0;
 
   constructor() { }
 
   ngOnInit(): void {
+    if (this.isBanner) {
+      return;
+    }
     setInterval(()=>{
       this.currentSlideIndex = ++this.currentSlideIndex % this.items.length;
     }, 5000)
