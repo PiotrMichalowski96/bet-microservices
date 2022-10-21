@@ -20,13 +20,12 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-  private static final String BET_USER = "BET_USER";
   private static final String BET_ADMIN = "BET_ADMIN";
 
   @Bean
   public ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
 
-    NimbusReactiveOpaqueTokenIntrospector delegate = new NimbusReactiveOpaqueTokenIntrospector(
+    var delegate = new NimbusReactiveOpaqueTokenIntrospector(
         props.getOpaquetoken().getIntrospectionUri(),
         props.getOpaquetoken().getClientId(),
         props.getOpaquetoken().getClientSecret());
@@ -37,15 +36,16 @@ public class SecurityConfig {
   @Bean
   @ConditionalOnProperty(prefix = "security", name = "mode", havingValue = "true", matchIfMissing = true)
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
-    http.authorizeExchange(exchange -> exchange
-            .pathMatchers(HttpMethod.GET, "/matches/**").hasAuthority(BET_USER)
-            .pathMatchers(HttpMethod.POST, "/matches/**").hasAuthority(BET_ADMIN)
-            .pathMatchers(HttpMethod.DELETE, "/matches/**").hasAuthority(BET_ADMIN)
-            .anyExchange()
-            .authenticated())
-        .oauth2ResourceServer(oauth2 -> oauth2
-            .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector)));
-    return http.build();
+    return http
+        .authorizeExchange()
+        .pathMatchers(HttpMethod.POST, "/matches/**").hasAuthority(BET_ADMIN)
+        .pathMatchers(HttpMethod.DELETE, "/matches/**").hasAuthority(BET_ADMIN)
+        .anyExchange().permitAll()
+        .and()
+        .oauth2ResourceServer()
+        .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector))
+        .and()
+        .build();
   }
 
   @Bean
@@ -60,7 +60,7 @@ public class SecurityConfig {
 
   //TODO: for development of front end Angular app
   @Bean
-  CorsWebFilter corsWebFilter() {
+  public CorsWebFilter corsWebFilter() {
     var corsConfig = new CorsConfiguration();
     corsConfig.setAllowCredentials(true);
     corsConfig.setAllowedOrigins(List.of("http://localhost:4201"));
