@@ -18,6 +18,6 @@ public class UserService {
   }
 
   public Mono<UserResultProjection> findUserResultByNickname(String nickname) {
-    return null;
+    return betRepository.findUserResultByUsersNickname(nickname);
   }
 }
