@@ -31,7 +31,14 @@
       </div>
     </p-tabPanel>
     <p-tabPanel header="Bets">
-      <p>Bets</p>
+      <ng-container *ngIf="bets.length == 0">
+        <span class="no-bets">No bets</span>
+      </ng-container>
+      <p-carousel [numVisible]="5" *ngIf="bets.length != 0" [value]="bets">
+        <ng-template let-bet pTemplate="bet">
+          <app-bet [bet]="bet"></app-bet>
+        </ng-template>
+      </p-carousel>
     </p-tabPanel>
   </p-tabView>
 </ng-container>

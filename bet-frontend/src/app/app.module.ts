@@ -17,6 +17,7 @@ import { MatchPageComponent } from './pages/match-page/match-page.component';
 import {TabViewModule} from "primeng/tabview";
 import { BetComponent } from './components/bet/bet.component';
 import { BetsPageComponent } from './pages/bets-page/bets-page.component';
+import {CarouselModule} from "primeng/carousel";
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { BetsPageComponent } from './pages/bets-page/bets-page.component';
     AppRoutingModule,
     HttpClientModule,
     PaginatorModule,
-    TabViewModule
+    TabViewModule,
+    CarouselModule
   ],
   providers: [],
   bootstrap: [AppComponent]
