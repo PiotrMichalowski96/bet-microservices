@@ -29,9 +29,13 @@ public class BetController {
   private final Validator validator;
 
   @GetMapping("/bets")
-  Flux<Bet> findAll(@RequestParam Optional<Long> matchId, BearerTokenAuthentication token) {
+  Flux<Bet> findAll(BearerTokenAuthentication token,
+      @RequestParam Optional<Long> matchId,
+      @RequestParam Optional<String> userNickname) {
+
     User user = TokenUtil.getUserFrom(token);
     return matchId.map(id -> betService.findAllByMatchId(id, user))
+        .or(() -> userNickname.map(nickname -> betService.findAllByUserNickname(nickname, user)))
         .orElse(betService.findAll(user));
   }
 

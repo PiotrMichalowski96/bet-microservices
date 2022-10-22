@@ -73,6 +73,16 @@ class BetServiceTest {
   }
 
   @Test
+  void shouldGetAllVisibleBetsByUserNickname() {
+    var nickname = BETS.get(2).getUser().getNickname();
+    var user = BETS.get(0).getUser();
+    Flux<Bet> betFlux = betService.findAllByUserNickname(nickname, user);
+    StepVerifier.create(betFlux)
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(3L))
+        .verifyComplete();
+  }
+
+  @Test
   void shouldGetBetsWhenMatchIsStarted() {
     var user = new User("Arya", "Stark", "needle");
     Flux<Bet> betFlux = betService.findAll(user);

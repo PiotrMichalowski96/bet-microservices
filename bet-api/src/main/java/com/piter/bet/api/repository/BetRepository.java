@@ -7,4 +7,6 @@ import reactor.core.publisher.Flux;
 public interface BetRepository extends ReactiveMongoRepository<Bet, Long> {
 
   Flux<Bet> findAllByMatchId(Long matchId);
+
+  Flux<Bet> findAllByUserNickname(String nickname);
 }
