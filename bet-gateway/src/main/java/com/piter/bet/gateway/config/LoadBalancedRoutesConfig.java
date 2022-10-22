@@ -15,7 +15,7 @@ public class LoadBalancedRoutesConfig {
     return builder.routes()
         .route(r -> r.path("/matches", "/matches/*")
             .uri("lb://match-api"))
-        .route(r -> r.path("/bets", "/bets/*")
+        .route(r -> r.path("/bets", "/bets/*", "/bets/results/users", "/bets/results/users/*")
             .uri("lb://bet-api"))
         .build();
   }
