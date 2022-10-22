@@ -15,6 +15,8 @@ import { MatchesPageComponent } from './pages/matches-page/matches-page.componen
 import {PaginatorModule} from "primeng/paginator";
 import { MatchPageComponent } from './pages/match-page/match-page.component';
 import {TabViewModule} from "primeng/tabview";
+import { BetComponent } from './components/bet/bet.component';
+import { BetsPageComponent } from './pages/bets-page/bets-page.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import {TabViewModule} from "primeng/tabview";
     MatchBannerComponent,
     MatchComponent,
     MatchesPageComponent,
-    MatchPageComponent
+    MatchPageComponent,
+    BetComponent,
+    BetsPageComponent
   ],
   imports: [
     BrowserModule,

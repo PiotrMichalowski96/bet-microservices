@@ -1,0 +1,62 @@
+@import "../../../styles/colors";
+
+.bet-item {
+  position: relative;
+  display: block;
+  min-height: 325px;
+  border-radius: 5px;
+  background-color: $bgColorLight;
+  border: 1px solid $lightGrey;
+
+  &-user {
+    display: block;
+    text-align: center;
+    align-items: center;
+    font-weight: bold;
+    margin: 0.5rem;
+    height: 20px;
+  }
+
+  &-matchTime {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 50px;
+    left: 10px;
+    background-color: $bgColorLight;
+    border-radius: 5px;
+    padding: 5px 10px;
+  }
+
+  &-image {
+    img {
+      width: 100%;
+      border-radius: 5px;
+      height: 275px;
+      object-fit: cover;
+    }
+  }
+
+  &-result {
+    position: absolute;
+    align-items: center;
+    top: 150px;
+    left: 33%;
+    background-color: $bgColorLight;
+    border-radius: 5px;
+    padding: 5px 10px;
+
+    span {
+      display: block;
+      text-align: center;
+    }
+  }
+
+  &-match {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin: 0.5rem;
+    height: 30px;
+  }
+}
