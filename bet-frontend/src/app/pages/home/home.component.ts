@@ -10,16 +10,16 @@ import {MatchesService} from "../../services/matches.service";
 export class HomeComponent implements OnInit {
 
   upcomingMatches: Match[] = [];
-  finishedMatches: Match[] = [];
+  allMatches: Match[] = [];
 
   constructor(private matchesService: MatchesService) { }
 
   ngOnInit(): void {
-    this.matchesService.getMatches().subscribe((matches: Match[]) => {
+    this.matchesService.getUpcomingMatches().subscribe((matches: Match[]) => {
       this.upcomingMatches = matches;
     });
     this.matchesService.getMatches().subscribe((matches: Match[]) => {
-      this.finishedMatches = matches;
+      this.allMatches = matches;
     });
   }
 

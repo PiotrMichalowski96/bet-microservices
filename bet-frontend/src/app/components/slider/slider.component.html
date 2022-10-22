@@ -6,6 +6,9 @@
       </div>
       <div class="slide-pane">
         <h2 class="name">{{item.homeTeam}} vs {{item.awayTeam}}</h2>
+        <ng-container *ngIf="item.result">
+          <h2 class="name">{{item.result.homeTeamGoals}} : {{item.result.awayTeamGoals}}</h2>
+        </ng-container>
         <div class="meta">
           <div class="info">
           <span class="match-info">

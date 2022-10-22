@@ -46,6 +46,7 @@
 
       .name {
         font-size: 2.8rem;
+        text-align: center;
       }
 
       .meta {
@@ -62,7 +63,8 @@
           }
 
           .match-info {
-            display: flex;
+            display: block;
+            text-align: center;
             align-items: center;
           }
         }
