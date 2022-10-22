@@ -58,6 +58,13 @@ public class MatchController {
         .orElse(matchService.findAll());
   }
 
+  @Operation(summary = "Find all not started matches")
+  @ApiResponse(responseCode = "200", description = "successful found upcoming match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
+  @GetMapping("/matches/upcoming")
+  Flux<Match> findUpcoming() {
+    return matchService.findAllUpcoming();
+  }
+
   @Operation(summary = "Find match by id")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "successful found match by id", content = @Content(schema = @Schema(implementation = Match.class))),
