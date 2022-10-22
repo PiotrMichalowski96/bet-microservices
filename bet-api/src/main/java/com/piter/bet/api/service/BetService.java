@@ -25,6 +25,16 @@ public class BetService {
         .filter(bet -> isBetVisibleForUser(user, bet));
   }
 
+  public Flux<Bet> findAllByMatchId(Long matchId, User user) {
+    return betRepository.findAllByMatchId(matchId)
+        .filter(bet -> isBetVisibleForUser(user, bet));
+  }
+
+  public Flux<Bet> findAllByUserNickname(String nickname, User user) {
+    return betRepository.findAllByUserNickname(nickname)
+        .filter(bet -> isBetVisibleForUser(user, bet));
+  }
+
   public Mono<Bet> findById(Long id, User user) {
     return betRepository.findById(id)
         .filter(bet -> isBetVisibleForUser(user, bet))

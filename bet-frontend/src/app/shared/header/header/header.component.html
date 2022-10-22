@@ -1,0 +1,17 @@
+<header>
+  <nav class="navbar">
+    <a href="" class="navbar-logo">
+      <img src="assets/images/favicon.ico" alt="">
+    </a>
+    <ul class="navbar-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/matches">Matches</a></li>
+      <li><a href="/bets">Bets</a></li>
+      <li><a href="/ranking">Ranking</a></li>
+      <li>
+        <button *ngIf="!isLoggedIn" class="btn btn-primary" (click)="login()" type="submit">Login</button>
+        <button *ngIf="isLoggedIn" class="btn btn-primary" (click)="logout()" type="submit">Logout</button>
+      </li>
+    </ul>
+  </nav>
+</header>

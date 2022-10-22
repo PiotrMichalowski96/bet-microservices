@@ -78,6 +78,14 @@ class MatchServiceTest {
   }
 
   @Test
+  void shouldGetUpcomingMatches() {
+    Flux<Match> matchFlux = matchService.findAllUpcoming();
+    StepVerifier.create(matchFlux)
+        .expectNextCount(0)
+        .verifyComplete();
+  }
+
+  @Test
   void shouldGetMatchById() {
     var id = 2L;
     Mono<Match> matchMono = matchService.findById(id);

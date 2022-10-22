@@ -1,0 +1,14 @@
+<ng-container *ngIf="match">
+  <a class="match-item" [routerLink]="'/match/' + match.id">
+    <div class="match-item-startTime">{{match.startTime | date: 'dd.MM.yyyy hh:mm'}}</div>
+    <ng-container *ngIf="match.result">
+      <div class="match-item-result">
+        <span>{{match.result.homeTeamGoals}} : {{match.result.awayTeamGoals}}</span>
+      </div>
+    </ng-container>
+    <div class="match-item-image">
+      <img [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'" > <!-- TODO -->
+    </div>
+    <div class="match-item-title">{{match.homeTeam}} vs {{match.awayTeam}}</div>
+  </a>
+</ng-container>

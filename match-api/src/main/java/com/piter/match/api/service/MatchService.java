@@ -4,6 +4,8 @@ import com.piter.api.commons.domain.Match;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +31,17 @@ public class MatchService {
 
   public Flux<Match> findAllByOrderByMatchRoundStartTime() {
     return matchRepository.findAllByOrderByRoundStartTimeDesc();
+  }
+
+  public Flux<Match> findAllUpcoming() {
+    return matchRepository.findAllByOrderByStartTimeDesc()
+        .filter(this::isNotStarted);
+  }
+
+  private boolean isNotStarted(Match match) {
+    return Optional.ofNullable(match.getStartTime())
+        .map(startTime -> LocalDateTime.now().isBefore(startTime))
+        .orElse(false);
   }
 
   @Cacheable(value = "match", key = "#id")

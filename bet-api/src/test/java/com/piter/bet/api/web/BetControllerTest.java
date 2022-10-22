@@ -2,6 +2,7 @@ package com.piter.bet.api.web;
 
 import static com.piter.bet.api.util.BetTestData.createBetList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
@@ -83,6 +84,58 @@ class BetControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Bet.class)
         .value(bets -> assertThat(bets).hasSize(2));
+  }
+
+  @Test
+  @WithMockUser
+  void shouldGetAllVisibleBetsByMatchId() {
+    var user = BETS.get(0).getUser();
+    var matchId = 1L;
+    var expectedBetId = 1L;
+    mockFindAllByMatchId(matchId);
+    webClient
+        .mutateWith(mockBearerToken(user))
+        .get()
+        .uri("/bets?matchId=" + matchId)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBodyList(Bet.class)
+        .value(bets -> {
+          assertThat(bets).hasSize(1);
+          assertThat(bets.get(0).getId()).isEqualTo(expectedBetId);
+        });
+  }
+
+  private void mockFindAllByMatchId(Long matchId) {
+    Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
+        .filter(bet -> Objects.equals(bet.getMatch().getId(), matchId));
+    when(betRepository.findAllByMatchId(eq(matchId))).thenReturn(mockedBetFlux);
+  }
+
+  @Test
+  @WithMockUser
+  void shouldGetAllVisibleBetsByUserNickname() {
+    var user = BETS.get(0).getUser();
+    var nickname = BETS.get(2).getUser().getNickname();
+    mockFindAllByUserNickName(nickname);
+    var expectedBetId = 3L;
+    webClient
+        .mutateWith(mockBearerToken(user))
+        .get()
+        .uri("/bets?userNickname=" + nickname)
+        .exchange()
+        .expectStatus().isOk()
+        .expectBodyList(Bet.class)
+        .value(bets -> {
+          assertThat(bets).hasSize(1);
+          assertThat(bets.get(0).getId()).isEqualTo(expectedBetId);
+        });
+  }
+
+  private void mockFindAllByUserNickName(String userNickname) {
+    Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
+        .filter(bet -> Objects.equals(bet.getUser().getNickname(), userNickname));
+    when(betRepository.findAllByUserNickname(eq(userNickname))).thenReturn(mockedBetFlux);
   }
 
   private WebTestClientConfigurer mockBearerToken(User user) {

@@ -10,8 +10,6 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-security.mode: true
-
 ########################
 # Cloud stream
 ########################
@@ -63,10 +61,12 @@ info:
 ########################
 # Security
 ########################
+security.mode: true
+
 spring.security.oauth2.resourceserver.opaqueToken:
   introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
   client-id: bet-login-app
-  client-secret: xXevjTY8vZD242FqapM4MmwkA7xHSCRj
+  client-secret: JfJ2DUSO6xZPjOEPDLtSVEkRMChAOsvL
 
 ########################
 # Swagger
