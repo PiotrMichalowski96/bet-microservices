@@ -63,6 +63,16 @@ class BetServiceTest {
   }
 
   @Test
+  void shouldGetAllVisibleBetsByMatchId() {
+    var matchId = 1L;
+    var user = BETS.get(0).getUser();
+    Flux<Bet> betFlux = betService.findAllByMatchId(matchId, user);
+    StepVerifier.create(betFlux)
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(1L))
+        .verifyComplete();
+  }
+
+  @Test
   void shouldGetBetsWhenMatchIsStarted() {
     var user = new User("Arya", "Stark", "needle");
     Flux<Bet> betFlux = betService.findAll(user);

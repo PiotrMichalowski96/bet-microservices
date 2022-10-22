@@ -10,6 +10,8 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
+
+
 ########################
 # Cloud stream
 ########################
@@ -40,10 +42,12 @@ bet.producer.binding: bets-out-0
 ########################
 # Security
 ########################
+security.mode: false
+
 spring.security.oauth2.resourceserver.opaqueToken:
   introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
   client-id: bet-login-app
-  client-secret: gxFjfVmqSQSLLvufqVpniY0qvfqpEnWt
+  client-secret: JfJ2DUSO6xZPjOEPDLtSVEkRMChAOsvL
 
 ########################
 # Logging

@@ -4,6 +4,7 @@ import com.piter.api.commons.domain.Bet;
 import com.piter.api.commons.domain.User;
 import com.piter.bet.api.service.BetService;
 import com.piter.bet.api.util.TokenUtil;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Flux;
@@ -27,9 +29,10 @@ public class BetController {
   private final Validator validator;
 
   @GetMapping("/bets")
-  Flux<Bet> findAll(BearerTokenAuthentication token) {
+  Flux<Bet> findAll(@RequestParam Optional<Long> matchId, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
-    return betService.findAll(user);
+    return matchId.map(id -> betService.findAllByMatchId(id, user))
+        .orElse(betService.findAll(user));
   }
 
   @GetMapping("/bets/{id}")
