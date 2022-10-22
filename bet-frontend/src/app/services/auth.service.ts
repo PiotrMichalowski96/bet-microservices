@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
+import {ID_TOKEN, TOKEN } from '../constants/token-properties';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,6 @@ export class AuthService {
   public readonly authorizationUri: string = `http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
 
   private readonly authorizationCodeGrant: string = 'authorization_code';
-  private readonly clientSecret: string = 'cshzoV8E22buk8uqdZiyroxQhIYkqRQl';
   private readonly tokenUri: string = 'http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token';
 
   constructor(private http: HttpClient) {
@@ -23,7 +23,6 @@ export class AuthService {
     let body = new HttpParams()
       .set('grant_type', this.authorizationCodeGrant)
       .set('client_id', this.clientId)
-      .set('client_secret', this.clientSecret)
       .set('redirect_uri', this.redirectUri)
       .set('code', code);
 
@@ -40,7 +39,7 @@ export class AuthService {
 
   saveToken(token: any) {
     let expireDate = new Date().getTime() + (1000 * token.expires_in);
-    Cookie.set("access_token", token.access_token, expireDate);
+    Cookie.set(TOKEN, token.access_token, expireDate);
     console.log('Obtained Access token');
     window.location.href = 'http://localhost:4201';
   }
@@ -50,8 +49,8 @@ export class AuthService {
   }
 
   logout() {
-    Cookie.delete('access_token');
-    Cookie.delete('id_token');
+    Cookie.delete(TOKEN);
+    Cookie.delete(ID_TOKEN);
     window.location.reload();
   }
 }
