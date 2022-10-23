@@ -39,6 +39,12 @@ public class BetController {
         .orElse(betService.findAll(user));
   }
 
+  @GetMapping("/bets/my-own")
+  Flux<Bet> findAllByUser(BearerTokenAuthentication token) {
+    User user = TokenUtil.getUserFrom(token);
+    return betService.findAllByUserNickname(user.getNickname(), user);
+  }
+
   @GetMapping("/bets/{id}")
   Mono<Bet> findById(@PathVariable("id") Long id, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
