@@ -8,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 
@@ -26,20 +25,14 @@ class MatchEventTypeTest {
   }
 
   private static Stream<Arguments> provideMessagesAndEvents() {
-    Message<?> matchMessageWithoutHeader = MessageBuilder.withPayload(Match.builder().build())
-        .build();
-
-    Message<?> matchMessageWithHeader = MessageBuilder.withPayload(Match.builder().build())
-        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, 1L)
+    Message<?> matchMessage = MessageBuilder.withPayload(Match.builder().build())
         .build();
 
     Message<?> tombstoneMessage = MessageBuilder.withPayload(KafkaNull.INSTANCE)
-        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, 1L)
         .build();
 
     return Stream.of(
-        Arguments.of(matchMessageWithoutHeader, MatchEventType.INSERT),
-        Arguments.of(matchMessageWithHeader, MatchEventType.UPDATE),
+        Arguments.of(matchMessage, MatchEventType.SAVE),
         Arguments.of(tombstoneMessage, MatchEventType.DELETE)
     );
   }

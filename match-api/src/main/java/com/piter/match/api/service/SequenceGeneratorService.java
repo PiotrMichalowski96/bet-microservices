@@ -19,7 +19,7 @@ public class SequenceGeneratorService {
 
   private final ReactiveMongoOperations mongoOperations;
 
-  public Mono<Long> generateSequence(String seqName) {
+  public Mono<Long> generateSequenceMatchId(String seqName) {
     return mongoOperations.findAndModify(
             Query.query(where("_id").is(seqName)),
             new Update().inc("seq", 1),

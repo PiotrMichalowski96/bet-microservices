@@ -3,7 +3,6 @@ package com.piter.match.api.consumer;
 import com.piter.api.commons.domain.Match;
 import com.piter.match.api.exception.MatchKafkaException;
 import com.piter.match.api.repository.MatchRepository;
-import com.piter.match.api.service.SequenceGeneratorService;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -18,17 +17,12 @@ import org.springframework.stereotype.Component;
 public class MatchKafkaConsumer {
 
   private final MatchRepository matchRepository;
-  private final SequenceGeneratorService sequenceGeneratorService;
   private final Map<MatchEventType, Consumer<Message<?>>> eventTypeProcessor;
 
-  public MatchKafkaConsumer(MatchRepository matchRepository,
-      SequenceGeneratorService sequenceGeneratorService) {
-
+  public MatchKafkaConsumer(MatchRepository matchRepository) {
     this.matchRepository = matchRepository;
-    this.sequenceGeneratorService = sequenceGeneratorService;
     this.eventTypeProcessor = Map.of(
-        MatchEventType.INSERT, this::saveMatch,
-        MatchEventType.UPDATE, this::updateMatch,
+        MatchEventType.SAVE, this::saveMatch,
         MatchEventType.DELETE, this::deleteMatch
     );
   }
@@ -42,28 +36,6 @@ public class MatchKafkaConsumer {
   }
 
   private void saveMatch(Message<?> matchMessage) {
-    Match match = (Match) matchMessage.getPayload();
-    sequenceGeneratorService.generateSequence(Match.SEQUENCE_NAME)
-        .map(id -> map(match, id))
-        .subscribe(
-            matchWithId -> matchRepository.save(matchWithId).subscribe(
-                savedMatch -> logger.debug("Inserted match: {}", savedMatch)
-            )
-        );
-  }
-
-  private Match map(Match match, Long id) {
-    return Match.builder()
-        .id(id)
-        .homeTeam(match.getHomeTeam())
-        .awayTeam(match.getAwayTeam())
-        .startTime(match.getStartTime())
-        .result(match.getResult())
-        .round(match.getRound())
-        .build();
-  }
-
-  private void updateMatch(Message<?> matchMessage) {
     Match match = (Match) matchMessage.getPayload();
     matchRepository.save(match).subscribe(
         savedMatch -> logger.debug("Updated match: {}", savedMatch)

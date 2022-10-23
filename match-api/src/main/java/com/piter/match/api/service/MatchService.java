@@ -20,6 +20,7 @@ public class MatchService {
 
   private final MatchRepository matchRepository;
   private final MatchKafkaProducer matchProducer;
+  private final SequenceGeneratorService sequenceGeneratorService;
 
   public Flux<Match> findAll() {
     return matchRepository.findAll();
@@ -53,8 +54,25 @@ public class MatchService {
 
   @CacheEvict(value = "match", key = "#match.id", condition = "#match.id != null")
   public Mono<Match> saveMatch(Match match) {
-    return Mono.just(matchProducer.sendSaveMatchEvent(match))
+    if (match.getId() != null) {
+      return Mono.just(matchProducer.sendSaveMatchEvent(match))
+          .then(matchRepository.findOne(Example.of(match)));
+    }
+    return sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)
+        .map(id -> mapToMatchWithId(match, id))
+        .map(matchProducer::sendSaveMatchEvent)
         .then(matchRepository.findOne(Example.of(match)));
+  }
+
+  private Match mapToMatchWithId(Match match, Long id) {
+    return Match.builder()
+        .id(id)
+        .homeTeam(match.getHomeTeam())
+        .awayTeam(match.getAwayTeam())
+        .startTime(match.getStartTime())
+        .result(match.getResult())
+        .round(match.getRound())
+        .build();
   }
 
   @CacheEvict(value = "match", key = "#id")

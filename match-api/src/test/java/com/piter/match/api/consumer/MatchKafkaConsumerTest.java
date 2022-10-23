@@ -9,7 +9,6 @@ import com.piter.api.commons.domain.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
-import java.util.function.Predicate;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.Test;
@@ -41,46 +40,7 @@ class MatchKafkaConsumerTest {
   private MatchRepository matchRepository;
 
   @Test
-  void shouldInsertMatch() {
-    //given
-    var homeTeam = "Atletico Madrid";
-    var awayTeam = "Valencia";
-    var match = Match.builder()
-        .homeTeam(homeTeam)
-        .awayTeam(awayTeam)
-        .startTime(LocalDateTime.of(2022, 2, 15, 21, 0, 0))
-        .result(new MatchResult(2, 2))
-        .round(new MatchRound("LaLiga round 30", LocalDateTime.of(2022, 2, 14, 21, 0, 0)))
-        .build();
-
-    var matchMessage = MessageBuilder.withPayload(match).build();
-
-    //when
-    matchKafkaConsumer.matches().accept(matchMessage);
-
-    //then
-    Predicate<Match> findMatchByTeams = m -> homeTeam.equals(m.getHomeTeam()) && awayTeam.equals(m.getAwayTeam());
-    assertAsync(() -> assertSavedMatch(findMatchByTeams, match));
-  }
-
-  private void assertAsync(ThrowingRunnable assertion) {
-    Awaitility.await()
-        .atMost(TIMEOUT_IN_SECONDS, SECONDS)
-        .pollInterval(POLL_INTERVAL_IN_SECONDS, SECONDS)
-        .untilAsserted(assertion);
-  }
-
-  private void assertSavedMatch(Predicate<Match> findMatchPredicate, Match expectedMatch) {
-    var savedMatch = matchRepository.findAll()
-        .filter(findMatchPredicate)
-        .blockFirst();
-    assertThat(savedMatch).usingRecursiveComparison()
-        .ignoringFields("id")
-        .isEqualTo(expectedMatch);
-  }
-
-  @Test
-  void shouldUpdateMatch() {
+  void shouldSaveMatch() {
     //given
     var id = 99L;
     var match = Match.builder()
@@ -111,11 +71,18 @@ class MatchKafkaConsumerTest {
     matchKafkaConsumer.matches().accept(updatedMatchMessage);
 
     //then
-    assertAsync(() -> assertSavedMatch(id, updatedMatch));
+    assertAsync(() -> assertSavedMatchById(updatedMatch));
   }
 
-  private void assertSavedMatch(Long id, Match expectedMatch) {
-    var savedMatch = matchRepository.findById(id).block();
+  private void assertAsync(ThrowingRunnable assertion) {
+    Awaitility.await()
+        .atMost(TIMEOUT_IN_SECONDS, SECONDS)
+        .pollInterval(POLL_INTERVAL_IN_SECONDS, SECONDS)
+        .untilAsserted(assertion);
+  }
+
+  private void assertSavedMatchById(Match expectedMatch) {
+    var savedMatch = matchRepository.findById(expectedMatch.getId()).block();
     assertThat(savedMatch).isEqualTo(expectedMatch);
   }
 }
