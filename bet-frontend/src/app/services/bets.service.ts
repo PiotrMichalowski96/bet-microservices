@@ -17,7 +17,6 @@ export class BetsService {
 
   getBets(page: number = 0) {
     let options = {
-      // params: new HttpParams().set('matchId', 1), //TODO
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet[]>(`${BetsService.baseUrl}`, options)
@@ -34,6 +33,13 @@ export class BetsService {
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet[]>(`${BetsService.baseUrl}`, options);
+  }
+
+  getMyOwnBets() {
+    let options = {
+      headers: this.createAuthHeader()
+    };
+    return this.http.get<Bet[]>(`${BetsService.baseUrl}/my-own`, options);
   }
 
   getBet(id: number) {

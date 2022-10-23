@@ -9,21 +9,29 @@ import {BetsService} from "../../services/bets.service";
 })
 export class BetsPageComponent implements OnInit {
 
-  bets: Bet[] = [];
+  myOwnBets: Bet[] = [];
+  allBets: Bet[] = [];
 
   constructor(private betsService: BetsService) { }
 
   ngOnInit(): void {
-    this.getPagedBets();
+    this.getMyOwnBets();
+    this.getPagedAllBets();
   }
 
-  private getPagedBets(page: number = 0) {
+  private getMyOwnBets() {
+    this.betsService.getMyOwnBets().subscribe(bets => {
+      this.myOwnBets = bets;
+    });
+  }
+
+  private getPagedAllBets(page: number = 0) {
     this.betsService.getBets(page).subscribe(bets => {
-      this.bets = bets;
+      this.allBets = bets;
     });
   }
 
   paginate(event: any) {
-    this.getPagedBets(event.page);
+    this.getPagedAllBets(event.page);
   }
 }
