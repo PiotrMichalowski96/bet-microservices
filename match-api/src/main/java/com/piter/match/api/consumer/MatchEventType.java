@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 
@@ -14,17 +13,12 @@ import org.springframework.messaging.Message;
 @RequiredArgsConstructor
 public enum MatchEventType {
 
-  INSERT(message -> !containsKey(message) && hasPayloadType(message, Match.class)),
-  UPDATE(message -> containsKey(message) && hasPayloadType(message, Match.class)),
+  SAVE(message -> hasPayloadType(message, Match.class)),
   // kafka convention takes record with null value (tombstone record) as delete operation
   // see (https://www.linkedin.com/pulse/tombstone-record-kafka-under-hood-sumon-mal/)
-  DELETE(message -> containsKey(message) && hasPayloadType(message, KafkaNull.class)),;
+  DELETE(message -> hasPayloadType(message, KafkaNull.class)),;
 
   private final Predicate<Message<?>> eventTypePredicate;
-
-  private static boolean containsKey(Message<?> message) {
-    return message.getHeaders().containsKey(KafkaHeaders.RECEIVED_MESSAGE_KEY);
-  }
 
   private static boolean hasPayloadType(Message<?> message, Class<?> payloadType) {
     return payloadType.isInstance(message.getPayload());

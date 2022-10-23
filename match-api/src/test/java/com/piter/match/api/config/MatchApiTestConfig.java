@@ -21,7 +21,6 @@ public class MatchApiTestConfig {
 
   //Mock because we don't use it in tests - just avoid missing bean errors
   @Bean
-  @Primary
   MatchKafkaProducer matchProducer() {
     return mock(MatchKafkaProducer.class);
   }
