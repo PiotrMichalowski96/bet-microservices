@@ -90,6 +90,30 @@
 					"response": []
 				},
 				{
+					"name": "Get all upcoming matches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{gw-url}}/matches/upcoming",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"matches",
+								"upcoming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Save match without result",
 					"request": {
 						"method": "POST",
@@ -269,6 +293,78 @@
 					"response": []
 				},
 				{
+					"name": "Get all bets by nickname",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{gw-url}}/bets?userNickname=piter",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"bets"
+							],
+							"query": [
+								{
+									"key": "userNickname",
+									"value": "piter"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all bets by match id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{gw-url}}/bets?matchId=713",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"bets"
+							],
+							"query": [
+								{
+									"key": "matchId",
+									"value": "713"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Save bet",
 					"request": {
 						"method": "POST",
@@ -356,6 +452,57 @@
 							"path": [
 								"bets",
 								"7001581537355382241"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users with results",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{gw-url}}/bets/results/users",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"bets",
+								"results",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get given user with result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{gw-url}}/bets/results/users/piter",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"bets",
+								"results",
+								"users",
+								"piter"
 							]
 						}
 					},

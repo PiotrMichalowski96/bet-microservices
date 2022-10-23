@@ -5,56 +5,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.api.commons.domain.Bet;
 import com.piter.api.commons.domain.User;
-import com.piter.bet.api.config.BetApiTestConfig;
 import com.piter.bet.api.exception.BetNotFoundException;
-import com.piter.bet.api.repository.BetRepository;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@DataMongoTest
-@ActiveProfiles("TEST")
-@ExtendWith(SpringExtension.class)
-@Import(BetApiTestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
-class BetServiceTest {
+class BetServiceTest extends AbstractServiceTest {
 
-  private static final List<Bet> BETS = createBetList();
+  private final BetService betService;
 
   @Autowired
-  private BetRepository betRepository;
-
-  @Autowired
-  private BetService betService;
-
-  @BeforeEach
-  void fillDatabaseIfEmpty() {
-    List<Bet> existingBets = betRepository.findAll()
-        .collectList()
-        .block();
-    if (existingBets == null || existingBets.isEmpty()) {
-      fillDatabase();
-    }
-  }
-
-  private void fillDatabase() {
-    BETS.forEach(bet -> betRepository.save(bet).block());
+  public BetServiceTest(BetService betService) {
+    super(createBetList());
+    this.betService = betService;
   }
 
   @Test
   void shouldGetAllVisibleBets() {
-    var user = BETS.get(0).getUser();
+    var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAll(user);
     StepVerifier.create(betFlux)
         .assertNext(bet -> assertThat(bet.getId()).isEqualTo(1L))
@@ -65,7 +35,7 @@ class BetServiceTest {
   @Test
   void shouldGetAllVisibleBetsByMatchId() {
     var matchId = 1L;
-    var user = BETS.get(0).getUser();
+    var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAllByMatchId(matchId, user);
     StepVerifier.create(betFlux)
         .assertNext(bet -> assertThat(bet.getId()).isEqualTo(1L))
@@ -74,8 +44,8 @@ class BetServiceTest {
 
   @Test
   void shouldGetAllVisibleBetsByUserNickname() {
-    var nickname = BETS.get(2).getUser().getNickname();
-    var user = BETS.get(0).getUser();
+    var nickname = super.getBets().get(2).getUser().getNickname();
+    var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAllByUserNickname(nickname, user);
     StepVerifier.create(betFlux)
         .assertNext(bet -> assertThat(bet.getId()).isEqualTo(3L))
@@ -94,7 +64,7 @@ class BetServiceTest {
   @Test
   void shouldGetBetById() {
     var id = 2L;
-    var user = BETS.get(1).getUser();
+    var user = super.getBets().get(1).getUser();
     Mono<Bet> betMono = betService.findById(id, user);
     StepVerifier.create(betMono)
         .assertNext(bet -> assertThat(bet.getId()).isEqualTo(id))

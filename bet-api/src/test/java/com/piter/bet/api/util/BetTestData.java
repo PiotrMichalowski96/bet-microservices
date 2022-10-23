@@ -60,4 +60,34 @@ public class BetTestData {
             .build()
     );
   }
+
+  public static List<Bet> createBetListWithBetResults() {
+    return List.of(
+        Bet.builder()
+            .id(1L)
+            .user(new User("Jon", "Snow", "snowboard"))
+            .betResult(new BetResult(Status.CORRECT, 5))
+            .build(),
+        Bet.builder()
+            .id(2L)
+            .user(new User("Tyrion", "Lanister", "bigGuy"))
+            .betResult(new BetResult(Status.CORRECT, 1))
+            .build(),
+        Bet.builder()
+            .id(3L)
+            .user(new User("Robb", "Stark", "bridegroom"))
+            .betResult(new BetResult(Status.INCORRECT, 3))
+            .build(),
+        Bet.builder()
+            .id(4L)
+            .user(new User("Tyrion", "Lanister", "bigGuy"))
+            .betResult(new BetResult(Status.CORRECT, 1))
+            .build(),
+        Bet.builder()
+            .id(5L)
+            .user(new User("Robb", "Stark", "bridegroom"))
+            .betResult(new BetResult(Status.CORRECT, 1))
+            .build()
+    );
+  }
 }
