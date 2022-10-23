@@ -35,7 +35,7 @@ match-api:
 spring.security.oauth2.client:
   registration.match-management:
     client-id: match-management-app
-    client-secret: fTHaBawFrT8HySTU1FPFqA2EmMaURV9o
+    client-secret: gB3WsF1k6489aVlDGBwaqUfqLvO8EzpE
     authorization-grant-type: authorization_code
     scope: openid, roles
     redirect-uri: http://localhost:8081/login/oauth2/code/match-management

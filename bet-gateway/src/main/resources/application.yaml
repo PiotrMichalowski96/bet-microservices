@@ -7,6 +7,6 @@ server.port: 9090
 spring.security.oauth2.resourceserver.opaquetoken:
   introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
   client-id: bet-login-app
-  client-secret: gxFjfVmqSQSLLvufqVpniY0qvfqpEnWt
+  client-secret: DQaXG75c2bAqfHA3CXsboQek4xxF2Y6Y
 
 logging.level.org.springframework.cloud.gateway: debug
