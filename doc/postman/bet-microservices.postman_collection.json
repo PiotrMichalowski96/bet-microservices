@@ -347,7 +347,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gw-url}}/bets?matchId=-9189574484313950336",
+							"raw": "{{gw-url}}/bets?matchId=713",
 							"host": [
 								"{{gw-url}}"
 							],
@@ -357,7 +357,7 @@
 							"query": [
 								{
 									"key": "matchId",
-									"value": "-9189574484313950336"
+									"value": "713"
 								}
 							]
 						}
