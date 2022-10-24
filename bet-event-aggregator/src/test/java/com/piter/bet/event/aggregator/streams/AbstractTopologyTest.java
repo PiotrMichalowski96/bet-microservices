@@ -23,13 +23,13 @@ abstract class AbstractTopologyTest {
   private static final String BET_REQUEST_TOPIC = "bet-request";
   private static final String MATCH_TOPIC = "match";
 
-  protected abstract BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> getBetStreamFunction();
+  protected abstract BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> getBetStreamFunction();
 
   protected void testAndAssertTopology(
       BiConsumer<TestInputTopic<Long, Bet>, TestInputTopic<Long, Match>> topicSender,
-      Consumer<MockProcessor<Long, Bet, Void, Void>> mockProcessorAsserter) {
+      Consumer<MockProcessor<String, Bet, Void, Void>> mockProcessorAsserter) {
 
-    final MockProcessorSupplier<Long, Bet, Void, Void> supplier = new MockProcessorSupplier<>();
+    final MockProcessorSupplier<String, Bet, Void, Void> supplier = new MockProcessorSupplier<>();
 
     var streamBuilder = new StreamsBuilder();
 
@@ -40,7 +40,7 @@ abstract class AbstractTopologyTest {
     KStream<Long, Match> matchStream = streamBuilder.stream(MATCH_TOPIC,
         Consumed.with(longSerde, MATCH_JSON_SERDE));
 
-    KStream<Long, Bet> betStream = getBetStreamFunction().apply(betRequestStream, matchStream);
+    KStream<String, Bet> betStream = getBetStreamFunction().apply(betRequestStream, matchStream);
     betStream.process(supplier);
 
     try (final var testDriver = new TopologyTestDriver(streamBuilder.build())) {
@@ -52,7 +52,7 @@ abstract class AbstractTopologyTest {
           longSerde.serializer(),
           MATCH_JSON_SERDE.serializer());
 
-      final MockProcessor<Long, Bet, Void, Void> processor = supplier.getProcessor();
+      final MockProcessor<String, Bet, Void, Void> processor = supplier.getProcessor();
 
       topicSender.accept(inputBetTopic, inputMatchTopic);
 

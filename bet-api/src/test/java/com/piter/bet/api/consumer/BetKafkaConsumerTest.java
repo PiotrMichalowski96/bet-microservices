@@ -39,7 +39,7 @@ class BetKafkaConsumerTest {
   @Test
   void shouldSaveBet() {
     //given
-    var id = 1L;
+    var id = "1";
     var bet = Bet.builder()
         .id(id)
         .matchPredictedResult(new MatchResult(1, 1))
@@ -55,7 +55,7 @@ class BetKafkaConsumerTest {
     assertAsync(() -> assertSavedBet(id, bet));
   }
 
-  private void assertSavedBet(long id, Bet expectedBet) {
+  private void assertSavedBet(String id, Bet expectedBet) {
     var savedBet = betRepository.findById(id).block();
     assertThat(savedBet).isEqualTo(expectedBet);
   }

@@ -43,7 +43,7 @@ public class BetKafkaConsumer {
   }
 
   private void deleteBet(Message<?> tombstoneMessage) {
-    Long id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class))
+    String id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, String.class))
         .orElseThrow(() -> new BetKafkaException("Delete event does not have Kafka key ID"));
     betRepository.deleteById(id).subscribe();
     logger.debug("Deleted bet id: {}", id);

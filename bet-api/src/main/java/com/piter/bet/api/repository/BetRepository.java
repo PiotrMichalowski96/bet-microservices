@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface BetRepository extends ReactiveMongoRepository<Bet, Long> {
+public interface BetRepository extends ReactiveMongoRepository<Bet, String> {
 
   Flux<Bet> findAllByMatchId(Long matchId);
 

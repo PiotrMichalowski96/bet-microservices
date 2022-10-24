@@ -27,7 +27,7 @@ spring.cloud.stream:
       bets-in-0:
         consumer:
           configuration:
-            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
   bindings:
     bets-out-0:
       destination: sample-bet-request-topic-2

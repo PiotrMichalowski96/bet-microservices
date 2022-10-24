@@ -11,7 +11,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 public class Bet {
   @NotNull
-  Long id;
+  String id;
   @NotNull
   @Valid
   MatchResult matchPredictedResult;
