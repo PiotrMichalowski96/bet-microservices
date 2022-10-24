@@ -1,6 +1,6 @@
 <ng-container *ngIf="match">
   <a class="match-item" [routerLink]="'/match/' + match.id">
-    <div class="match-item-startTime">{{match.startTime | date: 'dd.MM.yyyy hh:mm'}}</div>
+    <div class="match-item-startTime">{{match.startTime | date: 'dd.MM.yyyy HH:mm'}}</div>
     <ng-container *ngIf="match.result">
       <div class="match-item-result">
         <span>{{match.result.homeTeamGoals}} : {{match.result.awayTeamGoals}}</span>
