@@ -61,7 +61,7 @@ class BetValidatorTest {
     return Stream.of(
         // Missing home team goals prediction
         Arguments.of(Bet.builder()
-            .id(1L)
+            .id("1")
             .matchPredictedResult(MatchResult.builder()
                 .awayTeamGoals(1)
                 .build())
@@ -71,7 +71,7 @@ class BetValidatorTest {
             .build()),
         // Invalid match
         Arguments.of(Bet.builder()
-            .id(1L)
+            .id("1")
             .matchPredictedResult(MatchResult.builder()
                 .homeTeamGoals(1)
                 .awayTeamGoals(1)
@@ -82,7 +82,7 @@ class BetValidatorTest {
             .build()),
         // Wrong bet result - bet was resolved and result has points
         Arguments.of(Bet.builder()
-            .id(1L)
+            .id("1")
             .matchPredictedResult(MatchResult.builder()
                 .homeTeamGoals(1)
                 .awayTeamGoals(1)
@@ -99,7 +99,7 @@ class BetValidatorTest {
     //given
     LocalDateTime matchStartTime = LocalDateTime.now();
     Bet invalidBetRequest = Bet.builder()
-        .id(1L)
+        .id("1")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(1)
             .awayTeamGoals(1)

@@ -46,7 +46,7 @@ public class BetController {
   }
 
   @GetMapping("/bets/{id}")
-  Mono<Bet> findById(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+  Mono<Bet> findById(@PathVariable("id") String id, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return betService.findById(id, user);
   }
@@ -61,7 +61,7 @@ public class BetController {
   }
 
   @DeleteMapping("/bets/{id}")
-  Mono<Void> delete(@PathVariable("id") Long id, BearerTokenAuthentication token) {
+  Mono<Void> delete(@PathVariable("id") String id, BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
     return betService.deleteBet(id, user);
   }

@@ -52,7 +52,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
   private BetTopologyConfig betTopology;
 
   @Override
-  protected BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> getBetStreamFunction() {
+  protected BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> getBetStreamFunction() {
     return betTopology.bets();
   }
 
@@ -76,9 +76,9 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
         .toList();
 
     var key = RandomUtils.nextLong();
-    List<Record<Long, Bet>> expectedRecords = Stream.generate(TestData::createBetWithoutResult)
+    List<Record<String, Bet>> expectedRecords = Stream.generate(TestData::createBetWithoutResult)
         .limit(numberOfBetRequests)
-        .map(betResult -> new Record<>(key, betResult, 1L))
+        .map(betResult -> new Record<>(betResult.getId(), betResult, 1L))
         .toList();
 
     //when
@@ -88,7 +88,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserter =
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter =
         processor -> processor.checkAndClearProcessedRecords(expectedRecords);
 
     testAndAssertTopology(topicSender, asserter);
@@ -110,9 +110,9 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
-            new Record<>(key, betRequestWithPrediction, 4L),
-            new Record<>(key, betWithResult, 5L)
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+            new Record<>(betRequestWithPrediction.getId(), betRequestWithPrediction, 4L),
+            new Record<>(betWithResult.getId(), betWithResult, 5L)
     );
     testAndAssertTopology(topicSender, asserter);
   }
@@ -148,9 +148,9 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
-        new Record<>(firstKey, firstBetResult, 1L),
-        new Record<>(secondKey, secondBetResult, 1L)
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+        new Record<>(firstBetResult.getId(), firstBetResult, 1L),
+        new Record<>(secondBetResult.getId(), secondBetResult, 1L)
     );
     testAndAssertTopology(topicSender, asserter);
   }
@@ -169,7 +169,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
     testAndAssertTopology(topicSender, asserterEmpty);
   }
 
@@ -187,7 +187,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
     testAndAssertTopology(topicSender, asserterEmpty);
   }
 }

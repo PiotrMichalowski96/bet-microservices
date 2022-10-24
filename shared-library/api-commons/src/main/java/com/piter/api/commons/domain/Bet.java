@@ -4,14 +4,16 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Value
 @Builder
 @Document
 public class Bet {
+  @Id
   @NotNull
-  Long id;
+  String id;
   @NotNull
   @Valid
   MatchResult matchPredictedResult;

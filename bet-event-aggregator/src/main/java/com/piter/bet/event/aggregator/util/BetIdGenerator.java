@@ -24,13 +24,13 @@ public class BetIdGenerator {
         .orElseThrow(() -> BetAggregatorException.missingFieldException("User", bet));
   }
 
-  public Long generateId() {
+  public String generateId() {
     String concatMatchIdAndUser = StringUtils.join(matchId,
         user.getFirstName(),
         user.getLastName(),
         user.getNickname());
 
     UUID uuid = UUID.nameUUIDFromBytes(concatMatchIdAndUser.getBytes());
-    return uuid.getMostSignificantBits();
+    return uuid.toString();
   }
 }

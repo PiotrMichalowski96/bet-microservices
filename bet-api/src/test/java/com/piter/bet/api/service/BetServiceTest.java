@@ -27,8 +27,8 @@ class BetServiceTest extends AbstractServiceTest {
     var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAll(user);
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(1L))
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(3L))
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
         .verifyComplete();
   }
 
@@ -38,7 +38,7 @@ class BetServiceTest extends AbstractServiceTest {
     var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAllByMatchId(matchId, user);
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(1L))
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
         .verifyComplete();
   }
 
@@ -48,7 +48,7 @@ class BetServiceTest extends AbstractServiceTest {
     var user = super.getBets().get(0).getUser();
     Flux<Bet> betFlux = betService.findAllByUserNickname(nickname, user);
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(3L))
+        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
         .verifyComplete();
   }
 
@@ -63,7 +63,7 @@ class BetServiceTest extends AbstractServiceTest {
 
   @Test
   void shouldGetBetById() {
-    var id = 2L;
+    var id = "2";
     var user = super.getBets().get(1).getUser();
     Mono<Bet> betMono = betService.findById(id, user);
     StepVerifier.create(betMono)
@@ -73,7 +73,7 @@ class BetServiceTest extends AbstractServiceTest {
 
   @Test
   void shouldNotGetBetByIdBecauseUserIsNotOwner() {
-    var id = 2L;
+    var id = "2";
     var user = new User("Arya", "Stark", "needle");
     Mono<Bet> betMono = betService.findById(id, user);
     StepVerifier.create(betMono)

@@ -35,7 +35,7 @@ public class BetService {
         .filter(bet -> isBetVisibleForUser(user, bet));
   }
 
-  public Mono<Bet> findById(Long id, User user) {
+  public Mono<Bet> findById(String id, User user) {
     return betRepository.findById(id)
         .filter(bet -> isBetVisibleForUser(user, bet))
         .switchIfEmpty(Mono.error(new BetNotFoundException(id)));
@@ -45,7 +45,7 @@ public class BetService {
     return Mono.just(betKafkaProducer.sendSaveBetEvent(bet));
   }
 
-  public Mono<Void> deleteBet(Long id, User user) {
+  public Mono<Void> deleteBet(String id, User user) {
     return betRepository.findById(id)
         .filter(bet -> doesUserOwnBet(user, bet))
         .switchIfEmpty(Mono.error(new BetNotFoundException(id)))
