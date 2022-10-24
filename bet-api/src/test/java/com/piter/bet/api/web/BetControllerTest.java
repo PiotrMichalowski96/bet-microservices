@@ -91,7 +91,7 @@ class BetControllerTest {
   void shouldGetAllVisibleBetsByMatchId() {
     var user = BETS.get(0).getUser();
     var matchId = 1L;
-    var expectedBetId = 1L;
+    var expectedBetId = "1";
     mockFindAllByMatchId(matchId);
     webClient
         .mutateWith(mockBearerToken(user))
@@ -118,7 +118,7 @@ class BetControllerTest {
     var user = BETS.get(0).getUser();
     var nickname = BETS.get(2).getUser().getNickname();
     mockFindAllByUserNickName(nickname);
-    var expectedBetId = 3L;
+    var expectedBetId = "3";
     webClient
         .mutateWith(mockBearerToken(user))
         .get()
@@ -155,7 +155,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldGetBetById() {
-    var id = 2L;
+    var id = "2";
     var userOwningBet = BETS.get(1).getUser();
     mockFindById(id);
     webClient
@@ -171,7 +171,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldNotGetBetByIdBecauseUserIsNotBetOwner() {
-    var id = 2L;
+    var id = "2";
     var userNotOwningBet = BETS.get(0).getUser();
     mockFindById(id);
     webClient
@@ -182,7 +182,7 @@ class BetControllerTest {
         .expectStatus().isNotFound();
   }
 
-  private void mockFindById(Long id) {
+  private void mockFindById(String id) {
     Bet bet = BETS.stream()
         .filter(b -> Objects.equals(id, b.getId()))
         .findFirst()

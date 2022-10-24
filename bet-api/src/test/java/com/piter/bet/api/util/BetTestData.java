@@ -17,7 +17,7 @@ public class BetTestData {
   public static List<Bet> createBetList() {
     return List.of(
         Bet.builder()
-            .id(1L)
+            .id("1")
             .matchPredictedResult(new MatchResult(1, 1))
             .user(new User("Jon", "Snow", "snowboard"))
             .betResult(new BetResult(Status.UNRESOLVED, 0))
@@ -31,7 +31,7 @@ public class BetTestData {
                 .build())
             .build(),
         Bet.builder()
-            .id(2L)
+            .id("2")
             .matchPredictedResult(new MatchResult(3, 1))
             .user(new User("Tyrion", "Lanister", "bigGuy"))
             .betResult(new BetResult(Status.CORRECT, 3))
@@ -45,7 +45,7 @@ public class BetTestData {
                 .build())
             .build(),
         Bet.builder()
-            .id(3L)
+            .id("3")
             .matchPredictedResult(new MatchResult(2, 3))
             .user(new User("Robb", "Stark", "bridegroom"))
             .betResult(new BetResult(Status.UNRESOLVED, 0))
@@ -64,27 +64,27 @@ public class BetTestData {
   public static List<Bet> createBetListWithBetResults() {
     return List.of(
         Bet.builder()
-            .id(1L)
+            .id("1")
             .user(new User("Jon", "Snow", "snowboard"))
             .betResult(new BetResult(Status.CORRECT, 5))
             .build(),
         Bet.builder()
-            .id(2L)
+            .id("2")
             .user(new User("Tyrion", "Lanister", "bigGuy"))
             .betResult(new BetResult(Status.CORRECT, 1))
             .build(),
         Bet.builder()
-            .id(3L)
+            .id("3")
             .user(new User("Robb", "Stark", "bridegroom"))
             .betResult(new BetResult(Status.INCORRECT, 3))
             .build(),
         Bet.builder()
-            .id(4L)
+            .id("4")
             .user(new User("Tyrion", "Lanister", "bigGuy"))
             .betResult(new BetResult(Status.CORRECT, 1))
             .build(),
         Bet.builder()
-            .id(5L)
+            .id("5")
             .user(new User("Robb", "Stark", "bridegroom"))
             .betResult(new BetResult(Status.CORRECT, 1))
             .build()
