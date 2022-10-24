@@ -23,7 +23,7 @@ spring.cloud.stream:
       bets-out-0:
         producer:
           configuration:
-            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+            key.serializer: org.apache.kafka.common.serialization.LongSerializer
       bets-in-0:
         consumer:
           configuration:
