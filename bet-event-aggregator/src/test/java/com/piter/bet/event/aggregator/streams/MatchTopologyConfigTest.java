@@ -1,5 +1,6 @@
 package com.piter.bet.event.aggregator.streams;
 
+
 import static com.piter.bet.event.aggregator.util.TestData.createBetRequestWithCorrectPrediction;
 
 import com.piter.bet.event.aggregator.domain.Bet;
@@ -19,7 +20,7 @@ class MatchTopologyConfigTest extends AbstractTopologyTest {
   private final MatchTopologyConfig matchTopologyConfig = new MatchTopologyConfig(1);
 
   @Override
-  protected BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> getBetStreamFunction() {
+  protected BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> getBetStreamFunction() {
     return matchTopologyConfig.matches();
   }
 
@@ -37,7 +38,7 @@ class MatchTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserterEmpty = MockProcessor::checkAndClearProcessedRecords;
     testAndAssertTopology(topicSender, asserterEmpty);
   }
 
@@ -56,8 +57,8 @@ class MatchTopologyConfigTest extends AbstractTopologyTest {
     };
 
     //then
-    Consumer<MockProcessor<Long, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
-        new Record<>(key, expectedTombstoneBet, 1L)
+    Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
+        new Record<>("1", expectedTombstoneBet, 1L)
     );
     testAndAssertTopology(topicSender, asserter);
   }

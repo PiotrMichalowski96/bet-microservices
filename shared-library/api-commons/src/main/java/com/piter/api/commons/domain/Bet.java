@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Bet {
   @NotNull
-  Long id;
+  String id;
   @NotNull
   @Valid
   MatchResult matchPredictedResult;

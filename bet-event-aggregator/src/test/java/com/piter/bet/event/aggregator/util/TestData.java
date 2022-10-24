@@ -13,7 +13,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestData {
 
-  public Match createMatchWithTime(LocalDateTime startTime) {
+  public static Match createMatchWithTime(LocalDateTime startTime) {
     return Match.builder()
         .id(1L)
         .homeTeam("FC Barcelona")
@@ -26,11 +26,11 @@ public class TestData {
         .build();
   }
 
-  public Match createMatchWithoutResult() {
+  public static Match createMatchWithoutResult() {
     return createMatchWithTime(LocalDateTime.MAX);
   }
 
-  public Match createMatchWithResult() {
+  public static Match createMatchWithResult() {
     return Match.builder()
         .id(1L)
         .homeTeam("FC Barcelona")
@@ -47,7 +47,7 @@ public class TestData {
         .build();
   }
 
-  public Match createSecondMatchWithoutResult() {
+  public static Match createSecondMatchWithoutResult() {
     return Match.builder()
         .id(2L)
         .homeTeam("Sevilla")
@@ -60,7 +60,7 @@ public class TestData {
         .build();
   }
 
-  public Match createMatchThatAlreadyPassed() {
+  public static Match createMatchThatAlreadyPassed() {
     return Match.builder()
         .id(1L)
         .homeTeam("FC Barcelona")
@@ -77,9 +77,9 @@ public class TestData {
         .build();
   }
 
-  public Bet createBetRequestWithCorrectPrediction() {
+  public static Bet createBetRequestWithCorrectPrediction() {
     return Bet.builder()
-        .id(1L)
+        .id("1")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(2)
             .awayTeamGoals(1)
@@ -90,9 +90,9 @@ public class TestData {
         .build();
   }
 
-  public Bet createBetRequestWithWrongPrediction() {
+  public static Bet createBetRequestWithWrongPrediction() {
     return Bet.builder()
-        .id(1L)
+        .id("1")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(1)
             .awayTeamGoals(3)
@@ -103,9 +103,9 @@ public class TestData {
         .build();
   }
 
-  public Bet createSecondBetRequest() {
+  public static Bet createSecondBetRequest() {
     return Bet.builder()
-        .id(2L)
+        .id("2")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(3)
             .awayTeamGoals(2)
@@ -116,17 +116,17 @@ public class TestData {
         .build();
   }
 
-  public Bet createBetWithoutResult() {
+  public static Bet createBetWithoutResult() {
     return createBetRequestWithCorrectPrediction();
   }
 
-  public Bet createSecondBetWithoutResult() {
+  public static Bet createSecondBetWithoutResult() {
     return createSecondBetRequest();
   }
 
-  public Bet createBetWithCorrectResult() {
+  public static Bet createBetWithCorrectResult() {
     return Bet.builder()
-        .id(1L)
+        .id("1")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(2)
             .awayTeamGoals(1)
@@ -137,9 +137,9 @@ public class TestData {
         .build();
   }
 
-  public Bet createBetWithIncorrectResult() {
+  public static Bet createBetWithIncorrectResult() {
     return Bet.builder()
-        .id(1L)
+        .id("1")
         .matchPredictedResult(MatchResult.builder()
             .homeTeamGoals(1)
             .awayTeamGoals(3)
@@ -150,7 +150,7 @@ public class TestData {
         .build();
   }
 
-  public User createUser() {
+  public static User createUser() {
     return User.builder()
         .firstName("Bob")
         .lastName("Marley")
@@ -158,21 +158,21 @@ public class TestData {
         .build();
   }
 
-  public BetResult createEmptyBetResult() {
+  public static BetResult createEmptyBetResult() {
     return BetResult.builder()
         .status(Status.UNRESOLVED)
         .points(0)
         .build();
   }
 
-  private BetResult createCorrectBetResult() {
+  private static BetResult createCorrectBetResult() {
     return BetResult.builder()
         .status(Status.CORRECT)
         .points(5)
         .build();
   }
 
-  private BetResult createWrongBetResult() {
+  private static BetResult createWrongBetResult() {
     return BetResult.builder()
         .status(Status.INCORRECT)
         .points(0)

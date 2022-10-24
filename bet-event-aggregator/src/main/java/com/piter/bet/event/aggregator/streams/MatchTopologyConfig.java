@@ -31,7 +31,7 @@ public class MatchTopologyConfig {
   }
 
   @Bean
-  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<Long, Bet>> matches() {
+  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> matches() {
     return (bets, matches) -> matches
         .peek((k, match) -> logger.debug("Key: {}, Received match: {}", k, ObjectUtils.defaultIfNull(match, "null")))
         .filter((k, match) -> isTombstoneMatchRecord(match))
@@ -49,9 +49,9 @@ public class MatchTopologyConfig {
     return Objects.isNull(match);
   }
 
-  private KeyValue<Long, Bet> createTombstoneBetRecord(Bet bet) {
+  private KeyValue<String, Bet> createTombstoneBetRecord(Bet bet) {
     BetIdGenerator betIdGenerator = new BetIdGenerator(bet);
-    Long key = betIdGenerator.generateId();
+    String key = betIdGenerator.generateId();
     return new KeyValue<>(key, null);
   }
 }
