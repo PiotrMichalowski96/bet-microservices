@@ -1,0 +1,19 @@
+<form [formGroup]="betPredictionForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="homeTeamGoalsPrediction">
+      {{bet?.match?.homeTeam}}
+    </label>
+    <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction">
+  </div>
+
+  <div>
+    <label for="awayTeamGoalsPrediction">
+      {{bet?.match?.awayTeam}}
+    </label>
+    <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction">
+  </div>
+
+  <button class="button" type="submit">Bet</button>
+
+</form>
