@@ -18,6 +18,8 @@ import {TabViewModule} from "primeng/tabview";
 import { BetComponent } from './components/bet/bet.component';
 import { BetsPageComponent } from './pages/bets-page/bets-page.component';
 import {CarouselModule} from "primeng/carousel";
+import { BetPageComponent } from './pages/bet-page/bet-page.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import {CarouselModule} from "primeng/carousel";
     MatchesPageComponent,
     MatchPageComponent,
     BetComponent,
-    BetsPageComponent
+    BetsPageComponent,
+    BetPageComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import {CarouselModule} from "primeng/carousel";
     HttpClientModule,
     PaginatorModule,
     TabViewModule,
-    CarouselModule
+    CarouselModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

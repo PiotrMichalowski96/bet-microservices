@@ -4,6 +4,7 @@ import {HomeComponent} from "./pages/home/home.component";
 import {MatchesPageComponent} from "./pages/matches-page/matches-page.component";
 import {MatchPageComponent} from "./pages/match-page/match-page.component";
 import {BetsPageComponent} from "./pages/bets-page/bets-page.component";
+import {BetPageComponent} from "./pages/bet-page/bet-page.component";
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'bets',
     component: BetsPageComponent
+  },
+  {
+    path: 'bet/:id',
+    component: BetPageComponent
   },
   {
     path: '**',
