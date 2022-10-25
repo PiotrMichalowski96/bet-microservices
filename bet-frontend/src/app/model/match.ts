@@ -7,9 +7,14 @@ export interface Match {
   round: MatchRound;
 }
 
-export interface MatchResult {
+export class MatchResult {
   homeTeamGoals: number;
   awayTeamGoals: number;
+
+  constructor(homeTeamGoals: number, awayTeamGoals: number) {
+    this.homeTeamGoals = homeTeamGoals;
+    this.awayTeamGoals = awayTeamGoals;
+  }
 }
 
 export interface MatchRound {

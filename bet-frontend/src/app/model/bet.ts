@@ -1,11 +1,23 @@
 import {Match, MatchResult} from "./match";
 
-export interface Bet {
-  id: number;
+export class Bet {
+  id: string;
   matchPredictedResult: MatchResult;
   match: Match;
   user: User;
   betResult: BetResult;
+
+  constructor(id: string,
+              matchPredictedResult: MatchResult,
+              match: Match,
+              user: User,
+              betResult: BetResult) {
+    this.id = id;
+    this.matchPredictedResult = matchPredictedResult;
+    this.match = match;
+    this.user = user;
+    this.betResult = betResult;
+  }
 }
 
 export interface User {

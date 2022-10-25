@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
 import {TOKEN, TOKEN_HEADER_PREFIX} from "../constants/token-properties";
-import {of, switchMap} from "rxjs";
+import {catchError, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
 
 @Injectable({
@@ -42,11 +42,29 @@ export class BetsService {
     return this.http.get<Bet[]>(`${BetsService.baseUrl}/my-own`, options);
   }
 
-  getBet(id: number) {
+  getBet(id: string) {
     let options = {
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet>(`${BetsService.baseUrl}/${id}`, options);
+  }
+
+  postBet(bet: Bet) {
+    let options = {
+      headers: this.createAuthHeader()
+    };
+    return this.http.post<Bet>(`${BetsService.baseUrl}`, bet, options).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      console.error('An error occurred:', error.error);
+    } else {
+      console.error(`Backend returned code ${error.status}, body was: `, error.error);
+    }
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 
   private createAuthHeader(): HttpHeaders {

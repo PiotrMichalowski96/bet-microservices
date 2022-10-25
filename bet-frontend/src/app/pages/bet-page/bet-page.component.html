@@ -4,14 +4,14 @@
     <label for="homeTeamGoalsPrediction">
       {{bet?.match?.homeTeam}}
     </label>
-    <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction">
+    <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.homeTeamGoals">
   </div>
 
   <div>
     <label for="awayTeamGoalsPrediction">
       {{bet?.match?.awayTeam}}
     </label>
-    <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction">
+    <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.awayTeamGoals">
   </div>
 
   <button class="button" type="submit">Bet</button>

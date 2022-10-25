@@ -25,19 +25,30 @@ export class BetPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.pipe(first()).subscribe(({id}) => {
-      this.getBet(id);
+      this.getBetAndUpdateForm(id);
     });
-    console.log(this.bet);
   }
 
-  private getBet(id: number) {
+  private getBetAndUpdateForm(id: string) {
     this.betsService.getBet(id).subscribe(bet => {
       this.bet = bet;
+      this.updateBetPredictionForm();
     });
   }
 
   onSubmit(): void {
-    console.log('Submit ', this.betPredictionForm.value)
+    if (this.bet == null) {
+      return;
+    }
+    this.bet.matchPredictedResult.homeTeamGoals = this.betPredictionForm.get('homeTeamGoalsPrediction')?.value;
+    this.bet.matchPredictedResult.awayTeamGoals = this.betPredictionForm.get('awayTeamGoalsPrediction')?.value;
+    this.betsService.postBet(this.bet).subscribe();
   }
 
+  updateBetPredictionForm() {
+    this.betPredictionForm.setValue({
+      homeTeamGoalsPrediction: this.bet?.matchPredictedResult?.homeTeamGoals,
+      awayTeamGoalsPrediction: this.bet?.matchPredictedResult?.awayTeamGoals
+    });
+  }
 }
