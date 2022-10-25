@@ -3,7 +3,7 @@ import {Bet} from "../../model/bet";
 import {ActivatedRoute} from "@angular/router";
 import {BetsService} from "../../services/bets.service";
 import {first} from "rxjs";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-bet-page',
@@ -15,8 +15,8 @@ export class BetPageComponent implements OnInit {
   bet: Bet | null = null;
 
   betPredictionForm : FormGroup = this.formBuilder.group({
-    homeTeamGoalsPrediction: 0,
-    awayTeamGoalsPrediction: 0
+    homeTeamGoalsPrediction: [0, Validators.required],
+    awayTeamGoalsPrediction: [0, Validators.required]
   });
 
   constructor(private route: ActivatedRoute,

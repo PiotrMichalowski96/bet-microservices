@@ -5,6 +5,9 @@
       {{bet?.match?.homeTeam}}
     </label>
     <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.homeTeamGoals">
+    <div *ngIf="betPredictionForm.controls['homeTeamGoalsPrediction'].invalid" class="alert alert-danger">
+      Home team goals are required.
+    </div>
   </div>
 
   <div>
@@ -12,8 +15,11 @@
       {{bet?.match?.awayTeam}}
     </label>
     <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.awayTeamGoals">
+    <div *ngIf="betPredictionForm.controls['awayTeamGoalsPrediction'].invalid" class="alert alert-danger">
+        Away team goals are required.
+    </div>
   </div>
 
-  <button class="button" type="submit">Bet</button>
+  <button class="button" type="submit" [disabled]="!betPredictionForm.valid">Bet</button>
 
 </form>
