@@ -56,6 +56,8 @@ export class BetPageComponent implements OnInit {
     if (this.bet?.match.startTime == null) {
       return true;
     }
-    return this.bet.match.startTime < new Date();
+    let matchTime: number = new Date(this.bet.match.startTime).getTime();
+    let currentTime: number = new Date().getTime();
+    return matchTime < currentTime;
   }
 }
