@@ -29,7 +29,7 @@ export class BetPageComponent implements OnInit {
     });
   }
 
-  private getBetAndUpdateForm(id: string) {
+  private getBetAndUpdateForm(id: string): void {
     this.betsService.getBet(id).subscribe(bet => {
       this.bet = bet;
       this.updateBetPredictionForm();
@@ -45,10 +45,17 @@ export class BetPageComponent implements OnInit {
     this.betsService.postBet(this.bet).subscribe();
   }
 
-  updateBetPredictionForm() {
+  updateBetPredictionForm(): void {
     this.betPredictionForm.setValue({
       homeTeamGoalsPrediction: this.bet?.matchPredictedResult?.homeTeamGoals,
       awayTeamGoalsPrediction: this.bet?.matchPredictedResult?.awayTeamGoals
     });
+  }
+
+  isMatchStarted(): boolean {
+    if (this.bet?.match.startTime == null) {
+      return true;
+    }
+    return this.bet.match.startTime < new Date();
   }
 }

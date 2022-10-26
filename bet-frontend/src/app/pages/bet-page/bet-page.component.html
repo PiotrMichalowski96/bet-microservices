@@ -20,6 +20,6 @@
     </div>
   </div>
 
-  <button class="button" type="submit" [disabled]="!betPredictionForm.valid">Bet</button>
+  <button class="button" type="submit" [disabled]="!betPredictionForm.valid || isMatchStarted">Bet</button>
 
 </form>
