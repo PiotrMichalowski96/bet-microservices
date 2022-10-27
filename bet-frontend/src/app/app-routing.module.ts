@@ -24,7 +24,11 @@ const routes: Routes = [
     component: BetsPageComponent
   },
   {
-    path: 'bet/:id',
+    path: 'bet/:betId',
+    component: BetPageComponent
+  },
+  {
+    path: 'bets/new',
     component: BetPageComponent
   },
   {

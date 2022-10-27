@@ -37,10 +37,10 @@
       <h2>Bet Overview</h2>
         <div class="stat">
           <div class="label">
-            <label for="homeTeamGoalsPrediction">{{bet?.match?.homeTeam}}</label>
+            <label for="homeTeamGoalsPrediction">{{bet.match.homeTeam}}</label>
           </div>
           <div class="value">
-            <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.homeTeamGoals">
+            <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction" [defaultValue]="bet.matchPredictedResult.homeTeamGoals">
           </div>
           <div *ngIf="betPredictionForm.controls['homeTeamGoalsPrediction'].invalid" class="alert alert-danger">
             Home team goals are required.
@@ -48,10 +48,10 @@
         </div>
         <div class="stat">
           <div class="label">
-            <label for="awayTeamGoalsPrediction">{{bet?.match?.awayTeam}}</label>
+            <label for="awayTeamGoalsPrediction">{{bet.match.awayTeam}}</label>
           </div>
           <div class="value">
-            <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction" [defaultValue]="bet?.matchPredictedResult?.awayTeamGoals">
+            <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction" [defaultValue]="bet.matchPredictedResult.awayTeamGoals">
           </div>
           <div *ngIf="betPredictionForm.controls['awayTeamGoalsPrediction'].invalid" class="alert alert-danger">
             Away team goals are required.

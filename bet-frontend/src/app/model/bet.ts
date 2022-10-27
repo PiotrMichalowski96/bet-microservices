@@ -1,4 +1,5 @@
 import {Match, MatchResult} from "./match";
+import {User} from "./user";
 
 export class Bet {
   id: string;
@@ -20,13 +21,12 @@ export class Bet {
   }
 }
 
-export interface User {
-  firstName: string;
-  lastName: string;
-  nickname: string;
-}
-
-export interface BetResult {
+export class BetResult {
   status: string;
   points: number;
+
+  constructor(status: string, points: number) {
+    this.status = status;
+    this.points = points;
+  }
 }
