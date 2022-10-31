@@ -1,0 +1,18 @@
+<p-table [value]="usersResults">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nickname</th>
+      <th>Firstname</th>
+      <th>Lastname</th>
+      <th>Points</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-userResult>
+    <tr>
+      <td>{{userResult.user.nickname}}</td>
+      <td>{{userResult.user.firstName}}</td>
+      <td>{{userResult.user.lastName}}</td>
+      <td>{{userResult.points}}</td>
+    </tr>
+  </ng-template>
+</p-table>

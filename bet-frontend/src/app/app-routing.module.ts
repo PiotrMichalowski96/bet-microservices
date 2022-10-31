@@ -5,6 +5,7 @@ import {MatchesPageComponent} from "./pages/matches-page/matches-page.component"
 import {MatchPageComponent} from "./pages/match-page/match-page.component";
 import {BetsPageComponent} from "./pages/bets-page/bets-page.component";
 import {BetPageComponent} from "./pages/bet-page/bet-page.component";
+import {UsersPageComponent} from "./pages/users-page/users-page.component";
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
   {
     path: 'bets/new',
     component: BetPageComponent
+  },
+  {
+    path: 'ranking',
+    component: UsersPageComponent
   },
   {
     path: '**',
