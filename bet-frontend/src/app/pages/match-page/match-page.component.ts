@@ -6,6 +6,7 @@ import {first} from "rxjs";
 import {Bet} from "../../model/bet";
 import {BetsService} from "../../services/bets.service";
 import {MatchTimeHelper} from "../../util/match-time-helper";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-match-page',
@@ -14,15 +15,18 @@ import {MatchTimeHelper} from "../../util/match-time-helper";
 })
 export class MatchPageComponent implements OnInit {
 
+  isLoggedIn: boolean = false;
   match: Match | null = null;
   bets: Bet[] = [];
 
   constructor(private route: ActivatedRoute,
               private matchesService: MatchesService,
-              private betsService: BetsService) {
+              private betsService: BetsService,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.authService.hasCredentials();
     this.route.params.pipe(first()).subscribe(({id}) => {
       this.getMatch(id);
       this.getBets(id);

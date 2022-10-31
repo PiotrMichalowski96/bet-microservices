@@ -27,7 +27,7 @@
             <div class="label">Round start time:</div>
             <div class="value">{{match.round.startTime | date: 'HH:mm dd.MM.yyyy'}}</div>
           </div>
-          <ng-container *ngIf="canCreateBet()">
+          <ng-container *ngIf="canCreateBet() && isLoggedIn">
             <div class="stat">
               <p-button [routerLink]="'/bets/new'" [queryParams]="{matchId: match.id}">Create bet</p-button>
             </div>
@@ -35,7 +35,7 @@
         </div>
       </div>
     </p-tabPanel>
-    <p-tabPanel header="Bets">
+    <p-tabPanel *ngIf="isLoggedIn" header="Bets">
       <ng-container *ngIf="bets.length == 0">
         <span class="no-bets">No bets</span>
       </ng-container>
