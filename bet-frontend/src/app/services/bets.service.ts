@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
-import {TOKEN, TOKEN_HEADER_PREFIX} from "../constants/token-properties";
+import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {catchError, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
 

@@ -8,6 +8,7 @@ import {MatchesService} from "../../services/matches.service";
 import {Match, MatchResult} from "../../model/match";
 import {UsersService} from "../../services/users.service";
 import {User} from "../../model/user";
+import {MatchTimeHelper} from "../../util/match-time-helper";
 
 @Component({
   selector: 'app-bet-page',
@@ -68,12 +69,10 @@ export class BetPageComponent implements OnInit {
   }
 
   isMatchStarted(): boolean {
-    if (this.bet?.match.startTime == null) {
+    if (this.bet == null) {
       return true;
     }
-    let matchTime: number = new Date(this.bet.match.startTime).getTime();
-    let currentTime: number = new Date().getTime();
-    return matchTime < currentTime;
+    return MatchTimeHelper.isMatchStarted(this.bet.match);
   }
 
   private createBetAndUpdateForm(matchId: number): void {

@@ -20,6 +20,7 @@ import { BetsPageComponent } from './pages/bets-page/bets-page.component';
 import {CarouselModule} from "primeng/carousel";
 import { BetPageComponent } from './pages/bet-page/bet-page.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import {ButtonModule} from "primeng/button";
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {ReactiveFormsModule} from "@angular/forms";
     PaginatorModule,
     TabViewModule,
     CarouselModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

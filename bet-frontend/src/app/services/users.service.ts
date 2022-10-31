@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {TOKEN, TOKEN_HEADER_PREFIX} from "../constants/token-properties";
+import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {Cookie} from "ng2-cookies";
 import {User, UserResult} from "../model/user";
 

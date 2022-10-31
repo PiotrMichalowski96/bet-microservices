@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Match} from "../../model/match";
 import {MatchesService} from "../../services/matches.service";
 import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs";
 import {Bet} from "../../model/bet";
 import {BetsService} from "../../services/bets.service";
+import {MatchTimeHelper} from "../../util/match-time-helper";
 
 @Component({
   selector: 'app-match-page',
@@ -18,7 +19,8 @@ export class MatchPageComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private matchesService: MatchesService,
-              private betsService: BetsService) { }
+              private betsService: BetsService) {
+  }
 
   ngOnInit(): void {
     this.route.params.pipe(first()).subscribe(({id}) => {
@@ -37,5 +39,9 @@ export class MatchPageComponent implements OnInit {
     this.betsService.getBetsByMatchId(matchId).subscribe(bets => {
       this.bets = bets;
     });
+  }
+
+  canCreateBet(): boolean {
+    return !MatchTimeHelper.isMatchStarted(this.match);
   }
 }
