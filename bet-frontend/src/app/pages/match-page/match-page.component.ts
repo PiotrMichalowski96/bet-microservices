@@ -29,13 +29,13 @@ export class MatchPageComponent implements OnInit {
     });
   }
 
-  private getMatch(id: number) {
+  private getMatch(id: number): void {
     this.matchesService.getMatch(id).subscribe(match => {
       this.match = match;
     });
   }
 
-  private getBets(matchId: number) {
+  private getBets(matchId: number): void {
     this.betsService.getBetsByMatchId(matchId).subscribe(bets => {
       this.bets = bets;
     });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
 
 @Component({
@@ -10,22 +10,23 @@ export class HeaderComponent implements OnInit {
 
   isLoggedIn: boolean = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {
+  }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.checkCredentials();
+    this.isLoggedIn = this.authService.hasCredentials();
     let i = window.location.href.indexOf('code');
-    if(!this.isLoggedIn && i != -1) {
+    if (!this.isLoggedIn && i != -1) {
       console.log('Code: ' + window.location.href.substring(i + 5))
       this.authService.retrieveToken(window.location.href.substring(i + 5));
     }
   }
 
-  login() {
+  login(): void {
     window.location.href = this.authService.authorizationUri;
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
   }
 }

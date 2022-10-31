@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Match} from "../../model/match";
 import {MatchesService} from "../../services/matches.service";
 
@@ -11,19 +11,20 @@ export class MatchesPageComponent implements OnInit {
 
   matches: Match[] = [];
 
-  constructor(private matchesService: MatchesService) { }
+  constructor(private matchesService: MatchesService) {
+  }
 
   ngOnInit(): void {
     this.getPagedMatches();
   }
 
-  private getPagedMatches(page: number = 0) {
+  private getPagedMatches(page: number = 0): void {
     this.matchesService.getMatches(page).subscribe(matches => {
       this.matches = matches;
     });
   }
 
-  paginate(event: any) {
+  paginate(event: any): void {
     this.getPagedMatches(event.page);
   }
 }

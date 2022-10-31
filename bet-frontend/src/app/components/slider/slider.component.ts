@@ -20,15 +20,15 @@ export class SliderComponent implements OnInit {
 
   currentSlideIndex: number = 0;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
     if (this.isBanner) {
       return;
     }
-    setInterval(()=>{
+    setInterval(() => {
       this.currentSlideIndex = ++this.currentSlideIndex % this.items.length;
     }, 5000)
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Match} from "../../model/match";
 import {MatchesService} from "../../services/matches.service";
 
@@ -12,7 +12,8 @@ export class HomeComponent implements OnInit {
   upcomingMatches: Match[] = [];
   allMatches: Match[] = [];
 
-  constructor(private matchesService: MatchesService) { }
+  constructor(private matchesService: MatchesService) {
+  }
 
   ngOnInit(): void {
     this.matchesService.getUpcomingMatches().subscribe((matches: Match[]) => {
@@ -22,5 +23,4 @@ export class HomeComponent implements OnInit {
       this.allMatches = matches;
     });
   }
-
 }

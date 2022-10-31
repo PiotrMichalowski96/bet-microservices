@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {Cookie} from "ng2-cookies";
 import {User, UserResult} from "../model/user";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +15,14 @@ export class UsersService {
   constructor(private http: HttpClient) {
   }
 
-  getUsersResults() {
+  getUsersResults(): Observable<UserResult[]> {
     let options = {
       headers: this.createAuthHeader()
     };
     return this.http.get<UserResult[]>(`${UsersService.baseUrl}/bets/results/users`, options);
   }
 
-  getCurrentUser() {
+  getCurrentUser(): Observable<User> {
     let options = {
       headers: this.createAuthHeader()
     };

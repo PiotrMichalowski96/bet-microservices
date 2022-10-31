@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
 import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
-import {catchError, of, switchMap, throwError} from "rxjs";
+import {catchError, Observable, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
 
 @Injectable({
@@ -16,7 +16,7 @@ export class BetsService {
   constructor(private http: HttpClient) {
   }
 
-  getBets(page: number = 0) {
+  getBets(page: number = 0): Observable<Bet[]> {
     let options = {
       headers: this.createAuthHeader()
     };
@@ -28,7 +28,7 @@ export class BetsService {
     }));
   }
 
-  getBetsByMatchId(matchId: number) {
+  getBetsByMatchId(matchId: number): Observable<Bet[]> {
     let options = {
       params: new HttpParams().set('matchId', matchId),
       headers: this.createAuthHeader()
@@ -36,21 +36,21 @@ export class BetsService {
     return this.http.get<Bet[]>(`${BetsService.baseUrl}`, options);
   }
 
-  getMyOwnBets() {
+  getMyOwnBets(): Observable<Bet[]> {
     let options = {
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet[]>(`${BetsService.baseUrl}/my-own`, options);
   }
 
-  getBet(id: string) {
+  getBet(id: string): Observable<Bet> {
     let options = {
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet>(`${BetsService.baseUrl}/${id}`, options);
   }
 
-  postBet(bet: Bet) {
+  postBet(bet: Bet): Observable<Bet> {
     let options = {
       headers: this.createAuthHeader()
     };
@@ -59,7 +59,7 @@ export class BetsService {
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.status === 0) {
       console.error('An error occurred:', error.error);
     } else {
