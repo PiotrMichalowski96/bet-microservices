@@ -70,21 +70,12 @@ class MatchControllerTest {
   }
 
   @Test
-  void shouldReturnUnauthorized() {
-    webClient
-        .get()
-        .uri("/matches")
-        .exchange()
-        .expectStatus().isUnauthorized();
-  }
-
-  @Test
   @WithMockUser
   void shouldReturnForbidden() {
     webClient
         .mutateWith(mockUser())
-        .get()
-        .uri("/matches")
+        .delete()
+        .uri("/matches/1")
         .exchange()
         .expectStatus().isForbidden();
   }
