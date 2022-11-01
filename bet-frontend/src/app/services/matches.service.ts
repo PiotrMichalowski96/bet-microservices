@@ -8,7 +8,7 @@ import {Observable, of, switchMap} from "rxjs";
 })
 export class MatchesService {
 
-  private static readonly baseUrl: string = 'http://localhost:8082/matches';
+  private static readonly baseUrl: string = 'http://localhost:9090/matches';
   private static readonly itemsOnPage: number = 20;
 
   constructor(private http: HttpClient) {
