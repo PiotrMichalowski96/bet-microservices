@@ -62,6 +62,16 @@ public class MatchDashboardController {
     return showMatches();
   }
 
+  @GetMapping(value = "/match/{id}/remove")
+  ModelAndView deleteMatch(@PathVariable Long id) {
+    MatchDetails matchDetails = matchDetailsService.deleteMatch(id);
+    if (matchDetails.hasErrors()) {
+      ErrorDetails errorDetails = matchDetails.getErrorDetails();
+      return errorModelAndView(errorDetails);
+    }
+    return showMatches();
+  }
+
   private ModelAndView matchListModelAndView(List<Match> matches) {
     var mv = new ModelAndView();
     mv.setViewName(MATCHES_TEMPLATE);

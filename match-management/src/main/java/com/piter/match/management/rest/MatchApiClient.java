@@ -4,6 +4,7 @@ import com.piter.match.management.security.OAuth2FeignConfig;
 import com.piter.match.management.domain.Match;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,4 +24,7 @@ public interface MatchApiClient {
 
   @PostMapping(value = "/matches")
   Match saveMatch(Match match);
+
+  @DeleteMapping(value = "/matches/{id}")
+  void deleteMatch(@PathVariable Long id);
 }
