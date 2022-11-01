@@ -34,4 +34,9 @@ public class CallerService {
     logger.debug("Saved match: {}", match);
     return savedMatch;
   }
+
+  @CacheEvict(value = "match", key = "#matchId")
+  public void deleteMatch(Long matchId) {
+    matchApiClient.deleteMatch(matchId);
+  }
 }

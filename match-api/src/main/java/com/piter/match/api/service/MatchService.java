@@ -9,7 +9,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,13 +54,11 @@ public class MatchService {
   @CacheEvict(value = "match", key = "#match.id", condition = "#match.id != null")
   public Mono<Match> saveMatch(Match match) {
     if (match.getId() != null) {
-      return Mono.just(matchProducer.sendSaveMatchEvent(match))
-          .then(matchRepository.findOne(Example.of(match)));
+      return Mono.just(matchProducer.sendSaveMatchEvent(match));
     }
     return sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)
         .map(id -> mapToMatchWithId(match, id))
-        .map(matchProducer::sendSaveMatchEvent)
-        .then(matchRepository.findOne(Example.of(match)));
+        .map(matchProducer::sendSaveMatchEvent);
   }
 
   private Match mapToMatchWithId(Match match, Long id) {

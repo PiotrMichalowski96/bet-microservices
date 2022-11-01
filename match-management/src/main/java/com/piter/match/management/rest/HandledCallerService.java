@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class HandledCallerService {
 
-  private final CallerService matchApiService;
+  private final CallerService callerService;
 
   public Optional<Match> getMatch(Long matchId) {
-    return callHandled(() -> matchApiService.callMatch(matchId));
+    return callHandled(() -> callerService.callMatch(matchId));
   }
 
   private <T> Optional<T> callHandled(Supplier<T> call) {
@@ -35,7 +35,7 @@ public class HandledCallerService {
 
   public Optional<Match> saveMatch(Match match) {
     Match validMatch = validateMatchResult(match);
-    return callHandled(() -> matchApiService.saveMatch(validMatch));
+    return callHandled(() -> callerService.saveMatch(validMatch));
   }
 
   private Match validateMatchResult(Match match) {
@@ -52,7 +52,7 @@ public class HandledCallerService {
   }
 
   public List<Match> getMatchList(String order) {
-    return callListHandled(() -> matchApiService.callMatchList(order));
+    return callListHandled(() -> callerService.callMatchList(order));
   }
 
   private <T> List<T> callListHandled(Supplier<List<T>> call) {
@@ -64,5 +64,12 @@ public class HandledCallerService {
       logger.error("Error during call: {}", e.getMessage());
       return Collections.emptyList();
     }
+  }
+
+  public Optional<Match> deleteMatch(Long matchId) {
+    return callHandled(() -> {
+      callerService.deleteMatch(matchId);
+      return Match.builder().build();
+    });
   }
 }

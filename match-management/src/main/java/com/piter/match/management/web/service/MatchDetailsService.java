@@ -32,4 +32,11 @@ public class MatchDetailsService {
         .map(MatchDetails::new)
         .orElse(new MatchDetails(saveErrorMessage));
   }
+
+  public MatchDetails deleteMatch(Long matchId) {
+    var deleteErrorMessage = "Can not delete match.";
+    return handledCallerService.deleteMatch(matchId)
+        .map(MatchDetails::new)
+        .orElse(new MatchDetails(deleteErrorMessage));
+  }
 }
