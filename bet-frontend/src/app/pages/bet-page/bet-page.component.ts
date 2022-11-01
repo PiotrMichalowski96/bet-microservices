@@ -20,8 +20,8 @@ export class BetPageComponent implements OnInit {
   bet: Bet | null = null;
 
   betPredictionForm: FormGroup = this.formBuilder.group({
-    homeTeamGoalsPrediction: [0, Validators.required],
-    awayTeamGoalsPrediction: [0, Validators.required]
+    homeTeamGoalsPrediction: [0, [Validators.required, Validators.min(0)]],
+    awayTeamGoalsPrediction: [0, [Validators.required, Validators.min(0)]]
   });
 
   constructor(private route: ActivatedRoute,
