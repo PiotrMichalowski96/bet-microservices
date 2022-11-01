@@ -29,8 +29,8 @@ import lombok.RequiredArgsConstructor;
 @CucumberContextConfiguration
 public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
-  private static final String MATCHES_ENDPOINT = "/match";
-  private static final String MATCH_ENDPOINT = "/match/{id}";
+  private static final String MATCHES_ENDPOINT = "/matches";
+  private static final String MATCH_ENDPOINT = "/matches/{id}";
 
   private static final String INIT_DB_PATH = "samples/fill_out_database.json";
 
