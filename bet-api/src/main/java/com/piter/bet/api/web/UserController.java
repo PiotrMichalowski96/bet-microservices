@@ -18,12 +18,12 @@ public class UserController {
 
   private final UserService userService;
 
-  @GetMapping("/bets/results/users")
+  @GetMapping("/users-results")
   Flux<UserResultProjection> findAll() {
     return userService.findAllUserResults();
   }
 
-  @GetMapping("/bets/results/users/{nickname}")
+  @GetMapping("/users-results/{nickname}")
   Mono<UserResultProjection> findUserResultByNickname(@PathVariable("nickname") String nickname) {
     return userService.findUserResultByNickname(nickname);
   }

@@ -16,10 +16,7 @@ export class UsersService {
   }
 
   getUsersResults(): Observable<UserResult[]> {
-    let options = {
-      headers: this.createAuthHeader()
-    };
-    return this.http.get<UserResult[]>(`${UsersService.baseUrl}/bets/results/users`, options);
+    return this.http.get<UserResult[]>(`${UsersService.baseUrl}/users-results`);
   }
 
   getCurrentUser(): Observable<User> {

@@ -7,7 +7,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/matches">Matches</a></li>
       <li  *ngIf="isLoggedIn"><a href="/bets">Bets</a></li>
-      <li  *ngIf="isLoggedIn"><a href="/ranking">Ranking</a></li>
+      <li><a href="/ranking">Ranking</a></li>
       <li>
         <button *ngIf="!isLoggedIn" class="btn btn-primary" (click)="login()" type="submit">Login</button>
         <button *ngIf="isLoggedIn" class="btn btn-primary" (click)="logout()" type="submit">Logout</button>

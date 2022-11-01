@@ -58,7 +58,6 @@ public class SecurityConfig {
         .and().build();
   }
 
-  //TODO: for development of front end Angular app
   @Bean
   public CorsWebFilter corsWebFilter() {
     var corsConfig = new CorsConfiguration();

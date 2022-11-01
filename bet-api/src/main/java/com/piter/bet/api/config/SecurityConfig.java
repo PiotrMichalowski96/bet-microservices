@@ -39,6 +39,8 @@ public class SecurityConfig {
         .pathMatchers(HttpMethod.GET, "/bets/**").hasAuthority(BET_USER)
         .pathMatchers(HttpMethod.POST, "/bets/**").hasAuthority(BET_USER)
         .pathMatchers(HttpMethod.DELETE, "/bets/**").hasAuthority(BET_USER)
+        .pathMatchers(HttpMethod.GET, "/users/current").hasAuthority(BET_USER)
+        .pathMatchers(HttpMethod.GET, "/users-results/**").permitAll()
         .anyExchange().permitAll()
         .and()
         .oauth2ResourceServer()
@@ -47,7 +49,6 @@ public class SecurityConfig {
         .build();
   }
 
-  //TODO: for development of front end Angular app
   @Bean
   public CorsWebFilter corsWebFilter() {
     var corsConfig = new CorsConfiguration();

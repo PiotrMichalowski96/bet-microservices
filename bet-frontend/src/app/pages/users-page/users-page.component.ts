@@ -21,7 +21,6 @@ export class UsersPageComponent implements OnInit {
   private getUsersRanking(): void {
     this.usersService.getUsersResults().subscribe(usersResults => {
       this.usersResults = usersResults;
-      console.log(usersResults);
     });
   }
 }
