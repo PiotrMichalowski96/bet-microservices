@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Match} from "../../model/match";
 
 @Component({
@@ -6,13 +6,8 @@ import {Match} from "../../model/match";
   templateUrl: './match.component.html',
   styleUrls: ['./match.component.scss']
 })
-export class MatchComponent implements OnInit {
+export class MatchComponent {
 
   @Input() match: Match | null = null;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

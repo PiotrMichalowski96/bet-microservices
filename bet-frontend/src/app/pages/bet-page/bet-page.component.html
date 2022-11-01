@@ -1,0 +1,86 @@
+<ng-container *ngIf="bet">
+  <div class="slider">
+    <div class="slide">
+      <div class="slide-bg">
+        <img class="slide-bg-image" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'" alt=""> <!-- TODO: image source -->
+      </div>
+      <div class="slide-pane">
+        <h2 class="name">{{bet.match.homeTeam}} vs {{bet.match.awayTeam}}</h2>
+        <ng-container *ngIf="bet.matchPredictedResult && !bet.match.result">
+          <h2 class="name">{{bet.matchPredictedResult.homeTeamGoals}} : {{bet.matchPredictedResult.awayTeamGoals}}</h2>
+        </ng-container>
+        <ng-container *ngIf="bet.matchPredictedResult && bet.match.result">
+          <h2 class="name">{{bet.matchPredictedResult.homeTeamGoals}} : {{bet.matchPredictedResult.awayTeamGoals}} ({{bet.match.result.homeTeamGoals}} : {{bet.match.result.awayTeamGoals}})</h2>
+        </ng-container>
+        <div class="meta">
+          <div class="info">
+            <span class="match-info">
+              <span>{{bet.user.firstName}} {{bet.user.lastName}} ({{bet.user.nickname}})</span>
+            </span>
+            <ng-container *ngIf="bet.betResult.status !== 'UNRESOLVED'">
+              <span class="match-info">
+              <span>Win {{bet.betResult.points}} points</span>
+            </span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-3 lg:col-3">
+      <img class="poster" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'">
+    </div>
+    <form [formGroup]="betPredictionForm" (ngSubmit)="onSubmit()">
+    <div class="col-12 md:col-12 lg:col-12">
+      <h2>Bet Overview</h2>
+        <div class="stat">
+          <div class="label">
+            <label for="homeTeamGoalsPrediction">{{bet.match.homeTeam}}</label>
+          </div>
+          <div class="value">
+            <input id="homeTeamGoalsPrediction" type="number" formControlName="homeTeamGoalsPrediction" [defaultValue]="bet.matchPredictedResult.homeTeamGoals">
+          </div>
+          <div *ngIf="betPredictionForm.controls['homeTeamGoalsPrediction'].invalid" class="alert alert-danger">
+            Home team goals are required.
+          </div>
+        </div>
+        <div class="stat">
+          <div class="label">
+            <label for="awayTeamGoalsPrediction">{{bet.match.awayTeam}}</label>
+          </div>
+          <div class="value">
+            <input id="awayTeamGoalsPrediction" type="number" formControlName="awayTeamGoalsPrediction" [defaultValue]="bet.matchPredictedResult.awayTeamGoals">
+          </div>
+          <div *ngIf="betPredictionForm.controls['awayTeamGoalsPrediction'].invalid" class="alert alert-danger">
+            Away team goals are required.
+          </div>
+        </div>
+        <ng-container *ngIf="bet.match.result">
+          <div class="stat">
+            <div class="label">Result:</div>
+            <div class="value">{{bet.match.result.homeTeamGoals}} : {{bet.match.result.awayTeamGoals}}</div>
+          </div>
+        </ng-container>
+        <div class="stat">
+          <div class="label">Start time:</div>
+          <div class="value">{{bet.match.startTime | date: 'HH:mm dd.MM.yyyy'}}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Round:</div>
+          <div class="value">{{bet.match.round.roundName}}</div>
+        </div>
+        <ng-container *ngIf="bet.betResult.status !== 'UNRESOLVED'">
+          <div class="stat">
+            <div class="label">User points:</div>
+            <div class="value">{{bet.betResult.points}}</div>
+          </div>
+        </ng-container>
+        <div class="stat">
+          <p-button type="submit" [disabled]="!betPredictionForm.valid || isMatchStarted()">Bet</p-button>
+        </div>
+    </div>
+    </form>
+  </div>
+</ng-container>

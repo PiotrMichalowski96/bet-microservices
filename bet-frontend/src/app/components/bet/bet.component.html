@@ -1,13 +1,15 @@
 <ng-container *ngIf="bet">
   <a class="bet-item" [routerLink]="'/bet/' + bet.id">
     <div class="bet-item-user">{{bet.user.firstName}} {{bet.user.lastName}}</div>
-    <div class="bet-item-matchTime">{{bet.match.startTime | date: 'dd.MM.yyyy hh:mm'}}</div>
-    <ng-container *ngIf="bet.match.result">
-      <div class="bet-item-result">
-        <span>Predictions</span>
+    <div class="bet-item-matchTime">{{bet.match.startTime | date: 'dd.MM.yyyy HH:mm'}}</div>
+    <div class="bet-item-result">
+      <ng-container *ngIf="bet.match.result">
+        <span>Result</span>
         <span>{{bet.match.result.homeTeamGoals}} : {{bet.match.result.awayTeamGoals}}</span>
-      </div>
-    </ng-container>
+      </ng-container>
+      <span>Predictions</span>
+      <span>{{bet.matchPredictedResult.homeTeamGoals}} : {{bet.matchPredictedResult.awayTeamGoals}}</span>
+    </div>
     <div class="bet-item-image">
       <img [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'" > <!-- TODO -->
     </div>

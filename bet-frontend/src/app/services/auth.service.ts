@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
-import {ID_TOKEN, TOKEN } from '../constants/token-properties';
+import {ID_TOKEN, TOKEN} from '../util/token-properties';
 
 @Injectable({
   providedIn: 'root'
@@ -19,36 +19,36 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  retrieveToken(code: string) {
+  retrieveToken(code: string): void {
     let body = new HttpParams()
-      .set('grant_type', this.authorizationCodeGrant)
-      .set('client_id', this.clientId)
-      .set('redirect_uri', this.redirectUri)
-      .set('code', code);
+    .set('grant_type', this.authorizationCodeGrant)
+    .set('client_id', this.clientId)
+    .set('redirect_uri', this.redirectUri)
+    .set('code', code);
 
     let options = {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     };
 
-    this.http.post(this.tokenUri,  body.toString(), options)
-      .subscribe(
-        data => this.saveToken(data),
-        err => alert('Invalid Credentials')
-      );
+    this.http.post(this.tokenUri, body.toString(), options)
+    .subscribe(
+      data => this.saveToken(data),
+      err => alert('Invalid Credentials')
+    );
   }
 
-  saveToken(token: any) {
+  saveToken(token: any): void {
     let expireDate = new Date().getTime() + (1000 * token.expires_in);
     Cookie.set(TOKEN, token.access_token, expireDate);
     console.log('Obtained Access token');
     window.location.href = 'http://localhost:4201';
   }
 
-  checkCredentials() {
+  hasCredentials(): boolean {
     return Cookie.check('access_token');
   }
 
-  logout() {
+  logout(): void {
     Cookie.delete(TOKEN);
     Cookie.delete(ID_TOKEN);
     window.location.reload();

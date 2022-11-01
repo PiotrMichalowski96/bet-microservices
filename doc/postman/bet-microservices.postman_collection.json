@@ -406,11 +406,6 @@
 								"value": "application/json"
 							},
 							{
-								"key": "X-XSRF-TOKEN",
-								"value": "{{xsrf-token}}",
-								"type": "text"
-							},
-							{
 								"key": "Authorization",
 								"value": "Bearer {{access-token}}",
 								"type": "text"
@@ -469,14 +464,36 @@
 							}
 						],
 						"url": {
-							"raw": "{{gw-url}}/bets/results/users",
+							"raw": "{{gw-url}}/users-results",
 							"host": [
 								"{{gw-url}}"
 							],
 							"path": [
-								"bets",
-								"results",
-								"users"
+								"users-results"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access-token}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{gw-url}}/users/current",
+							"host": [
+								"{{gw-url}}"
+							],
+							"path": [
+								"users",
+								"current"
 							]
 						}
 					},
@@ -494,14 +511,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{gw-url}}/bets/results/users/piter",
+							"raw": "{{gw-url}}/users-results/piter",
 							"host": [
 								"{{gw-url}}"
 							],
 							"path": [
-								"bets",
-								"results",
-								"users",
+								"users-results",
 								"piter"
 							]
 						}

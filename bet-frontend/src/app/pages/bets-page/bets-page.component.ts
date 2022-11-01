@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Bet} from "../../model/bet";
 import {BetsService} from "../../services/bets.service";
 
@@ -9,21 +9,30 @@ import {BetsService} from "../../services/bets.service";
 })
 export class BetsPageComponent implements OnInit {
 
-  bets: Bet[] = [];
+  myOwnBets: Bet[] = [];
+  allBets: Bet[] = [];
 
-  constructor(private betsService: BetsService) { }
-
-  ngOnInit(): void {
-    this.getPagedBets();
+  constructor(private betsService: BetsService) {
   }
 
-  private getPagedBets(page: number = 0) {
-    this.betsService.getBets(page).subscribe(bets => {
-      this.bets = bets;
+  ngOnInit(): void {
+    this.getMyOwnBets();
+    this.getPagedAllBets();
+  }
+
+  private getMyOwnBets(): void {
+    this.betsService.getMyOwnBets().subscribe(bets => {
+      this.myOwnBets = bets;
     });
   }
 
-  paginate(event: any) {
-    this.getPagedBets(event.page);
+  private getPagedAllBets(page: number = 0): void {
+    this.betsService.getBets(page).subscribe(bets => {
+      this.allBets = bets;
+    });
+  }
+
+  paginate(event: any): void {
+    this.getPagedAllBets(event.page);
   }
 }
