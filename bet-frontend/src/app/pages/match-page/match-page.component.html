@@ -41,7 +41,9 @@
       </ng-container>
       <p-carousel [numVisible]="5" *ngIf="bets.length != 0" [value]="bets">
         <ng-template let-bet pTemplate="bet">
-          <app-bet [bet]="bet"></app-bet>
+          <div class="carousel-item">
+            <app-bet [bet]="bet"></app-bet>
+          </div>
         </ng-template>
       </p-carousel>
     </p-tabPanel>
