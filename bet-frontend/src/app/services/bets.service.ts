@@ -10,7 +10,7 @@ import {Bet} from "../model/bet";
 })
 export class BetsService {
 
-  private static readonly baseUrl: string = 'http://localhost:8083/bets';
+  private static readonly baseUrl: string = 'http://localhost:9090/bets';
   private static readonly itemsOnPage: number = 20;
 
   constructor(private http: HttpClient) {

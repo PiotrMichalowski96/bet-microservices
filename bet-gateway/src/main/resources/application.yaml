@@ -1,6 +1,8 @@
 spring.application.name: bet-gateway
 server.port: 9090
 
+frontend.app.uri: http://localhost:4201
+
 ########################
 # Security
 ########################

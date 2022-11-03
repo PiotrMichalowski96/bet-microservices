@@ -55,6 +55,11 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.piter</groupId>
+      <artifactId>api-commons</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>

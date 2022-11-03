@@ -10,7 +10,7 @@ import {Observable} from "rxjs";
 })
 export class UsersService {
 
-  private static readonly baseUrl: string = 'http://localhost:8083';
+  private static readonly baseUrl: string = 'http://localhost:9090';
 
   constructor(private http: HttpClient) {
   }
