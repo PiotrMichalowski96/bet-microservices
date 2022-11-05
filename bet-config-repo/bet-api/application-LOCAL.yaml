@@ -1,17 +1,14 @@
 server.port: 8083
 spring:
-  data:
-    mongodb:
-      port: 27017
-      host: localhost
+  data.mongodb:
+    port: 27017
+    host: localhost
 
 ########################
 # Cloud stream
 ########################
 spring.cloud.stream:
-  kafka:
-    binder:
-      brokers: localhost:9092
+  kafka.binder.brokers: localhost:9092
   bindings:
     bets-out-0:
       destination: sample-bet-request-topic-2
