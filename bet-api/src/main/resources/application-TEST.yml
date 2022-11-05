@@ -6,3 +6,4 @@ spring:
     mongodb:
       port: 0
       host: localhost
+  cloud.config.enabled: false

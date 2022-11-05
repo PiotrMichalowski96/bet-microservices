@@ -30,7 +30,7 @@ import org.springframework.test.web.reactive.server.WebTestClientConfigurer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(controllers = BetController.class)
+@WebFluxTest(controllers = BetController.class, properties = "spring.cloud.config.enabled=false")
 @Import({BetApiTestConfig.class, SecurityTestConfig.class})
 class BetControllerTest {
 

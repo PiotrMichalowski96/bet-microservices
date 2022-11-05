@@ -1,6 +1,6 @@
 package com.piter.bet.api.config;
 
-import com.piter.api.commons.security.KeycloakReactiveTokenInstrospector;
+import com.piter.security.commons.KeycloakReactiveTokenInstrospector;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

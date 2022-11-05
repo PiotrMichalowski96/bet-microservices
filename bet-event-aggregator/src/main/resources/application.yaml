@@ -1,0 +1,15 @@
+spring.application.name: bet-event-aggregator
+
+########################
+# Cloud stream
+########################
+spring.cloud.stream:
+  function.definition: bets;matches
+  kafka.streams.binder:
+    deserializationExceptionHandler: logAndContinue
+    functions:
+      bets.application-id: bets
+      matches.application-id: matches
+    configuration:
+      default.key.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+      spring.json.trusted.packages: "*"

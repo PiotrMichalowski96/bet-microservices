@@ -1,4 +1,4 @@
-package com.piter.api.commons.security;
+package com.piter.security.commons;
 
 import java.util.Collection;
 import java.util.Collections;

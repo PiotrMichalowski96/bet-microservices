@@ -1,0 +1,11 @@
+server.port: 8888
+spring:
+  application.name: bet-server-config
+  cloud.config.server.git:
+    uri: https://github.com/PiotrMichalowski96/bet-microservices
+    clone-on-start: true
+    search-paths: bet-config-repo/{application}
+
+logging.level:
+  org.springframework.cloud: debug
+  org.springframework.web: debug
