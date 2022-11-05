@@ -24,7 +24,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(controllers = MatchController.class)
+@WebFluxTest(controllers = MatchController.class, properties = "spring.cloud.config.enabled=false")
 @Import({MatchApiTestConfig.class, SecurityTestConfig.class})
 class MatchControllerTest {
 
