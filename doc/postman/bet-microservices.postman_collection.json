@@ -526,6 +526,68 @@
 			]
 		},
 		{
+			"name": "Config-server",
+			"item": [
+				{
+					"name": "bet-api properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8888/bet-api/LOCAL",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"bet-api",
+								"LOCAL"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bet-event-aggregator properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8888/bet-event-aggregator/LOCAL",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"bet-event-aggregator",
+								"LOCAL"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "match-api properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8888/match-api/LOCAL",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"match-api",
+								"LOCAL"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "login Keycloak",
 			"event": [
 				{
