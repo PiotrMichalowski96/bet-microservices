@@ -1,62 +1,20 @@
 server.port: 8082
 spring:
-  application.name: match-api
-  data:
-    mongodb:
-      port: 27017
-      host: localhost
-  kafka:
-    consumer:
-      properties:
-        spring.json.trusted.packages: "*"
+  data.mongodb:
+    port: 27017
+    host: localhost
+  cloud.config.enabled: false
 
 ########################
 # Cloud stream
 ########################
 spring.cloud.stream:
-  kafka:
-    binder:
-      brokers: localhost:9092
-    bindings:
-      matches-out-0:
-        producer:
-          configuration:
-            key.serializer: org.apache.kafka.common.serialization.LongSerializer
-      matches-in-0:
-        consumer:
-          configuration:
-            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+  kafka.binder.brokers: localhost:9092
   bindings:
     matches-out-0:
       destination: sample-match-topic-3
     matches-in-0:
       destination: sample-match-topic-3
-
-########################
-# Kafka Match producer
-########################
-match.producer.binding: matches-out-0
-
-cache:
-  expiry-in-hours: 2
-
-########################
-# Actuator
-########################
-management:
-  endpoints.web.exposure.include: health, info
-  info:
-    env.enabled: true
-    build.enabled: true
-    git:
-      enabled: true
-      mode: full
-
-info:
-  application:
-    name: Match API
-    description: Match API microservice for betting
-    author.name: Piter
 
 ########################
 # Security
@@ -67,13 +25,6 @@ spring.security.oauth2.resourceserver.opaqueToken:
   introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
   client-id: bet-login-app
   client-secret: DQaXG75c2bAqfHA3CXsboQek4xxF2Y6Y
-
-########################
-# Swagger
-########################
-springdoc:
-  swagger-ui.path: /swagger-doc/swagger-ui.html
-  api-docs.path: /swagger-doc/v3/api-docs
 
 ########################
 # Logging

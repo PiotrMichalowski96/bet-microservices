@@ -1,0 +1,22 @@
+spring:
+  application.name: bet-api
+  kafka.consumer.properties:
+    spring.json.trusted.packages: "*"
+
+########################
+# Cloud stream
+########################
+spring.cloud.stream.kafka.bindings:
+  bets-out-0:
+    producer:
+      configuration:
+        key.serializer: org.apache.kafka.common.serialization.LongSerializer
+  bets-in-0:
+    consumer:
+      configuration:
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+########################
+# Kafka Match producer
+########################
+bet.producer.binding: bets-out-0
