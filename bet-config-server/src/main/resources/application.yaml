@@ -6,6 +6,9 @@ spring:
     clone-on-start: true
     search-paths: bet-config-repo/{application}
 
+eureka.client.serviceUrl:
+  defaultZone: ${eureka.url:http://localhost:8761/eureka/}
+
 logging.level:
   org.springframework.cloud: debug
   org.springframework.web: debug

@@ -3,6 +3,9 @@ spring:
   kafka.consumer.properties:
     spring.json.trusted.packages: "*"
 
+eureka.client.serviceUrl:
+  defaultZone: ${eureka.url:http://localhost:8761/eureka/}
+
 ########################
 # Cloud stream
 ########################

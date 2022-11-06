@@ -1,7 +1,10 @@
 spring.application.name: bet-gateway
 server.port: 9090
 
-eureka.client.register-with-eureka: false
+eureka.client:
+  register-with-eureka: false
+  serviceUrl:
+    defaultZone: ${eureka.url:http://localhost:8761/eureka/}
 
 logging.level:
   org.springframework.cloud.gateway: debug
