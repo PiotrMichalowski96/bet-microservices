@@ -26,7 +26,7 @@
     <cucumber.version>7.6.0</cucumber.version>
     <rest-assured.version>5.1.1</rest-assured.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <bet.commons.version>0.0.4-SNAPSHOT</bet.commons.version>
+    <bet.commons.version>0.0.5-SNAPSHOT</bet.commons.version>
   </properties>
 
   <dependencies>

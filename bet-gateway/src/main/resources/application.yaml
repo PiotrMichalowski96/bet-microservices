@@ -1,14 +1,7 @@
 spring.application.name: bet-gateway
 server.port: 9090
 
-frontend.app.uri: http://localhost:4201
+eureka.client.register-with-eureka: false
 
-########################
-# Security
-########################
-spring.security.oauth2.resourceserver.opaquetoken:
-  introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
-  client-id: bet-login-app
-  client-secret: DQaXG75c2bAqfHA3CXsboQek4xxF2Y6Y
-
-logging.level.org.springframework.cloud.gateway: debug
+logging.level:
+  org.springframework.cloud.gateway: debug
