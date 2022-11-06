@@ -22,7 +22,7 @@
     <java.version>17</java.version>
     <spring-cloud.version>2021.0.3</spring-cloud.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <bet.commons.version>0.0.3-SNAPSHOT</bet.commons.version>
+    <bet.commons.version>0.0.4-SNAPSHOT</bet.commons.version>
   </properties>
 
   <dependencies>
