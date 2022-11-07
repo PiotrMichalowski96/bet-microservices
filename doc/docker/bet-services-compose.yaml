@@ -89,7 +89,6 @@ services:
       - bet-event-aggregator
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
-      FRONTEND_APP_URI: "http://localhost:4201"
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
   match-management:
     image: piter/match-management
