@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  eureka:
+    image: piter/bet-eureka
+    ports:
+      - "8761:8761"
+  match-api:
+    image: piter/match-api
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+  bet-api:
+    image: piter/bet-api
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+  bet-event-aggregator:
+    image: piter/bet-event-aggregator
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+  gateway:
+    image: piter/bet-gateway
+    ports:
+      - "9090:9090"
+    depends_on:
+      - eureka
+      - match-api
+      - bet-api
+      - bet-event-aggregator
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+  match-management:
+    image: piter/match-management
+    ports:
+      - "8081:8081"
+    depends_on:
+      - gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      MATCHAPI_URL: "gateway:9090"
