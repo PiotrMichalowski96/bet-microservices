@@ -12,7 +12,6 @@ eureka.client.serviceUrl:
 # Cloud stream
 ########################
 spring.cloud.stream:
-  kafka.binder.brokers: host.docker.internal:9092
   bindings:
     bets-out-0:
       destination: sample-bet-request-topic-2

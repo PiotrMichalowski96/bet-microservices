@@ -1,5 +1,3 @@
-spring.kafka.bootstrap-servers: host.docker.internal:9092
-
 spring.cloud:
   stream.bindings:
     bets-in-0.destination: sample-bet-request-topic-2
