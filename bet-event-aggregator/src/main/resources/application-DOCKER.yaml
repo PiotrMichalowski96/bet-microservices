@@ -1,0 +1,74 @@
+spring.cloud:
+  stream.bindings:
+    bets-in-0.destination: sample-bet-request-topic-2
+    bets-in-1.destination: sample-match-topic-3
+    bets-out-0.destination:  sample-bet-topic
+    matches-in-0.destination: sample-bet-request-topic-2
+    matches-in-1.destination: sample-match-topic-3
+    matches-out-0.destination: sample-bet-topic
+  config.enabled: false
+
+##################################################
+# Betting and correct prediction rules and points
+##################################################
+bet:
+  joining.window.hours: 168 #7 days
+  rules:
+    -
+      # Correct result
+      points: 5
+      logicalOperator: and
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # Draw
+      points: 3
+      logicalOperator: AND
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_PREDICTION
+          mathOperator: EQUAL
+        -
+          firstCompare: AWAY_TEAM_RESULT
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # Correct one team goals
+      points: 3
+      logicalOperator: OR
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: EQUAL
+    -
+      # No correct goals
+      points: 1
+      logicalOperator: AND
+      subPredictions:
+        -
+          firstCompare: AWAY_TEAM_PREDICTION
+          secondCompare: AWAY_TEAM_RESULT
+          mathOperator: NOT_EQUAL
+        -
+          firstCompare: HOME_TEAM_PREDICTION
+          secondCompare: HOME_TEAM_RESULT
+          mathOperator: NOT_EQUAL
+
+########################
+# Logging
+########################
+logging.level:
+  com.piter.bet.event.aggregator: DEBUG

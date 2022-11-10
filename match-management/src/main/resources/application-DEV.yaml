@@ -2,7 +2,7 @@
 # Match service
 ########################
 match-api:
-  port: 9651
+  port: 9090
   url: localhost:${match-api.port}
 
 ########################

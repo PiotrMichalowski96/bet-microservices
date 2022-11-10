@@ -1,0 +1,29 @@
+########################
+# Match service
+########################
+match-api:
+  port: 9090
+  url: host.docker.internal:${match-api.port}
+
+########################
+# OAuth2 Security
+########################
+spring.security.oauth2.client:
+  registration.match-management:
+    client-id: match-management-app
+    client-secret: gB3WsF1k6489aVlDGBwaqUfqLvO8EzpE
+    authorization-grant-type: authorization_code
+    scope: openid, roles
+    redirect-uri: http://host.docker.internal:8081/login/oauth2/code/match-management
+  provider.match-management:
+    authorization-uri: http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth
+    token-uri: http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token
+    jwk-set-uri: http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/certs
+    user-info-uri: http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/userinfo
+    user-name-attribute: preferred_username
+
+########################
+# Logging
+########################
+logging.level:
+  com.piter.match.service: DEBUG

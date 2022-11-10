@@ -1,0 +1,175 @@
+version: "3.8"
+
+volumes:
+  postgres_data:
+    driver: local
+  zookeeper_log:
+    driver: local
+  zookeeper_data:
+    driver: local
+  broker_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    container_name: keycloak-db
+    ports:
+      - "5432:5432"
+    networks:
+      - keycloak-network
+  keycloak:
+    image: quay.io/keycloak/keycloak:19.0.2
+    environment:
+      KC_DB: postgres
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_DB_SCHEMA: public
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_PORT: 5432
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    networks:
+      - keycloak-network
+    command: "start-dev"
+    depends_on:
+      - postgres
+  mongodatabase:
+    image: mongo:latest
+    container_name: "mongodatabase"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "piter"
+      MONGO_INITDB_ROOT_PASSWORD: "S3cret"
+      MONGO_DB_USERNAME: "piter"
+      MONGO_DB_PASSWORD: "S3cret"
+    volumes:
+      - mongodb_data:/data/db
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+  broker:
+    image: confluentinc/cp-kafka:7.1.1
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    restart: on-failure
+    volumes:
+      - broker_data:/var/lib/kafka/data
+  eureka:
+    image: piter/bet-eureka
+    ports:
+      - "8761:8761"
+  match-api:
+    image: piter/match-api
+    ports:
+      - "8082:8082"
+    depends_on:
+      - keycloak
+      - eureka
+      - broker
+      - mongodatabase
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "piter"
+      SPRING_DATA_MONGODB_PASSWORD: "S3cret"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    links:
+      - mongodatabase
+    restart: on-failure
+  bet-api:
+    image: piter/bet-api
+    ports:
+      - "8083:8083"
+    depends_on:
+      - keycloak
+      - eureka
+      - broker
+      - mongodatabase
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "piter"
+      SPRING_DATA_MONGODB_PASSWORD: "S3cret"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    links:
+      - mongodatabase
+    restart: on-failure
+  bet-event-aggregator:
+    image: piter/bet-event-aggregator
+    depends_on:
+      - eureka
+      - broker
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_KAFKA_BOOTSTRAPSERVERS: "broker:9092"
+    restart: on-failure
+  gateway:
+    image: piter/bet-gateway
+    ports:
+      - "9090:9090"
+    depends_on:
+      - keycloak
+      - eureka
+      - match-api
+      - bet-api
+      - bet-event-aggregator
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+  match-management:
+    image: piter/match-management
+    ports:
+      - "8081:8081"
+    depends_on:
+      - keycloak
+      - gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      MATCHAPI_URL: "gateway:9090"

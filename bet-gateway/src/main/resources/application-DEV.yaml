@@ -1,0 +1,9 @@
+frontend.app.uri: http://localhost:4201
+
+########################
+# Security
+########################
+spring.security.oauth2.resourceserver.opaquetoken:
+  introspection-uri: http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
+  client-id: bet-login-app
+  client-secret: DQaXG75c2bAqfHA3CXsboQek4xxF2Y6Y
