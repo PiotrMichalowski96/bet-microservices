@@ -1,9 +1,5 @@
 server.port: 8083
-spring:
-  data.mongodb:
-    port: 27017
-    host: host.docker.internal
-  cloud.config.enabled: false
+spring.cloud.config.enabled: false
 
 eureka.client.serviceUrl:
   defaultZone: ${eureka.url:http://host.docker.internal:8761/eureka/}

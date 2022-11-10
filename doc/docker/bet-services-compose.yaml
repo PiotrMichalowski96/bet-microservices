@@ -9,6 +9,8 @@ volumes:
     driver: local
   broker_data:
     driver: local
+  mongodb_data:
+    driver: local
 
 networks:
   keycloak-network:
@@ -47,6 +49,18 @@ services:
     command: "start-dev"
     depends_on:
       - postgres
+  mongodatabase:
+    image: mongo:latest
+    container_name: "mongodatabase"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "piter"
+      MONGO_INITDB_ROOT_PASSWORD: "S3cret"
+      MONGO_DB_USERNAME: "piter"
+      MONGO_DB_PASSWORD: "S3cret"
+    volumes:
+      - mongodb_data:/data/db
   zookeeper:
     image: confluentinc/cp-zookeeper:7.1.1
     hostname: zookeeper
@@ -91,10 +105,19 @@ services:
       - keycloak
       - eureka
       - broker
+      - mongodatabase
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "piter"
+      SPRING_DATA_MONGODB_PASSWORD: "S3cret"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    links:
+      - mongodatabase
     restart: on-failure
   bet-api:
     image: piter/bet-api
@@ -104,10 +127,19 @@ services:
       - keycloak
       - eureka
       - broker
+      - mongodatabase
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "piter"
+      SPRING_DATA_MONGODB_PASSWORD: "S3cret"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    links:
+      - mongodatabase
     restart: on-failure
   bet-event-aggregator:
     image: piter/bet-event-aggregator
