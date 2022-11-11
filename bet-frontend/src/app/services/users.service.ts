@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
+import {ACCESS_TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {Cookie} from "ng2-cookies";
 import {User, UserResult} from "../model/user";
 import {Observable} from "rxjs";
@@ -27,6 +27,6 @@ export class UsersService {
   }
 
   private createAuthHeader(): HttpHeaders {
-    return new HttpHeaders().set('Authorization', TOKEN_HEADER_PREFIX + Cookie.get(TOKEN));
+    return new HttpHeaders().set('Authorization', TOKEN_HEADER_PREFIX + Cookie.get(ACCESS_TOKEN));
   }
 }
