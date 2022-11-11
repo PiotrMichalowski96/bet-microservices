@@ -97,6 +97,16 @@ services:
     image: piter/bet-eureka
     ports:
       - "8761:8761"
+  config-server:
+    image: piter/bet-config-server
+    container_name: "config-server"
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
   match-api:
     image: piter/match-api
     ports:
@@ -116,8 +126,10 @@ services:
       SPRING_DATA_MONGODB_DATABASE: "betLeague"
       SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      CONFIG_SERVER_URL: http://config-server:8888
     links:
       - mongodatabase
+      - config-server
     restart: on-failure
   bet-api:
     image: piter/bet-api
@@ -138,8 +150,10 @@ services:
       SPRING_DATA_MONGODB_DATABASE: "betLeague"
       SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      CONFIG_SERVER_URL: http://config-server:8888
     links:
       - mongodatabase
+      - config-server
     restart: on-failure
   bet-event-aggregator:
     image: piter/bet-event-aggregator
@@ -149,6 +163,9 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
       SPRING_KAFKA_BOOTSTRAPSERVERS: "broker:9092"
+      CONFIG_SERVER_URL: http://config-server:8888
+    links:
+      - config-server
     restart: on-failure
   gateway:
     image: piter/bet-gateway

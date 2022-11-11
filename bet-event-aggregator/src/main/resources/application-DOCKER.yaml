@@ -1,4 +1,6 @@
-spring.cloud.config.enabled: true
+spring:
+  cloud.config.enabled: true
+  config.import: optional:configserver:${config.server.url}
 
 eureka.client.serviceUrl:
   defaultZone: ${eureka.url:http://host.docker.internal:8761/eureka/}
