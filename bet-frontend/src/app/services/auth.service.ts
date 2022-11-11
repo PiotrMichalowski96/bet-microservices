@@ -11,10 +11,10 @@ export class AuthService {
   private readonly clientId: string = 'bet-frontend-app';
   private readonly redirectUri: string = 'http://localhost:4201';
 
-  public readonly authorizationUri: string = `http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
+  public readonly authorizationUri: string = `http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
 
   private readonly authorizationCodeGrant: string = 'authorization_code';
-  private readonly tokenUri: string = 'http://localhost:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token';
+  private readonly tokenUri: string = 'http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token';
 
   constructor(private http: HttpClient) {
   }
