@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
+import {AppConfig} from "../../../config/app.config";
 
 @Component({
   selector: 'app-header',
@@ -9,8 +10,13 @@ import {AuthService} from "../../../services/auth.service";
 export class HeaderComponent implements OnInit {
 
   isLoggedIn: boolean = false;
+  private readonly loginUri: string = '';
 
-  constructor(private authService: AuthService) {
+  constructor(private appConfig: AppConfig, private authService: AuthService) {
+    let config = this.appConfig.getConfig();
+    if (config !== null) {
+      this.loginUri = config.authorizationUri;
+    }
   }
 
   ngOnInit(): void {
@@ -23,7 +29,7 @@ export class HeaderComponent implements OnInit {
   }
 
   login(): void {
-    window.location.href = this.authService.authorizationUri;
+    window.location.href = this.loginUri;
   }
 
   logout(): void {
