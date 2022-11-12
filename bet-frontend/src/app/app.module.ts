@@ -10,7 +10,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { MatchBannerComponent } from './components/match-banner/match-banner.component';
 import { MatchComponent } from './components/match/match.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import { MatchesPageComponent } from './pages/matches-page/matches-page.component';
 import {PaginatorModule} from "primeng/paginator";
 import { MatchPageComponent } from './pages/match-page/match-page.component';
@@ -23,6 +23,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
 import { UsersPageComponent } from './pages/users-page/users-page.component';
 import {TableModule} from "primeng/table";
+import {AuthInterceptor} from "./interceptors/auth-interceptor";
 
 @NgModule({
   declarations: [
@@ -52,7 +53,9 @@ import {TableModule} from "primeng/table";
     ButtonModule,
     TableModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
-import {TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
+import {ACCESS_TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {catchError, Observable, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
 
@@ -69,6 +69,6 @@ export class BetsService {
   }
 
   private createAuthHeader(): HttpHeaders {
-    return new HttpHeaders().set('Authorization', TOKEN_HEADER_PREFIX + Cookie.get(TOKEN));
+    return new HttpHeaders().set('Authorization', TOKEN_HEADER_PREFIX + Cookie.get(ACCESS_TOKEN));
   }
 }
