@@ -46,9 +46,7 @@ export class AuthService {
         this.saveRefreshToken(data);
         window.location.href = this.frontendBaseUrl;
       },
-      err => {
-        alert('Invalid Credentials');
-      }
+      err => alert('Invalid Credentials')
     );
   }
 

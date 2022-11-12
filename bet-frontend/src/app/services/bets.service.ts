@@ -51,7 +51,7 @@ export class BetsService {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet>(this.betUri + id, options);
+    return this.http.get<Bet>(this.betUri + "/" + id, options);
   }
 
   postBet(bet: Bet): Observable<Bet> {
