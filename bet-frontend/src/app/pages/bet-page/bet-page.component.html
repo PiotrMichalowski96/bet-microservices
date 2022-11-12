@@ -2,7 +2,7 @@
   <div class="slider">
     <div class="slide">
       <div class="slide-bg">
-        <img class="slide-bg-image" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'" alt=""> <!-- TODO: image source -->
+        <img class="slide-bg-image" [src]="'https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/graphics/' + bet.match.homeTeam + '-' + bet.match.awayTeam + '.png?raw=true'">
       </div>
       <div class="slide-pane">
         <h2 class="name">{{bet.match.homeTeam}} vs {{bet.match.awayTeam}}</h2>
@@ -30,7 +30,7 @@
 
   <div class="grid">
     <div class="col-12 md:col-3 lg:col-3">
-      <img class="poster" [src]="'https://fullmatchesreplays.com/wp-content/uploads/2021/02/Arsenal-vs-Leeds-United.jpg'">
+      <img class="poster" [src]="'https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/graphics/' + bet.match.homeTeam + '-' + bet.match.awayTeam + '.png?raw=true'">
     </div>
     <form [formGroup]="betPredictionForm" (ngSubmit)="onSubmit()">
     <div class="col-12 md:col-12 lg:col-12">
