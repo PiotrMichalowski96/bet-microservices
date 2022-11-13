@@ -3,41 +3,48 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
 import {ID_TOKEN, ACCESS_TOKEN, REFRESH_TOKEN} from '../util/token-properties';
 import {Observable} from "rxjs";
+import {AppConfig} from "../config/app.config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly clientId: string = 'bet-frontend-app';
-  private readonly redirectUri: string = 'http://localhost:4201';
-
-  public readonly authorizationUri: string = `http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=${this.clientId}&redirect_uri=${this.redirectUri}`;
-
-  private readonly authorizationCodeGrant: string = 'authorization_code';
-  private readonly refreshTokenGrant: string = 'refresh_token';
-  private readonly tokenUri: string = 'http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token';
-
-  private readonly options = {
+  private static readonly authorizationCodeGrant: string = 'authorization_code';
+  private static readonly refreshTokenGrant: string = 'refresh_token';
+  private static readonly options = {
     headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
   };
 
-  constructor(private http: HttpClient) {
+  public readonly authorizationUri: string = '';
+  private readonly frontendBaseUrl: string = '';
+  private readonly clientId: string = '';
+  private readonly tokenUri: string = '';
+
+  constructor(private http: HttpClient, private appConfig: AppConfig) {
+    let config = this.appConfig.getConfig();
+    if (config != null) {
+      this.authorizationUri = config.authorizationUri;
+      this.clientId = config.clientId;
+      this.frontendBaseUrl = config.frontendBaseUrl;
+      this.tokenUri = config.tokenUri;
+    }
   }
+
 
   retrieveToken(code: string): void {
     let body = new HttpParams()
-    .set('grant_type', this.authorizationCodeGrant)
+    .set('grant_type', AuthService.authorizationCodeGrant)
     .set('client_id', this.clientId)
-    .set('redirect_uri', this.redirectUri)
+    .set('redirect_uri', this.frontendBaseUrl)
     .set('code', code);
 
-    this.http.post(this.tokenUri, body.toString(), this.options)
+    this.http.post(this.tokenUri, body.toString(), AuthService.options)
     .subscribe(
       data => {
         this.saveToken(data);
         this.saveRefreshToken(data);
-        window.location.href = 'http://localhost:4201';
+        window.location.href = this.frontendBaseUrl;
       },
       err => alert('Invalid Credentials')
     );
@@ -55,11 +62,11 @@ export class AuthService {
 
   refreshToken(token: string): Observable<any> {
     let body = new HttpParams()
-    .set('grant_type', this.refreshTokenGrant)
+    .set('grant_type', AuthService.refreshTokenGrant)
     .set('client_id', this.clientId)
     .set('refresh_token', token);
 
-    return this.http.post(this.tokenUri, body.toString(), this.options);
+    return this.http.post(this.tokenUri, body.toString(), AuthService.options);
   }
 
   hasCredentials(): boolean {

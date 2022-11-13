@@ -1,0 +1,7 @@
+{
+  "frontendBaseUrl": "http://localhost:4201",
+  "backendBaseUrl": "http://localhost:9090",
+  "clientId": "bet-frontend-app",
+  "authorizationUri": "http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=bet-frontend-app&redirect_uri=http://localhost:4201",
+  "tokenUri": "http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token"
+}

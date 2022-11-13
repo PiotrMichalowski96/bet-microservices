@@ -4,23 +4,27 @@ import {Cookie} from "ng2-cookies";
 import {ACCESS_TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
 import {catchError, Observable, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
+import {AppConfig} from "../config/app.config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class BetsService {
 
-  private static readonly baseUrl: string = 'http://localhost:9090/bets';
+  private static readonly betEndpoint: string = '/bets';
   private static readonly itemsOnPage: number = 20;
 
-  constructor(private http: HttpClient) {
+  private readonly betUri: string;
+
+  constructor(private http: HttpClient, private appConfig: AppConfig) {
+    this.betUri = this.appConfig.getConfig()?.backendBaseUrl + BetsService.betEndpoint;
   }
 
   getBets(page: number = 0): Observable<Bet[]> {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet[]>(`${BetsService.baseUrl}`, options)
+    return this.http.get<Bet[]>(this.betUri, options)
     .pipe(switchMap(res => {
       let countMin: number = page * BetsService.itemsOnPage;
       let countMax: number = (page + 1) * BetsService.itemsOnPage;
@@ -33,28 +37,28 @@ export class BetsService {
       params: new HttpParams().set('matchId', matchId),
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet[]>(`${BetsService.baseUrl}`, options);
+    return this.http.get<Bet[]>(this.betUri, options);
   }
 
   getMyOwnBets(): Observable<Bet[]> {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet[]>(`${BetsService.baseUrl}/my-own`, options);
+    return this.http.get<Bet[]>(`${this.betUri}/my-own`, options);
   }
 
   getBet(id: string): Observable<Bet> {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet>(`${BetsService.baseUrl}/${id}`, options);
+    return this.http.get<Bet>(`${this.betUri}/${id}`, options);
   }
 
   postBet(bet: Bet): Observable<Bet> {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.post<Bet>(`${BetsService.baseUrl}`, bet, options).pipe(
+    return this.http.post<Bet>(this.betUri, bet, options).pipe(
       catchError(this.handleError)
     );
   }
