@@ -44,14 +44,14 @@ export class BetsService {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet[]>(this.betUri + `/my-own`, options);
+    return this.http.get<Bet[]>(`${this.betUri}/my-own`, options);
   }
 
   getBet(id: string): Observable<Bet> {
     let options = {
       headers: this.createAuthHeader()
     };
-    return this.http.get<Bet>(this.betUri + "/" + id, options);
+    return this.http.get<Bet>(`${this.betUri}/${id}`, options);
   }
 
   postBet(bet: Bet): Observable<Bet> {
