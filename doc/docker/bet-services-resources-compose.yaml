@@ -30,6 +30,13 @@ services:
       - "5432:5432"
     networks:
       - keycloak-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   keycloak:
     image: quay.io/keycloak/keycloak:19.0.2
     environment:
@@ -49,6 +56,13 @@ services:
     command: "start-dev"
     depends_on:
       - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
   mongodatabase:
     image: mongo:latest
     container_name: "mongodatabase"
@@ -61,6 +75,13 @@ services:
       MONGO_DB_PASSWORD: "S3cret"
     volumes:
       - mongodb_data:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
   zookeeper:
     image: confluentinc/cp-zookeeper:7.1.1
     hostname: zookeeper
@@ -73,6 +94,13 @@ services:
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_log:/var/lib/zookeeper/log
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
   broker:
     image: confluentinc/cp-kafka:7.1.1
     hostname: broker
@@ -93,10 +121,24 @@ services:
     restart: on-failure
     volumes:
       - broker_data:/var/lib/kafka/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
   eureka:
     image: piter/bet-eureka
     ports:
       - "8761:8761"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   config-server:
     image: piter/bet-config-server
     container_name: "config-server"
@@ -107,6 +149,13 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   match-api:
     image: piter/match-api
     ports:
@@ -131,6 +180,13 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   bet-api:
     image: piter/bet-api
     ports:
@@ -155,6 +211,13 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   bet-event-aggregator:
     image: piter/bet-event-aggregator
     depends_on:
@@ -167,6 +230,13 @@ services:
     links:
       - config-server
     restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
   gateway:
     image: piter/bet-gateway
     ports:
@@ -181,6 +251,13 @@ services:
       SPRING_PROFILES_ACTIVE: DOCKER
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
       FRONTEND_APP_URI: "http://host.docker.internal:4201"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   match-management:
     image: piter/match-management
     ports:
@@ -191,6 +268,13 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: DOCKER
       MATCHAPI_URL: "gateway:9090"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
   bet-frontend:
     image: piter/bet-frontend
     ports:
@@ -198,3 +282,10 @@ services:
     depends_on:
       - keycloak
       - gateway
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
