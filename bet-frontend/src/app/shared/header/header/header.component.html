@@ -4,10 +4,10 @@
       <img src="assets/images/favicon.ico" alt="">
     </a>
     <ul class="navbar-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/matches">Matches</a></li>
-      <li  *ngIf="isLoggedIn"><a href="/bets">Bets</a></li>
-      <li><a href="/ranking">Ranking</a></li>
+      <li><a [routerLink]="'/'">Home</a></li>
+      <li><a [routerLink]="'/matches'">Matches</a></li>
+      <li  *ngIf="isLoggedIn"><a [routerLink]="'/bets'">Bets</a></li>
+      <li><a [routerLink]="'/ranking'">Ranking</a></li>
       <li>
         <button *ngIf="!isLoggedIn" class="btn btn-primary" (click)="login()" type="submit">Login</button>
         <button *ngIf="isLoggedIn" class="btn btn-primary" (click)="logout()" type="submit">Logout</button>
