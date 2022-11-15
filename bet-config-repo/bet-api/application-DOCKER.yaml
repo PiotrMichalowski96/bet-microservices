@@ -14,9 +14,9 @@ spring.cloud.stream:
 # Security
 ########################
 spring.security.oauth2.resourceserver.opaqueToken:
-  introspection-uri: http://host.docker.internal:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
+  introspection-uri: http://${keycloak.base.url:host.docker.internal}:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token/introspect
   client-id: bet-login-app
-  client-secret: DQaXG75c2bAqfHA3CXsboQek4xxF2Y6Y
+  client-secret: ${oauth.secret}
 
 ########################
 # Logging
