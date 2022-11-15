@@ -17,6 +17,46 @@ networks:
     driver: bridge
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    ports:
+      - "5601:5601"
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.7.0
+    volumes:
+      - ./filebeat/filebeat.docker.yaml:/usr/share/filebeat/filebeat.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 128m
+        reservations:
+          memory: 128m
   postgres:
     image: postgres
     volumes:
@@ -180,6 +220,9 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
     deploy:
       resources:
         limits:
@@ -211,6 +254,9 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
     deploy:
       resources:
         limits:
@@ -230,6 +276,9 @@ services:
     links:
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
     deploy:
       resources:
         limits:

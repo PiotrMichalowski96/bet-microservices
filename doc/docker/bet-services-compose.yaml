@@ -17,6 +17,25 @@ networks:
     driver: bridge
 
 services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    ports:
+      - "5601:5601"
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.5.0
+    volumes:
+      - ./filebeat/filebeat.docker.yaml:/usr/share/filebeat/filebeat.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   postgres:
     image: postgres
     volumes:
@@ -131,6 +150,9 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   bet-api:
     image: piter/bet-api
     ports:
@@ -155,6 +177,9 @@ services:
       - mongodatabase
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   bet-event-aggregator:
     image: piter/bet-event-aggregator
     depends_on:
@@ -167,6 +192,9 @@ services:
     links:
       - config-server
     restart: on-failure
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   gateway:
     image: piter/bet-gateway
     ports:
