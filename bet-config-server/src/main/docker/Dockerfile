@@ -1,11 +1,14 @@
-FROM openjdk:17 as builder
+FROM openjdk:17-alpine as builder
 WORKDIR application
 ADD maven/${project.build.finalName}.jar ${project.build.finalName}.jar
 RUN java -Djarmode=layertools -jar ${project.build.finalName}.jar extract
 
-FROM openjdk:17
+FROM openjdk:17-alpine
 LABEL PROJECT_NAME=${project.artifactId} \
       PROJECT=${project.id}
+
+ENV TZ=Europe/Warsaw
+RUN apk add --no-cache tzdata
 
 EXPOSE 8080
 

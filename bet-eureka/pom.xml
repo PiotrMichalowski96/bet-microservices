@@ -21,7 +21,7 @@
   <properties>
     <java.version>17</java.version>
     <spring-cloud.version>2021.0.3</spring-cloud.version>
-    <docker.image.prefix>piter</docker.image.prefix>
+    <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
   </properties>
 
@@ -86,6 +86,10 @@
               </build>
             </image>
           </images>
+          <authConfig>
+            <username>pmich96</username>
+            <password>Canal#1997PL</password>
+          </authConfig>
         </configuration>
       </plugin>
     </plugins>
