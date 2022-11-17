@@ -1,0 +1,7 @@
+{
+  "frontendBaseUrl": "http://159.89.22.27:4201",
+  "backendBaseUrl": "http://159.89.22.27:9090",
+  "clientId": "bet-frontend-app",
+  "authorizationUri": "http://159.89.22.27:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/auth?response_type=code&scope=openid%20roles&client_id=bet-frontend-app&redirect_uri=http://159.89.22.27:4201",
+  "tokenUri": "http://159.89.22.27:8080/realms/BetSpringBootKeycloak/protocol/openid-connect/token"
+}
