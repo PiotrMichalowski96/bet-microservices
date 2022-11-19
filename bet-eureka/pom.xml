@@ -86,10 +86,6 @@
               </build>
             </image>
           </images>
-          <authConfig>
-            <username>pmich96</username>
-            <password>Canal#1997PL</password>
-          </authConfig>
         </configuration>
       </plugin>
     </plugins>
