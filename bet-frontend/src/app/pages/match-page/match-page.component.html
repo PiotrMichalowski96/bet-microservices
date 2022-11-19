@@ -39,7 +39,8 @@
       <ng-container *ngIf="bets.length == 0">
         <span class="no-bets">No bets</span>
       </ng-container>
-      <p-carousel [numVisible]="5" *ngIf="bets.length != 0" [value]="bets">
+      <p-carousel [value]="bets" [numVisible]="5" [numScroll]="3" *ngIf="bets.length != 0"
+                  [responsiveOptions]="responsiveOptions">
         <ng-template let-bet pTemplate="bet">
           <div class="carousel-item">
             <app-bet [bet]="bet"></app-bet>

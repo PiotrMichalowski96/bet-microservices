@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Bet} from "../../model/bet";
 import {BetsService} from "../../services/bets.service";
+import {RESPONSIVE_CAROUSEL_OPTIONS} from "../../util/carousel-properties";
 
 @Component({
   selector: 'app-bets-page',
@@ -9,10 +10,13 @@ import {BetsService} from "../../services/bets.service";
 })
 export class BetsPageComponent implements OnInit {
 
+  responsiveOptions;
+
   myOwnBets: Bet[] = [];
   allBets: Bet[] = [];
 
   constructor(private betsService: BetsService) {
+    this.responsiveOptions = RESPONSIVE_CAROUSEL_OPTIONS;
   }
 
   ngOnInit(): void {
