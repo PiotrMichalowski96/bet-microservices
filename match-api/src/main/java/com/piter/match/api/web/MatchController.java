@@ -32,10 +32,13 @@ public class MatchController {
 
   private static final String MATCH_TIME_PARAM_VALUE = "match-time";
   private static final String ROUND_TIME_PARAM_VALUE = "round-time";
+  private static final String ASC_ORDER_UPCOMING_MATCHES = "asc";
+  private static final String DESC_ORDER_UPCOMING_MATCHES = "desc";
 
   private final MatchService matchService;
   private final Validator validator;
   private final Map<String, Supplier<Flux<Match>>> findAllMapSuppliers;
+  private final Map<String, Supplier<Flux<Match>>> findUpcomingMapSuppliers;
 
   public MatchController(MatchService matchService, Validator validator) {
     this.matchService = matchService;
@@ -43,6 +46,10 @@ public class MatchController {
     this.findAllMapSuppliers = Map.of(
         MATCH_TIME_PARAM_VALUE, matchService::findAllByOrderByMatchStartTime,
         ROUND_TIME_PARAM_VALUE, matchService::findAllByOrderByMatchRoundStartTime
+    );
+    this.findUpcomingMapSuppliers = Map.of(
+        ASC_ORDER_UPCOMING_MATCHES, matchService::findAllUpcomingOrderByStartTimeAsc,
+        DESC_ORDER_UPCOMING_MATCHES, matchService::findAllUpcomingOrderByStartTimeDesc
     );
   }
 
@@ -61,8 +68,13 @@ public class MatchController {
   @Operation(summary = "Find all not started matches")
   @ApiResponse(responseCode = "200", description = "successful found upcoming match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches/upcoming")
-  Flux<Match> findUpcoming() {
-    return matchService.findAllUpcoming();
+  Flux<Match> findUpcoming(
+      @Parameter(in = ParameterIn.QUERY, name = "startTime", example = "desc, asc")
+      @RequestParam Optional<String> order) {
+
+    return order.map(findUpcomingMapSuppliers::get)
+        .map(Supplier::get)
+        .orElse(matchService.findAllUpcomingOrderByStartTimeAsc());
   }
 
   @Operation(summary = "Find match by id")

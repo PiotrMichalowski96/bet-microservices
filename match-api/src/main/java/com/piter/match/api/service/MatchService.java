@@ -33,8 +33,13 @@ public class MatchService {
     return matchRepository.findAllByOrderByRoundStartTimeDesc();
   }
 
-  public Flux<Match> findAllUpcoming() {
+  public Flux<Match> findAllUpcomingOrderByStartTimeDesc() {
     return matchRepository.findAllByOrderByStartTimeDesc()
+        .filter(this::isNotStarted);
+  }
+
+  public Flux<Match> findAllUpcomingOrderByStartTimeAsc() {
+    return matchRepository.findAllByOrderByStartTimeAsc()
         .filter(this::isNotStarted);
   }
 

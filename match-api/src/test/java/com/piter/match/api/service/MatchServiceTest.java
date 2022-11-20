@@ -89,7 +89,7 @@ class MatchServiceTest {
 
   @Test
   void shouldGetUpcomingMatches() {
-    Flux<Match> matchFlux = matchService.findAllUpcoming();
+    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeDesc();
     StepVerifier.create(matchFlux)
         .expectNextCount(0)
         .verifyComplete();
