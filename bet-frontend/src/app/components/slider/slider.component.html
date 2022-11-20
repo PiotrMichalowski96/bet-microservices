@@ -2,7 +2,7 @@
   <ng-container *ngFor="let item of items; let i = index">
     <div class="slide" *ngIf="i == currentSlideIndex" @slideFade>
       <div class="slide-bg">
-        <img class="slide-bg-image" [src]="'https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/graphics/' + item.homeTeam + '-' + item.awayTeam + '.png?raw=true'">
+        <img class="slide-bg-image" [src]="'https://github.com/PiotrMichalowski96/bet-microservices/blob/graphics/doc/graphics/' + item.homeTeam + '-' + item.awayTeam + '.png?raw=true'">
       </div>
       <div class="slide-pane">
         <h2 class="name">{{item.homeTeam}} vs {{item.awayTeam}}</h2>

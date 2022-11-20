@@ -12,7 +12,7 @@ import {AppConfig} from "../config/app.config";
 export class BetsService {
 
   private static readonly betEndpoint: string = '/bets';
-  private static readonly itemsOnPage: number = 20;
+  private static readonly itemsOnPage: number = 10;
 
   private readonly betUri: string;
 

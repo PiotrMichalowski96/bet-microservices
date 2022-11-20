@@ -10,7 +10,7 @@ import {AppConfig} from "../config/app.config";
 export class MatchesService {
 
   private static readonly matchEndpoint: string = '/matches';
-  private static readonly itemsOnPage: number = 20;
+  private static readonly itemsOnPage: number = 10;
 
   private readonly matchUri: string;
 

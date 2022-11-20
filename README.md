@@ -1,10 +1,34 @@
 # Bet microservices
-Several microservices that allows you to bet matches.
+Several microservices that is used for Bet League. It allows you to bet matches, score points for correct results and compare with your friends.
 
-## Overview
-I am trying to decouple previous monolith implementation. The result should be more matured micro-services architecture of bet application.
+## Requirement
+Use case chart shows the main requirement for Bet League:
+![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/bet-microservices-requirements.png?raw=true)
 
-## Planned architecture
+## Project Overview
+It was a monolith implementation in the past. I used this project to do a decoupling of monolith. It was a process of changing to micro-services architecture.
+
+Technology stack for backend services:
+- Java 17
+- Spring Cloud
+- Apache Kafka
+- MongoDB
+
+Testing:
+- Test containers
+- Cucumber
+- JUnit 5
+
+Security:
+- OAuth2
+- Spring Security OAuth2.0.
+- Keycloak
+
+Technology stack for frontend:
+- TypeScript
+- Angular
+
+## Architecture
 ![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/bet-microservices-architecture-3.png?raw=true)
 
 ## Security considerations
@@ -14,3 +38,14 @@ I chose to the way where Gateway acts as a OAuth2 Resource Server. Access to the
 
 Below I presented example of sequence diagram:
 ![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/oauth2-bets-sequence-diagram.png?raw=true)
+
+## Setup
+To run this project, build it locally with Maven and additionally create a docker image of each microservice:
+```
+$ mvn clean package docker:build
+```
+Then you can run all micro-services containers with docker compose file:
+```
+$ docker-compose -f "<project-path>\doc\docker\bet-services-compose.yaml"
+```
+All of micro-services docker containers could be also started on cloud environment.

@@ -7,6 +7,7 @@ import {Bet} from "../../model/bet";
 import {BetsService} from "../../services/bets.service";
 import {MatchTimeHelper} from "../../util/match-time-helper";
 import {AuthService} from "../../services/auth.service";
+import {RESPONSIVE_CAROUSEL_OPTIONS} from "../../util/carousel-properties";
 
 @Component({
   selector: 'app-match-page',
@@ -14,6 +15,8 @@ import {AuthService} from "../../services/auth.service";
   styleUrls: ['./match-page.component.scss']
 })
 export class MatchPageComponent implements OnInit {
+
+  responsiveOptions;
 
   isLoggedIn: boolean = false;
   match: Match | null = null;
@@ -23,6 +26,7 @@ export class MatchPageComponent implements OnInit {
               private matchesService: MatchesService,
               private betsService: BetsService,
               private authService: AuthService) {
+    this.responsiveOptions = RESPONSIVE_CAROUSEL_OPTIONS;
   }
 
   ngOnInit(): void {
