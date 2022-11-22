@@ -71,3 +71,4 @@ bet:
 ########################
 logging.level:
   com.piter.bet.event.aggregator: DEBUG
+  org.apache.kafka.clients: WARN

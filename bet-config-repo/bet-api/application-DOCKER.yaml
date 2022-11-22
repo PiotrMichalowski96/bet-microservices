@@ -22,8 +22,6 @@ spring.security.oauth2.resourceserver.opaqueToken:
 # Logging
 ########################
 logging.level:
-  org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
-  org.springframework.data.mongodb.repository.support: DEBUG
-  org.springframework.cache: TRACE
   com.piter.bet.api: DEBUG
+  org.apache.kafka.clients: WARN
 
