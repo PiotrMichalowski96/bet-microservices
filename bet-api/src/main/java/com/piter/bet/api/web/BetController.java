@@ -4,8 +4,8 @@ import com.piter.api.commons.domain.Bet;
 import com.piter.api.commons.domain.User;
 import com.piter.bet.api.service.BetService;
 import com.piter.bet.api.util.TokenUtil;
+import java.util.Map;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -22,21 +22,37 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequiredArgsConstructor
 public class BetController {
+
+  private static final String ASC_ORDER_MATCH_TIME = "asc";
+  private static final String DESC_ORDER_MATCH_TIME = "desc";
 
   private final BetService betService;
   private final Validator validator;
+  private final Map<String, BetFetcher> findAllMapSuppliers;
+
+  public BetController(BetService betService, Validator validator) {
+    this.betService = betService;
+    this.validator = validator;
+    this.findAllMapSuppliers = Map.of(
+        ASC_ORDER_MATCH_TIME, betService::findAllByOrderByMatchStartTimeAsc,
+        DESC_ORDER_MATCH_TIME, betService::findAllByOrderByMatchStartTimeDesc
+    );
+  }
 
   @GetMapping("/bets")
   Flux<Bet> findAll(BearerTokenAuthentication token,
       @RequestParam Optional<Long> matchId,
-      @RequestParam Optional<String> userNickname) {
+      @RequestParam Optional<String> userNickname,
+      @RequestParam Optional<String> matchOrder) {
 
     User user = TokenUtil.getUserFrom(token);
     return matchId.map(id -> betService.findAllByMatchId(id, user))
         .or(() -> userNickname.map(nickname -> betService.findAllByUserNickname(nickname, user)))
-        .orElse(betService.findAll(user));
+        .orElse(matchOrder
+                .map(findAllMapSuppliers::get)
+                .map(betFetcher -> betFetcher.fetch(user))
+                .orElse(betService.findAll(user)));
   }
 
   @GetMapping("/bets/my-own")
@@ -83,5 +99,10 @@ public class BetController {
     if(errors.hasErrors()){
       throw new ServerWebInputException(errors.toString());
     }
+  }
+
+  @FunctionalInterface
+  private interface BetFetcher {
+    Flux<Bet> fetch(User user);
   }
 }

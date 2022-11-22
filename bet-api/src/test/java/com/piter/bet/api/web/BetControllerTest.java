@@ -135,7 +135,7 @@ class BetControllerTest {
   private void mockFindAllByUserNickName(String userNickname) {
     Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
         .filter(bet -> Objects.equals(bet.getUser().getNickname(), userNickname));
-    when(betRepository.findAllByUserNickname(eq(userNickname))).thenReturn(mockedBetFlux);
+    when(betRepository.findAllByUserNicknameOrderByMatchStartTimeDesc(eq(userNickname))).thenReturn(mockedBetFlux);
   }
 
   private WebTestClientConfigurer mockBearerToken(User user) {

@@ -9,9 +9,13 @@ import reactor.core.publisher.Mono;
 
 public interface BetRepository extends ReactiveMongoRepository<Bet, String> {
 
+  Flux<Bet> findAllByOrderByMatchStartTimeAsc();
+
+  Flux<Bet> findAllByOrderByMatchStartTimeDesc();
+
   Flux<Bet> findAllByMatchId(Long matchId);
 
-  Flux<Bet> findAllByUserNickname(String nickname);
+  Flux<Bet> findAllByUserNicknameOrderByMatchStartTimeDesc(String nickname);
 
   @Aggregation(pipeline = {
       "{$group: {_id: {user: '$user'}, points: {$sum: '$betResult.points'}}}",
