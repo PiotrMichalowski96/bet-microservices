@@ -36,10 +36,19 @@ public class BetKafkaConsumer {
   }
 
   private void saveBet(Message<?> betMessage) {
+    logReceivedMessage(betMessage);
     Bet bet = (Bet) betMessage.getPayload();
     betRepository.save(bet).subscribe(
         savedBet -> logger.debug("Saved bet: {}", bet)
     );
+  }
+
+  private void logReceivedMessage(Message<?> betMessage) {
+    Optional.ofNullable(betMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, String.class))
+        .ifPresent(key -> {
+          Bet bet = (Bet) betMessage.getPayload();
+          logger.debug("Received bet to save. Key: {} bet: {}", key, bet);
+        });
   }
 
   private void deleteBet(Message<?> tombstoneMessage) {
