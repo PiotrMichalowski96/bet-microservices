@@ -8,5 +8,7 @@ public interface MatchRepository extends ReactiveMongoRepository<Match, Long> {
 
   Flux<Match> findAllByOrderByStartTimeDesc();
 
+  Flux<Match> findAllByOrderByStartTimeAsc();
+
   Flux<Match> findAllByOrderByRoundStartTimeDesc();
 }

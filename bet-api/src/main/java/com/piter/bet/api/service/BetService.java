@@ -25,13 +25,23 @@ public class BetService {
         .filter(bet -> isBetVisibleForUser(user, bet));
   }
 
+  public Flux<Bet> findAllByOrderByMatchStartTimeAsc(User user) {
+    return betRepository.findAllByOrderByMatchStartTimeAsc()
+        .filter(bet -> isBetVisibleForUser(user, bet));
+  }
+
+  public Flux<Bet> findAllByOrderByMatchStartTimeDesc(User user) {
+    return betRepository.findAllByOrderByMatchStartTimeDesc()
+        .filter(bet -> isBetVisibleForUser(user, bet));
+  }
+
   public Flux<Bet> findAllByMatchId(Long matchId, User user) {
     return betRepository.findAllByMatchId(matchId)
         .filter(bet -> isBetVisibleForUser(user, bet));
   }
 
   public Flux<Bet> findAllByUserNickname(String nickname, User user) {
-    return betRepository.findAllByUserNickname(nickname)
+    return betRepository.findAllByUserNicknameOrderByMatchStartTimeDesc(nickname)
         .filter(bet -> isBetVisibleForUser(user, bet));
   }
 

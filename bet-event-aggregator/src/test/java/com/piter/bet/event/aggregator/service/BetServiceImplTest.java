@@ -75,6 +75,20 @@ class BetServiceImplTest {
                 .status(Status.CORRECT)
                 .points(5)
                 .build()),
+        // Correct draw result prediction
+        Arguments.of(
+            MatchResult.builder()
+                .homeTeamGoals(2)
+                .awayTeamGoals(2)
+                .build(),
+            MatchResult.builder()
+                .homeTeamGoals(2)
+                .awayTeamGoals(2)
+                .build(),
+            BetResult.builder()
+                .status(Status.CORRECT)
+                .points(5)
+                .build()),
         // Draw prediction
         Arguments.of(
             MatchResult.builder()

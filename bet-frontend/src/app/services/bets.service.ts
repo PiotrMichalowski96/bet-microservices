@@ -22,6 +22,7 @@ export class BetsService {
 
   getBets(page: number = 0): Observable<Bet[]> {
     let options = {
+      params: new HttpParams().set('matchOrder', 'desc'),
       headers: this.createAuthHeader()
     };
     return this.http.get<Bet[]>(this.betUri, options)
