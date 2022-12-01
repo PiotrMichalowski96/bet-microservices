@@ -13,7 +13,7 @@
 
   <groupId>com.piter.match.api</groupId>
   <artifactId>match-api</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
 
   <name>match-api</name>
   <description>Match API microservice</description>

@@ -3,6 +3,7 @@ package com.piter.bet.api.consumer;
 import com.piter.api.commons.domain.Bet;
 import com.piter.bet.api.exception.BetKafkaException;
 import com.piter.bet.api.repository.BetRepository;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class BetKafkaConsumer {
+
+  private static final Duration DB_TIMEOUT = Duration.ofSeconds(1);
 
   private final BetRepository betRepository;
   private final Map<BetEventType, Consumer<Message<?>>> eventTypeProcessor;
@@ -38,9 +41,7 @@ public class BetKafkaConsumer {
   private void saveBet(Message<?> betMessage) {
     logReceivedMessage(betMessage);
     Bet bet = (Bet) betMessage.getPayload();
-    betRepository.save(bet).subscribe(
-        savedBet -> logger.debug("Saved bet: {}", bet)
-    );
+    betRepository.save(bet).block(DB_TIMEOUT); //block is used to ensure saving order
   }
 
   private void logReceivedMessage(Message<?> betMessage) {
@@ -54,7 +55,7 @@ public class BetKafkaConsumer {
   private void deleteBet(Message<?> tombstoneMessage) {
     String id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, String.class))
         .orElseThrow(() -> new BetKafkaException("Delete event does not have Kafka key ID"));
-    betRepository.deleteById(id).subscribe();
+    betRepository.deleteById(id).block(DB_TIMEOUT); //block is used to ensure delete order
     logger.debug("Deleted bet id: {}", id);
   }
 }
