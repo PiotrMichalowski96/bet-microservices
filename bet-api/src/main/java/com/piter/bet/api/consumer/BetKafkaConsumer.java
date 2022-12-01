@@ -41,7 +41,7 @@ public class BetKafkaConsumer {
   private void saveBet(Message<?> betMessage) {
     logReceivedMessage(betMessage);
     Bet bet = (Bet) betMessage.getPayload();
-    betRepository.save(bet).block(DB_TIMEOUT);
+    betRepository.save(bet).block(DB_TIMEOUT); //block is used to ensure saving order
   }
 
   private void logReceivedMessage(Message<?> betMessage) {
@@ -55,7 +55,7 @@ public class BetKafkaConsumer {
   private void deleteBet(Message<?> tombstoneMessage) {
     String id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, String.class))
         .orElseThrow(() -> new BetKafkaException("Delete event does not have Kafka key ID"));
-    betRepository.deleteById(id).block(DB_TIMEOUT);
+    betRepository.deleteById(id).block(DB_TIMEOUT); //block is used to ensure delete order
     logger.debug("Deleted bet id: {}", id);
   }
 }

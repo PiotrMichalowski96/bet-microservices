@@ -41,7 +41,7 @@ public class MatchKafkaConsumer {
   private void saveMatch(Message<?> matchMessage) {
     logReceivedMessage(matchMessage);
     Match match = (Match) matchMessage.getPayload();
-    matchRepository.save(match).block(DB_TIMEOUT);
+    matchRepository.save(match).block(DB_TIMEOUT); //block is used to ensure saving order
   }
 
   private void logReceivedMessage(Message<?> matchMessage) {
@@ -55,7 +55,7 @@ public class MatchKafkaConsumer {
   private void deleteMatch(Message<?> tombstoneMessage) {
     Long id = Optional.ofNullable(tombstoneMessage.getHeaders().get(KafkaHeaders.RECEIVED_MESSAGE_KEY, Long.class))
         .orElseThrow(() -> new MatchKafkaException("Delete event does not have Kafka key ID"));
-    matchRepository.deleteById(id).block(DB_TIMEOUT);
+    matchRepository.deleteById(id).block(DB_TIMEOUT); //block is used to ensure delete order
     logger.debug("Deleted match id: {}", id);
   }
 }
