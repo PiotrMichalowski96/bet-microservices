@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Mono;
 
 @DataMongoTest
 @ActiveProfiles("TEST")
@@ -44,5 +45,17 @@ public abstract class AbstractServiceTest {
 
   private void fillDatabase() {
     bets.forEach(bet -> betRepository.save(bet).block());
+  }
+
+  protected Mono<Bet> findBetBy(String id) {
+    return betRepository.findById(id);
+  }
+
+  protected void saveBet(Bet bet) {
+    betRepository.save(bet).block();
+  }
+
+  protected void deleteBet(Bet bet) {
+    betRepository.deleteById(bet.getId()).block();
   }
 }
