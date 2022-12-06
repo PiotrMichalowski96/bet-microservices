@@ -1,6 +1,8 @@
 package com.piter.bet.api.service;
 
 import static com.piter.bet.api.util.BetTestData.createBetList;
+import static com.piter.bet.api.util.UserTestData.createFirstUser;
+import static com.piter.bet.api.util.UserTestData.createFourthUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -113,7 +115,7 @@ class BetServiceTest extends AbstractServiceTest {
   @Test
   void shouldGetBetsWhenMatchIsStarted() {
     //given
-    var user = new User("Arya", "Stark", "needle");
+    var user = createFourthUser();
 
     //when
     Flux<Bet> betFlux = betService.findAll(user);
@@ -143,7 +145,7 @@ class BetServiceTest extends AbstractServiceTest {
   void shouldNotGetBetByIdBecauseUserIsNotOwner() {
     //given
     var id = "2";
-    var user = new User("Arya", "Stark", "needle");
+    var user = createFourthUser();
 
     //when
     Mono<Bet> betMono = betService.findById(id, user);
@@ -177,7 +179,7 @@ class BetServiceTest extends AbstractServiceTest {
   void shouldDeleteBet() {
     //given
     var id = "99";
-    var user = new User("Arya", "Stark", "needle");
+    var user = createFourthUser();
     var bet = Bet.builder()
         .id(id)
         .user(user)
@@ -216,8 +218,8 @@ class BetServiceTest extends AbstractServiceTest {
     var id = "123";
     var wrongId = "987";
 
-    var userOwner = new User("Arya", "Stark", "needle");
-    var wrongUser = new User("Jon", "Snow", "snowboard");
+    var userOwner = createFourthUser();
+    var wrongUser = createFirstUser();
 
     var bet = Bet.builder()
         .id(id)
