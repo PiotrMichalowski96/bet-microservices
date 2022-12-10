@@ -33,7 +33,6 @@ public class BetApiTestConfig {
   }
 
   @Bean
-  @Primary
   Validator validator() {
     return mock(Validator.class);
   }

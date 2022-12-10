@@ -70,9 +70,9 @@ public class MatchController {
   @GetMapping("/matches/upcoming")
   Flux<Match> findUpcoming(
       @Parameter(in = ParameterIn.QUERY, name = "startTime", example = "desc, asc")
-      @RequestParam Optional<String> order) {
+      @RequestParam Optional<String> startTime) {
 
-    return order.map(findUpcomingMapSuppliers::get)
+    return startTime.map(findUpcomingMapSuppliers::get)
         .map(Supplier::get)
         .orElse(matchService.findAllUpcomingOrderByStartTimeAsc());
   }

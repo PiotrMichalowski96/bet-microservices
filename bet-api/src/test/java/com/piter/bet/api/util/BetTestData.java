@@ -1,12 +1,15 @@
 package com.piter.bet.api.util;
 
+import static com.piter.bet.api.util.UserTestData.createFirstUser;
+import static com.piter.bet.api.util.UserTestData.createSecondUser;
+import static com.piter.bet.api.util.UserTestData.createThirdUser;
+
 import com.piter.api.commons.domain.Bet;
 import com.piter.api.commons.domain.BetResult;
 import com.piter.api.commons.domain.BetResult.Status;
 import com.piter.api.commons.domain.Match;
 import com.piter.api.commons.domain.MatchResult;
 import com.piter.api.commons.domain.MatchRound;
-import com.piter.api.commons.domain.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.experimental.UtilityClass;
@@ -19,7 +22,7 @@ public class BetTestData {
         Bet.builder()
             .id("1")
             .matchPredictedResult(new MatchResult(1, 1))
-            .user(new User("Jon", "Snow", "snowboard"))
+            .user(createFirstUser())
             .betResult(new BetResult(Status.UNRESOLVED, 0))
             .match(Match.builder()
                 .id(1L)
@@ -33,7 +36,7 @@ public class BetTestData {
         Bet.builder()
             .id("2")
             .matchPredictedResult(new MatchResult(3, 1))
-            .user(new User("Tyrion", "Lanister", "bigGuy"))
+            .user(createSecondUser())
             .betResult(new BetResult(Status.CORRECT, 3))
             .match(Match.builder()
                 .id(1L)
@@ -47,7 +50,7 @@ public class BetTestData {
         Bet.builder()
             .id("3")
             .matchPredictedResult(new MatchResult(2, 3))
-            .user(new User("Robb", "Stark", "bridegroom"))
+            .user(createThirdUser())
             .betResult(new BetResult(Status.UNRESOLVED, 0))
             .match(Match.builder()
                 .id(2L)
@@ -65,27 +68,27 @@ public class BetTestData {
     return List.of(
         Bet.builder()
             .id("1")
-            .user(new User("Jon", "Snow", "snowboard"))
+            .user(createFirstUser())
             .betResult(new BetResult(Status.CORRECT, 5))
             .build(),
         Bet.builder()
             .id("2")
-            .user(new User("Tyrion", "Lanister", "bigGuy"))
+            .user(createSecondUser())
             .betResult(new BetResult(Status.CORRECT, 1))
             .build(),
         Bet.builder()
             .id("3")
-            .user(new User("Robb", "Stark", "bridegroom"))
+            .user(createThirdUser())
             .betResult(new BetResult(Status.INCORRECT, 3))
             .build(),
         Bet.builder()
             .id("4")
-            .user(new User("Tyrion", "Lanister", "bigGuy"))
+            .user(createSecondUser())
             .betResult(new BetResult(Status.CORRECT, 1))
             .build(),
         Bet.builder()
             .id("5")
-            .user(new User("Robb", "Stark", "bridegroom"))
+            .user(createThirdUser())
             .betResult(new BetResult(Status.CORRECT, 1))
             .build()
     );
