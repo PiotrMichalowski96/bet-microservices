@@ -13,7 +13,7 @@ public abstract class KafkaMessageProducer {
   private final String producerBinding;
   private final StreamBridge streamBridge;
 
-  public void sendEvent(Supplier<Long> keySupplier, Object payload) {
+  protected void sendEvent(Supplier<Long> keySupplier, Object payload) {
     Long key = keySupplier.get();
 
     Message<?> event = MessageBuilder
