@@ -31,6 +31,13 @@ Technology stack for frontend:
 ## Architecture
 ![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/bet-microservices-architecture-3.png?raw=true)
 
+## Testing
+- There are unit tests with JUnit 5 for all microservices.
+- In Match API there are also integration tests. I used test containers and Cucumber for them.
+- Most complex business logic is present in Bet Event Aggregator, Bet API and Match API services.
+- For those three most important microservices I prepared a code coverage report to ensure coverage is more than 80%:
+![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/bet-microservices-code-coverage.png?raw=true)
+
 ## Security considerations
 There are different security approaches that we could follow in order to implement OAuth2 in bet microservices ecosystem.
 
@@ -44,8 +51,8 @@ To run this project, build it locally with Maven and additionally create a docke
 ```
 $ mvn clean package docker:build
 ```
-Then you can run all micro-services containers with docker compose file:
+Then you can run all microservices containers with docker compose file:
 ```
 $ docker-compose -f "<project-path>\doc\docker\bet-services-compose.yaml"
 ```
-All of micro-services docker containers could be also started on cloud environment.
+All of microservices in docker containers could be also started on cloud environment.
