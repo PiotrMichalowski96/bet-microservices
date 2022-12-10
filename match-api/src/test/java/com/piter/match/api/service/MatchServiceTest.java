@@ -8,12 +8,16 @@ import static org.mockito.Mockito.when;
 import com.piter.api.commons.domain.Match;
 import com.piter.api.commons.domain.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
+import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,7 @@ import reactor.test.StepVerifier;
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @Import(MatchApiTestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 class MatchServiceTest {
 
   @Autowired
@@ -43,6 +48,9 @@ class MatchServiceTest {
 
   @MockBean
   private MatchKafkaProducer matchKafkaProducer;
+
+  @MockBean
+  private SequenceGeneratorService sequenceGeneratorService;
 
   @BeforeEach
   void fillDatabaseIfEmpty() {
@@ -82,16 +90,26 @@ class MatchServiceTest {
     Flux<Match> matchFlux = matchService.findAllByOrderByMatchStartTime();
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
         .assertNext(match -> assertThat(match.getId()).isEqualTo(3L))
+        .verifyComplete();
+  }
+
+  @Test
+  void shouldGetUpcomingMatchesOrderedByMatchTimeDesc() {
+    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeDesc();
+    StepVerifier.create(matchFlux)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
         .verifyComplete();
   }
 
   @Test
-  void shouldGetUpcomingMatches() {
-    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeDesc();
+  void shouldGetUpcomingMatchesOrderedByMatchTimeAsc() {
+    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeAsc();
     StepVerifier.create(matchFlux)
-        .expectNextCount(0)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
         .verifyComplete();
   }
 
@@ -105,6 +123,7 @@ class MatchServiceTest {
   }
 
   @Test
+  @Order(Integer.MAX_VALUE)
   void shouldSaveMatchWithId() {
     //given
     var id = 10L;
@@ -139,5 +158,51 @@ class MatchServiceTest {
   private void assertSavedMatchById(Match expectedMatch) {
     var savedMatch = matchRepository.findById(expectedMatch.getId()).block();
     assertThat(savedMatch).isEqualTo(expectedMatch);
+  }
+
+  @Test
+  @Order(Integer.MAX_VALUE)
+  void shouldSaveMatchWithoutId() {
+    //given
+    var matchToSave = Match.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Athletic Bilbao")
+        .startTime(LocalDateTime.of(2022, 10, 23, 21, 0, 0))
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.of(2022, 10, 22, 14, 0, 0)))
+        .build();
+
+    var generatedId = 99L;
+
+    mockSequenceGeneratorServiceCreateId(generatedId);
+    mockMatchKafkaProducerSavingInDatabase();
+
+    //when
+    Mono<Match> matchMono = matchService.saveMatch(matchToSave);
+
+    //then
+    StepVerifier.create(matchMono)
+        .assertNext(match -> assertThat(match.getId()).isEqualTo(generatedId))
+        .verifyComplete();
+    assertSavedMatchWithoutId(generatedId, matchToSave);
+  }
+
+  private void mockSequenceGeneratorServiceCreateId(long generatedId) {
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(Mono.just(generatedId));
+  }
+
+  private void assertSavedMatchWithoutId(Long generatedId, Match expectedMatch) {
+    var savedMatch = matchRepository.findById(generatedId).block();
+    assertThat(savedMatch).usingRecursiveComparison()
+        .ignoringFields("id")
+        .isEqualTo(expectedMatch);
+  }
+
+  @Test
+  void shouldReturnErrorDuringDeletingMatch() {
+    var nonExistingId = 12324L;
+    Mono<Void> voidMono = matchService.deleteMatch(nonExistingId);
+    StepVerifier.create(voidMono)
+        .expectError(MatchNotFoundException.class)
+        .verify();
   }
 }

@@ -30,7 +30,6 @@ public class MatchApiTestConfig {
   }
 
   @Bean
-  @Primary
   Validator validator() {
     return mock(Validator.class);
   }
