@@ -22,6 +22,7 @@
     <java.version>17</java.version>
     <project.lombok.version>1.18.24</project.lombok.version>
     <spring-doc.version>1.6.11</spring-doc.version>
+    <spring.contract.version>4.0.0</spring.contract.version>
     <testcontainers.version>1.17.3</testcontainers.version>
     <cucumber.version>7.6.0</cucumber.version>
     <rest-assured.version>5.1.1</rest-assured.version>
@@ -40,6 +41,21 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Spring Cloud -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+      <version>${spring.contract.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- To resolve error in cloud contract tests -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Bet microservices commons -->
@@ -257,6 +273,16 @@
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+        <version>${spring.contract.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <baseClassForTests>com.piter.match.api.contract.MatchServiceBaseTest</baseClassForTests>
         </configuration>
       </plugin>
 
