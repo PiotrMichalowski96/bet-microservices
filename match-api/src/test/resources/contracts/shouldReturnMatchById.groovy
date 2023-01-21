@@ -3,7 +3,7 @@ import org.springframework.cloud.contract.spec.Contract
 Contract.make {
     description "should return match by id"
 
-    request{
+    request {
         method GET()
         url("/matches/1")
     }
@@ -13,7 +13,7 @@ Contract.make {
         headers {
             contentType applicationJson()
         }
-        body ("""
+        body("""
                 {
                     "id": 1,
                     "homeTeam": "Argentina",
