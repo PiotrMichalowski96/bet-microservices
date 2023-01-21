@@ -3,6 +3,8 @@ server:
 
 spring:
   application.name: match-api
+  main:
+    web-application-type: REACTIVE
   data:
     mongodb:
       port: 27018

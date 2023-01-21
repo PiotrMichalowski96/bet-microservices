@@ -1,4 +1,4 @@
-package com.piter.match.api.it.util;
+package com.piter.api.commons.util;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,13 +11,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 @UtilityClass
 public class JsonUtil {
 
-  private static final String RESOURCE_PATH = "src/int-test/resources/";
   private static final ObjectMapper OBJECT_MAPPER;
 
   static {
@@ -42,7 +41,7 @@ public class JsonUtil {
   }
 
   public static String readFileAsString(String resourceFilePath) throws IOException {
-    var fis = new FileInputStream(RESOURCE_PATH + resourceFilePath);
+    var fis = new FileInputStream(resourceFilePath);
     return IOUtils.toString(fis, StandardCharsets.UTF_8);
   }
 

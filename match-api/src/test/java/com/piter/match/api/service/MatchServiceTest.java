@@ -11,6 +11,7 @@ import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
+import com.piter.match.api.util.DbPopulatorUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,18 +54,9 @@ class MatchServiceTest {
   private SequenceGeneratorService sequenceGeneratorService;
 
   @BeforeEach
-  void fillDatabaseIfEmpty() {
-    List<Match> existingMatches = matchRepository.findAll()
-        .collectList()
-        .block();
-    if (existingMatches == null || existingMatches.isEmpty()) {
-      fillDatabase();
-    }
-  }
-
-  private void fillDatabase() {
+  void initDatabase() {
     List<Match> matches = createMatchList();
-    matches.forEach(match -> matchRepository.save(match).block());
+    DbPopulatorUtil.fillDatabaseIfEmpty(matchRepository, matches);
   }
 
   @Test
