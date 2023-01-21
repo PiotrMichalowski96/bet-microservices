@@ -10,22 +10,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@TestPropertySource(properties = "spring.main.allow-bean-definition-overriding=true")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import({MatchApiTestConfig.class, SecurityTestConfig.class})
 @ImportAutoConfiguration(exclude = ContextFunctionCatalogAutoConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
-@AutoConfigureMessageVerifier
 public @interface MatchContractTest {
 }

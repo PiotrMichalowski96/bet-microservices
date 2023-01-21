@@ -1,4 +1,5 @@
 spring:
+  main.web-application-type: REACTIVE
   mongodb:
     embedded:
       version: 5.0.6
