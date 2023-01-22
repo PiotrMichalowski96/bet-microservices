@@ -15,8 +15,10 @@ jobs:
   bet-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
+    working_directory: ~/bet-microservices/bet-api
     steps:
-      - checkout
+      - checkout:
+          path: ~/bet-microservices
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
@@ -26,8 +28,10 @@ jobs:
   bet-event-aggregator-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
+    working_directory: ~/bet-microservices/bet-event-aggregator
     steps:
-      - checkout
+      - checkout:
+          path: ~/bet-microservices
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
@@ -37,8 +41,10 @@ jobs:
   match-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
+    working_directory: ~/bet-microservices/match-api
     steps:
-      - checkout
+      - checkout:
+          path: ~/bet-microservices
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
