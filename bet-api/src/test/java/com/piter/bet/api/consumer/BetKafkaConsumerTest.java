@@ -9,6 +9,7 @@ import com.piter.bet.api.config.BetApiTestConfig;
 import com.piter.bet.api.repository.BetRepository;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ThrowingRunnable;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@Tag("EmbeddedMongoDBTest")
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)

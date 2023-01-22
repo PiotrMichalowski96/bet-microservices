@@ -111,7 +111,8 @@
     </dependency>
     <dependency>
       <groupId>de.flapdoodle.embed</groupId>
-      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <artifactId>de.flapdoodle.embed.mongo.spring27x</artifactId>
+      <version>4.3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

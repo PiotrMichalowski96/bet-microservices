@@ -8,12 +8,14 @@ import io.restassured.module.webtestclient.RestAssuredWebTestClient;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag("EmbeddedMongoDBTest")
 @ActiveProfiles("TEST")
 @MatchContractTest
 public abstract class MatchApiBaseTest {

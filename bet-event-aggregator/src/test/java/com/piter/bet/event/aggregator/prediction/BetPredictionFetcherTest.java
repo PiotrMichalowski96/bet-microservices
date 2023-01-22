@@ -103,7 +103,8 @@ class BetPredictionFetcherTest {
     );
   }
 
-  private Bet createBetWithResults(MatchResult predictedMatchResult, MatchResult actualMatchResult) {
+  private Bet createBetWithResults(MatchResult predictedMatchResult,
+      MatchResult actualMatchResult) {
 
     Match match = Match.builder()
         .result(actualMatchResult)

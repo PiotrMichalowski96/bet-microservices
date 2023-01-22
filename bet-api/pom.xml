@@ -22,7 +22,7 @@
     <java.version>17</java.version>
     <spring-cloud.version>2021.0.3</spring-cloud.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <bet.commons.version>0.0.5-SNAPSHOT</bet.commons.version>
+    <bet.commons.version>0.0.6-SNAPSHOT</bet.commons.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
   </properties>
@@ -60,7 +60,8 @@
     </dependency>
     <dependency>
       <groupId>de.flapdoodle.embed</groupId>
-      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <artifactId>de.flapdoodle.embed.mongo.spring27x</artifactId>
+      <version>4.3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -1,0 +1,79 @@
+version: 2.1
+
+parameters:
+  bet-api-modified:
+    type: boolean
+    default: false
+  bet-event-aggregator-modified:
+    type: boolean
+    default: false
+  match-api-modified:
+    type: boolean
+    default: false
+
+jobs:
+  bet-api-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    working_directory: ~/bet-microservices/bet-api
+    steps:
+      - checkout:
+          path: ~/bet-microservices
+      - run:
+          name: Install shared library
+          path: ~/bet-microservices/shared-library
+          command: mvn -B clean install
+      - run:
+          name: Build
+          path: ~/bet-microservices/bet-api
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          path: ~/bet-microservices/bet-api
+          command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
+  bet-event-aggregator-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout:
+          path: ~/bet-microservices
+      - run:
+          name: Build
+          path: ~/bet-microservices/bet-event-aggregator
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          path: ~/bet-microservices/bet-event-aggregator
+          command: mvn test
+  match-api-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout:
+          path: ~/bet-microservices
+      - run:
+          name: Install shared library
+          path: ~/bet-microservices/shared-library
+          command: mvn -B clean install
+      - run:
+          name: Build
+          path: ~/bet-microservices/match-api
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          path: ~/bet-microservices/match-api
+          command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
+
+workflows:
+  bet-api:
+    when: << pipeline.parameters.bet-api-modified >>
+    jobs:
+      - bet-api-build-and-test
+  bet-event-aggregator:
+    when: << pipeline.parameters.bet-event-aggregator-modified >>
+    jobs:
+      - bet-event-aggregator-build-and-test
+  match-api:
+    when: << pipeline.parameters.match-api-modified >>
+    jobs:
+      - match-api-build-and-test

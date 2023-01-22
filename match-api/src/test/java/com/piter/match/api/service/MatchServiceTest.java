@@ -17,6 +17,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+@Tag("EmbeddedMongoDBTest")
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
@@ -179,7 +181,8 @@ class MatchServiceTest {
   }
 
   private void mockSequenceGeneratorServiceCreateId(long generatedId) {
-    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(Mono.just(generatedId));
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
+        Mono.just(generatedId));
   }
 
   private void assertSavedMatchWithoutId(Long generatedId, Match expectedMatch) {
