@@ -6,7 +6,7 @@ spring:
   data:
     mongodb:
       port: 0
-      host: localhost
+      host: 127.0.0.1
   cloud.config.enabled: false
 
 security.mode: true
