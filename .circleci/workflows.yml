@@ -38,10 +38,6 @@ jobs:
       - checkout:
           path: ~/bet-microservices
       - run:
-          name: Install shared library
-          path: ~/bet-microservices/shared-library
-          command: mvn -B clean install
-      - run:
           name: Build
           path: ~/bet-microservices/bet-event-aggregator
           command: mvn -B -DskipTests clean package
