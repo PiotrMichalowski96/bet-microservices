@@ -12,6 +12,16 @@ parameters:
     default: false
 
 jobs:
+  shared-library-install:
+    docker:
+      - image: cimg/openjdk:17.0
+    working_directory: ~/bet-microservices/shared-library
+    steps:
+      - checkout:
+          path: ~/bet-microservices
+      - run:
+          name: Install
+          command: mvn -B clean install
   bet-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
@@ -56,12 +66,15 @@ workflows:
   bet-api:
     when: << pipeline.parameters.bet-api-modified >>
     jobs:
+      - shared-library-install
       - bet-api-build-and-test
   bet-event-aggregator:
     when: << pipeline.parameters.bet-event-aggregator-modified >>
     jobs:
+      - shared-library-install
       - bet-event-aggregator-build-and-test
   match-api:
     when: << pipeline.parameters.match-api-modified >>
     jobs:
+      - shared-library-install
       - match-api-build-and-test
