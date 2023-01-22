@@ -48,17 +48,14 @@ jobs:
 
 workflows:
   bet-api:
-    when:
-      - << pipeline.parameters.bet-api-modified >>
+    when: << pipeline.parameters.bet-api-modified >>
     jobs:
       - bet-api-build-and-test
   bet-event-aggregator:
-    when:
-      - << pipeline.parameters.bet-event-aggregator-modified >>
+    when: << pipeline.parameters.bet-event-aggregator-modified >>
     jobs:
       - bet-event-aggregator-build-and-test
   match-api:
-    when:
-      - << pipeline.parameters.match-api-modified >>
+    when: << pipeline.parameters.match-api-modified >>
     jobs:
       - match-api-build-and-test
