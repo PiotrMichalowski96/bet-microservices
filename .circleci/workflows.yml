@@ -51,7 +51,7 @@ jobs:
           command: mvn test
   match-api-build-and-test:
     docker:
-      - image: cimg/openjdk:19.0
+      - image: cimg/openjdk:17.0
     steps:
       - checkout:
           path: ~/bet-microservices
