@@ -2,7 +2,7 @@ spring:
   main.web-application-type: REACTIVE
   mongodb:
     embedded:
-      version: 4.4.0
+      version: 5.0.6
   data:
     mongodb:
       port: 0
