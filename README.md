@@ -1,4 +1,6 @@
 # Bet microservices
+[![<PiotrMichalowski96>](https://circleci.com/gh/PiotrMichalowski96/bet-microservices.svg?style=svg)](https://circleci.com/gh/PiotrMichalowski96/bet-microservices)
+
 Several microservices that is used for Bet League. It allows you to bet matches, score points for correct results and compare with your friends.
 
 ## Requirement
