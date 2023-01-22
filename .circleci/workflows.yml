@@ -51,10 +51,17 @@ jobs:
   match-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
-    working_directory: ~/bet-microservices/match-api
+    working_directory: ~/bet-microservices
     steps:
       - checkout:
           path: ~/bet-microservices
+      - run:
+          command: cd shared-library
+      - run:
+          name: Install shared library
+          command: mvn -B clean install
+      - run:
+          command: cd ../match-api
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
