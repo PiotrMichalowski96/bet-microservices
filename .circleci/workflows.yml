@@ -67,14 +67,20 @@ workflows:
     when: << pipeline.parameters.bet-api-modified >>
     jobs:
       - shared-library-install
-      - bet-api-build-and-test
+      - bet-api-build-and-test:
+          requires:
+            - shared-library-install
   bet-event-aggregator:
     when: << pipeline.parameters.bet-event-aggregator-modified >>
     jobs:
       - shared-library-install
-      - bet-event-aggregator-build-and-test
+      - bet-event-aggregator-build-and-test:
+          requires:
+            - shared-library-install
   match-api:
     when: << pipeline.parameters.match-api-modified >>
     jobs:
       - shared-library-install
-      - match-api-build-and-test
+      - match-api-build-and-test:
+          requires:
+            - shared-library-install
