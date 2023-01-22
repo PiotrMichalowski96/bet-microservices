@@ -6,7 +6,6 @@ workflows:
   setup:
     jobs:
       - path-filtering/filter:
-          base-revision: feature/circle-CI
           mapping: |
             bet-api/.* bet-api-modified true
             bet-event-aggregator/.* bet-event-aggregator-modified true
