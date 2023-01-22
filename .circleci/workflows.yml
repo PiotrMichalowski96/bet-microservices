@@ -1,0 +1,68 @@
+version: 2.1
+
+orbs:
+  azure-cli: circleci/azure-cli@1.1.0
+  docker: circleci/docker@1.5.0
+
+parameters:
+  bet-api-modified:
+    type: boolean
+    default: false
+  bet-event-aggregator-modified:
+    type: boolean
+    default: false
+  match-api-modified:
+    type: boolean
+    default: false
+
+jobs:
+  bet-api-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          command: mvn test
+  bet-event-aggregator-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          command: mvn test
+  match-api-build-and-test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: mvn -B -DskipTests clean package
+      - run:
+          name: Test
+          command: mvn test
+
+workflows:
+  bet-api:
+    when:
+      - pipeline.parameters.bet-api-modified
+    jobs:
+      - bet-api-build-and-test
+  bet-event-aggregator:
+    when:
+      - pipeline.parameters.bet-event-aggregator-modified
+    jobs:
+      - bet-event-aggregator-build-and-test
+  match-api:
+    when:
+      - pipeline.parameters.match-api-modified
+    jobs:
+      - match-api-build-and-test
