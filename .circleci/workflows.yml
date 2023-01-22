@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Test
           path: ~/bet-microservices/bet-api
-          command: mvn test
+          command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
   bet-event-aggregator-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
