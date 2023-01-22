@@ -1,11 +1,11 @@
 package com.piter.match.api.it.stepdefs;
 
+import static com.piter.api.commons.util.JsonUtil.convertJson;
+import static com.piter.api.commons.util.JsonUtil.convertJsonArray;
+import static com.piter.api.commons.util.JsonUtil.readFileAsString;
+import static com.piter.api.commons.util.JsonUtil.readJsonArrayFile;
+import static com.piter.api.commons.util.JsonUtil.readJsonFile;
 import static com.piter.match.api.it.util.AwaitilityUtil.assertAsync;
-import static com.piter.match.api.it.util.JsonUtil.convertJson;
-import static com.piter.match.api.it.util.JsonUtil.convertJsonArray;
-import static com.piter.match.api.it.util.JsonUtil.readFileAsString;
-import static com.piter.match.api.it.util.JsonUtil.readJsonArrayFile;
-import static com.piter.match.api.it.util.JsonUtil.readJsonFile;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,8 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   private static final String MATCHES_ENDPOINT = "/matches";
   private static final String MATCH_ENDPOINT = "/matches/{id}";
 
-  private static final String INIT_DB_PATH = "samples/fill_out_database.json";
+  private static final String SAMPLES_DIRECTORY = "src/int-test/resources/samples/";
+  private static final String INIT_DB_SAMPLE = "fill_out_database.json";
 
   private final MatchRepository matchRepository;
 
@@ -42,7 +43,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   @Before("@InitDb")
   public void initDatabase() throws IOException {
     matchRepository.deleteAll().block();
-    List<Match> initialMatches = readJsonArrayFile(INIT_DB_PATH, Match.class);
+    List<Match> initialMatches = readJsonArrayFile(SAMPLES_DIRECTORY + INIT_DB_SAMPLE, Match.class);
     initialMatches.forEach(match -> matchRepository.save(match).block());
   }
 
@@ -54,7 +55,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @Given("match {string} is saved in database")
   public void saveMatchInDb(String matchPath) throws IOException {
-    Match match = readJsonFile(matchPath, Match.class);
+    Match match = readJsonFile(SAMPLES_DIRECTORY + matchPath, Match.class);
     matchRepository.save(match).block();
   }
 
@@ -75,7 +76,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   }
 
   private boolean doesMatchExistInDatabase(String matchPath) throws IOException {
-    Match match = readJsonFile(matchPath, Match.class);
+    Match match = readJsonFile(SAMPLES_DIRECTORY + matchPath, Match.class);
     if (match.getId() == null) {
       return matchRepository.findAll()
           .toStream()
@@ -116,7 +117,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @When("user sends post request with match {string}")
   public void saveMatch(String matchPath) throws IOException {
-    var matchJson = readFileAsString(matchPath);
+    var matchJson = readFileAsString(SAMPLES_DIRECTORY + matchPath);
     response = given()
         .body(matchJson)
         .contentType(ContentType.JSON)
@@ -139,7 +140,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @Then("returned matches are equal to expected {string}")
   public void matchesAreEqualToExpected(String expectedMatchesPath) throws IOException {
-    List<Match> expectedMatches = readJsonArrayFile(expectedMatchesPath, Match.class);
+    List<Match> expectedMatches = readJsonArrayFile(SAMPLES_DIRECTORY + expectedMatchesPath, Match.class);
     var matchesJson = response.getBody().asString();
     List<Match> actualMatches = convertJsonArray(matchesJson, Match.class);
     assertThat(actualMatches).hasSameSizeAs(expectedMatches);
@@ -148,7 +149,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @Then("returned match is equal to expected {string}")
   public void matchIsEqualToExpected(String expectedMatchPath) throws IOException {
-    Match expectedMatch = readJsonFile(expectedMatchPath, Match.class);
+    Match expectedMatch = readJsonFile(SAMPLES_DIRECTORY + expectedMatchPath, Match.class);
     var matchJson = response.getBody().asString();
     Match actualMatch = convertJson(matchJson, Match.class);
     assertThat(actualMatch).isEqualTo(expectedMatch);
@@ -156,7 +157,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @Then("match {string} is not present in service")
   public void matchIsNotPresentInDb(String matchPath) throws IOException {
-    Match match = readJsonFile(matchPath, Match.class);
+    Match match = readJsonFile(SAMPLES_DIRECTORY + matchPath, Match.class);
     assertAsync(() -> assertMatchIsNotPresentInDb(match));
   }
 
@@ -175,7 +176,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
 
   @Then("match {string} is saved and retrieved in service")
   public void matchIsSavedAndExpected(String matchPath) throws IOException {
-    Match match = readJsonFile(matchPath, Match.class);
+    Match match = readJsonFile(SAMPLES_DIRECTORY + matchPath, Match.class);
     assertAsync(() -> assertSavedMatchIsEqualTo(match));
   }
 

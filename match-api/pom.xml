@@ -22,11 +22,12 @@
     <java.version>17</java.version>
     <project.lombok.version>1.18.24</project.lombok.version>
     <spring-doc.version>1.6.11</spring-doc.version>
+    <spring.contract.version>4.0.0</spring.contract.version>
     <testcontainers.version>1.17.3</testcontainers.version>
     <cucumber.version>7.6.0</cucumber.version>
     <rest-assured.version>5.1.1</rest-assured.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <bet.commons.version>0.0.5-SNAPSHOT</bet.commons.version>
+    <bet.commons.version>0.0.6-SNAPSHOT</bet.commons.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
   </properties>
@@ -40,6 +41,28 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- Spring Cloud -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+      <version>${spring.contract.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- To resolve error in cloud contract tests -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required to use cloud contract with webflux reactive API -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>spring-web-test-client</artifactId>
+      <version>5.3.0</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Bet microservices commons -->
@@ -257,6 +280,18 @@
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+        <version>${spring.contract.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <baseClassForTests>com.piter.match.api.contract.MatchApiBaseTest</baseClassForTests>
+          <testMode>WEBTESTCLIENT</testMode>
+          <testFramework>JUNIT5</testFramework>
         </configuration>
       </plugin>
 

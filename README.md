@@ -16,7 +16,8 @@ Technology stack for backend services:
 
 Testing:
 - Test containers
-- Cucumber
+- Cucumber (Behaviour-Driven Development)
+- Spring Cloud Contract Tests (Consumer-Driven Contract)
 - JUnit 5
 
 Security:

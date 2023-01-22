@@ -1,4 +1,4 @@
-package com.piter.match.api.it.util;
+package com.piter.api.commons.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +12,7 @@ class JsonUtilTest {
   @Test
   void shouldConvertJson() throws IOException {
     //given
-    var jsonPath = "samples/retrieve_scenario/get_match_by_id_1.json";
+    var jsonPath = "src/test/resources/samples/single.json";
 
     //when
     Match match = JsonUtil.readJsonFile(jsonPath, Match.class);
@@ -24,7 +24,7 @@ class JsonUtilTest {
   @Test
   void shouldConvertJsonArrayWithManyElements() throws IOException {
     //given
-    var jsonArrayPath = "samples/retrieve_scenario/get_all_matches.json";
+    var jsonArrayPath = "src/test/resources/samples/array.json";
 
     //when
     List<Match> matches = JsonUtil.readJsonArrayFile(jsonArrayPath, Match.class);
