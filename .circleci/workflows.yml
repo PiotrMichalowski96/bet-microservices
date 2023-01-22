@@ -12,16 +12,6 @@ parameters:
     default: false
 
 jobs:
-  shared-library-install:
-    docker:
-      - image: cimg/openjdk:17.0
-    working_directory: ~/bet-microservices/shared-library
-    steps:
-      - checkout:
-          path: ~/bet-microservices
-      - run:
-          name: Install
-          command: mvn -B clean install
   bet-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
@@ -30,23 +20,34 @@ jobs:
       - checkout:
           path: ~/bet-microservices
       - run:
+          name: Install shared library
+          path: ~/bet-microservices/shared-library
+          command: mvn -B clean install
+      - run:
           name: Build
+          path: ~/bet-microservices/bet-api
           command: mvn -B -DskipTests clean package
       - run:
           name: Test
+          path: ~/bet-microservices/bet-api
           command: mvn test
   bet-event-aggregator-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
-    working_directory: ~/bet-microservices/bet-event-aggregator
     steps:
       - checkout:
           path: ~/bet-microservices
       - run:
+          name: Install shared library
+          path: ~/bet-microservices/shared-library
+          command: mvn -B clean install
+      - run:
           name: Build
+          path: ~/bet-microservices/bet-event-aggregator
           command: mvn -B -DskipTests clean package
       - run:
           name: Test
+          path: ~/bet-microservices/bet-event-aggregator
           command: mvn test
   match-api-build-and-test:
     docker:
@@ -71,17 +72,11 @@ workflows:
   bet-api:
     when: << pipeline.parameters.bet-api-modified >>
     jobs:
-      - shared-library-install
-      - bet-api-build-and-test:
-          requires:
-            - shared-library-install
+      - bet-api-build-and-test
   bet-event-aggregator:
     when: << pipeline.parameters.bet-event-aggregator-modified >>
     jobs:
-      - shared-library-install
-      - bet-event-aggregator-build-and-test:
-          requires:
-            - shared-library-install
+      - bet-event-aggregator-build-and-test
   match-api:
     when: << pipeline.parameters.match-api-modified >>
     jobs:
