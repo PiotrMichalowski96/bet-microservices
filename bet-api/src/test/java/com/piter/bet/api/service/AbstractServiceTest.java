@@ -6,6 +6,7 @@ import com.piter.bet.api.repository.BetRepository;
 import java.util.List;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
+@Tag("EmbeddedMongoDBTest")
 @DataMongoTest
 @ActiveProfiles("TEST")
 @ExtendWith(SpringExtension.class)
