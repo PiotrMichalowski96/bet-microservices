@@ -179,7 +179,8 @@ class MatchServiceTest {
   }
 
   private void mockSequenceGeneratorServiceCreateId(long generatedId) {
-    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(Mono.just(generatedId));
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
+        Mono.just(generatedId));
   }
 
   private void assertSavedMatchWithoutId(Long generatedId, Match expectedMatch) {
