@@ -24,17 +24,9 @@ jobs:
           path: ~/bet-microservices/shared-library
           command: mvn -B clean install
       - run:
-          name: Build
+          name: Build and analyze
           path: ~/bet-microservices/bet-api
-          command: mvn -B -DskipTests clean package
-      - run:
-          name: Test
-          path: ~/bet-microservices/bet-api
-          command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
-      - run:
-          name: Analyze on SonarCloud
-          path: ~/bet-microservices/bet-api
-          command: mvn verify sonar:sonar
+          command: mvn -DexcludedGroups=EmbeddedMongoDBTest verify sonar:sonar
   bet-event-aggregator-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
@@ -42,15 +34,7 @@ jobs:
       - checkout:
           path: ~/bet-microservices
       - run:
-          name: Build
-          path: ~/bet-microservices/bet-event-aggregator
-          command: mvn -B -DskipTests clean package
-      - run:
-          name: Test
-          path: ~/bet-microservices/bet-event-aggregator
-          command: mvn test
-      - run:
-          name: Analyze on SonarCloud
+          name: Build and analyze
           path: ~/bet-microservices/bet-event-aggregator
           command: mvn verify sonar:sonar
   match-api-build-and-test:
@@ -64,17 +48,9 @@ jobs:
           path: ~/bet-microservices/shared-library
           command: mvn -B clean install
       - run:
-          name: Build
+          name: Build and analyze
           path: ~/bet-microservices/match-api
-          command: mvn -B -DskipTests clean package
-      - run:
-          name: Test
-          path: ~/bet-microservices/match-api
-          command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
-      - run:
-          name: Analyze on SonarCloud
-          path: ~/bet-microservices/match-api
-          command: mvn verify sonar:sonar
+          command: mvn -DexcludedGroups=EmbeddedMongoDBTest verify sonar:sonar
 
 workflows:
   bet-api:
