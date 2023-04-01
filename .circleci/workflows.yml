@@ -31,6 +31,9 @@ jobs:
           name: Test
           path: ~/bet-microservices/bet-api
           command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar
   bet-event-aggregator-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
@@ -45,6 +48,9 @@ jobs:
           name: Test
           path: ~/bet-microservices/bet-event-aggregator
           command: mvn test
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar
   match-api-build-and-test:
     docker:
       - image: cimg/openjdk:17.0
@@ -63,17 +69,23 @@ jobs:
           name: Test
           path: ~/bet-microservices/match-api
           command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar
 
 workflows:
   bet-api:
     when: << pipeline.parameters.bet-api-modified >>
     jobs:
-      - bet-api-build-and-test
+      - bet-api-build-and-test:
+          context: SonarCloud
   bet-event-aggregator:
     when: << pipeline.parameters.bet-event-aggregator-modified >>
     jobs:
-      - bet-event-aggregator-build-and-test
+      - bet-event-aggregator-build-and-test:
+          context: SonarCloud
   match-api:
     when: << pipeline.parameters.match-api-modified >>
     jobs:
-      - match-api-build-and-test
+      - match-api-build-and-test:
+          context: SonarCloud
