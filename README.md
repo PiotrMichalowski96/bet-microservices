@@ -1,6 +1,11 @@
 # Bet microservices
 [![<PiotrMichalowski96>](https://circleci.com/gh/PiotrMichalowski96/bet-microservices.svg?style=svg)](https://circleci.com/gh/PiotrMichalowski96/bet-microservices)
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-microservices)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-microservices&metric=bugs)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-microservices)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-microservices&metric=coverage)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-microservices)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-microservices&metric=ncloc)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-microservices)
+
 Several microservices that is used for Bet League. It allows you to bet matches, score points for correct results and compare with your friends.
 
 ## Requirement

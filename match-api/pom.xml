@@ -30,6 +30,10 @@
     <bet.commons.version>0.0.6-SNAPSHOT</bet.commons.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
+    <sonar.projectKey>PiotrMichalowski96_bet-microservices</sonar.projectKey>
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.organization>piotrmichalowski96</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
 
   <dependencies>
