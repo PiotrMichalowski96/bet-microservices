@@ -55,7 +55,6 @@ Technology stack for frontend:
 - In Match API there are also integration tests. I used test containers and Cucumber for them.
 - Most complex business logic is present in Bet Event Aggregator, Bet API and Match API services.
 - For those three most important microservices I prepared a code coverage report to ensure coverage is more than 80%:
-- ![alt text](https://github.com/PiotrMichalowski96/bet-microservices/blob/master/doc/bet-microservices-code-coverage.png?raw=true)
 
 ## Security considerations
 There are different security approaches that we could follow in order to implement OAuth2 in bet microservices ecosystem.
