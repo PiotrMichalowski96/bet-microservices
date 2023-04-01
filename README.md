@@ -2,19 +2,19 @@
 [![<PiotrMichalowski96>](https://circleci.com/gh/PiotrMichalowski96/bet-microservices.svg?style=svg)](https://circleci.com/gh/PiotrMichalowski96/bet-microservices)
 
 ### Bet Event Aggregator
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-event-aggregator&metric=bugs)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-event-aggregator)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-event-aggregator&metric=coverage)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-event-aggregator)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-event-aggregator&metric=ncloc)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-event-aggregator)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-event-aggregator&metric=bugs)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-event-aggregator)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-event-aggregator&metric=coverage)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-event-aggregator)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-event-aggregator&metric=ncloc)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-event-aggregator)
 
 ### Bet API
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-api&metric=bugs)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-api)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-api&metric=coverage)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-api)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_bet-api&metric=ncloc)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_bet-api)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-api&metric=bugs)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-api)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-api&metric=coverage)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-api)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_bet-api&metric=ncloc)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_bet-api)
 
 ### Match API
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_match-api&metric=bugs)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_match-api)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_match-api&metric=coverage)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_match-api)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=PiotrMichalowski96_match-api&metric=ncloc)](https://sonarcloud.io/dashboard?id=PiotrMichalowski96_match-api)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_match-api&metric=bugs)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_match-api)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_match-api&metric=coverage)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_match-api)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=piotrmichalowski96_match-api&metric=ncloc)](https://sonarcloud.io/dashboard?id=piotrmichalowski96_match-api)
 
 
 Several microservices that is used for Bet League. It allows you to bet matches, score points for correct results and compare with your friends.
