@@ -33,6 +33,7 @@ jobs:
           command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
       - run:
           name: Analyze on SonarCloud
+          path: ~/bet-microservices/bet-api
           command: mvn verify sonar:sonar
   bet-event-aggregator-build-and-test:
     docker:
@@ -50,6 +51,7 @@ jobs:
           command: mvn test
       - run:
           name: Analyze on SonarCloud
+          path: ~/bet-microservices/bet-event-aggregator
           command: mvn verify sonar:sonar
   match-api-build-and-test:
     docker:
@@ -71,6 +73,7 @@ jobs:
           command: mvn -DexcludedGroups=EmbeddedMongoDBTest test
       - run:
           name: Analyze on SonarCloud
+          path: ~/bet-microservices/match-api
           command: mvn verify sonar:sonar
 
 workflows:
