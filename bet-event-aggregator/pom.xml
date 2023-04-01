@@ -23,8 +23,7 @@
     <spring-cloud.version>2021.0.4</spring-cloud.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
-    <sonar.projectKey>PiotrMichalowski96_bet-microservices</sonar.projectKey>
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.projectKey>PiotrMichalowski96_bet-event-aggregator</sonar.projectKey>
     <sonar.organization>piotrmichalowski96</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
