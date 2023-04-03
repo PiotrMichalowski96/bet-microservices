@@ -37,7 +37,7 @@ public class BetValidator {
     if (bet == null) {
       return false;
     }
-    return betValidators.stream().allMatch(validator -> validator.isValid(bet));
+    return betValidators.stream().allMatch(v -> v.isValid(bet));
   }
 
   private boolean areRequireFieldsValid(Bet bet) {

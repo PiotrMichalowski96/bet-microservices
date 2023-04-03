@@ -97,7 +97,7 @@ class BetValidatorTest {
   @Test
   void invalidBetBecauseMatchHasAlreadyStarted() {
     //given
-    LocalDateTime matchStartTime = LocalDateTime.now();
+    LocalDateTime matchStartTime = LocalDateTime.now().minusSeconds(10);
     Bet invalidBetRequest = Bet.builder()
         .id("1")
         .matchPredictedResult(MatchResult.builder()
@@ -110,19 +110,10 @@ class BetValidatorTest {
         .build();
 
     //when
-    waitMillis(200L);
     boolean isValid = betValidator.validate(invalidBetRequest);
 
     //then
     assertThat(isValid).isFalse();
-  }
-
-  private void waitMillis(long millis) {
-    try {
-      Thread.sleep(millis);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
   }
 
   @Test
