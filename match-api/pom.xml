@@ -21,7 +21,7 @@
   <properties>
     <java.version>17</java.version>
     <project.lombok.version>1.18.24</project.lombok.version>
-    <spring-doc.version>1.6.11</spring-doc.version>
+    <spring-doc.version>1.6.15</spring-doc.version>
     <spring.contract.version>4.0.0</spring.contract.version>
     <testcontainers.version>1.17.3</testcontainers.version>
     <cucumber.version>7.6.0</cucumber.version>
@@ -33,6 +33,7 @@
     <sonar.projectKey>piotrmichalowski96_match-api</sonar.projectKey>
     <sonar.organization>piotrmichalowski96</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.coverage.exclusions>**/config/*, **/exception/*</sonar.coverage.exclusions>
   </properties>
 
   <dependencies>

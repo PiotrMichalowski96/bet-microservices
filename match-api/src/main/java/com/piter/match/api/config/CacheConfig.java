@@ -17,12 +17,12 @@ public class CacheConfig {
   private Integer expiryTimeInHours;
 
   @Bean
-  public Caffeine caffeine() {
+  public Caffeine<Object, Object> caffeine() {
     return Caffeine.newBuilder().expireAfterWrite(expiryTimeInHours, TimeUnit.HOURS);
   }
 
   @Bean
-  public CacheManager cacheManager(Caffeine caffeine) {
+  public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
     CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
     caffeineCacheManager.setCaffeine(caffeine);
     return caffeineCacheManager;
