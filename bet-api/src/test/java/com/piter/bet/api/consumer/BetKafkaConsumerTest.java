@@ -1,71 +1,86 @@
 package com.piter.bet.api.consumer;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.piter.api.commons.domain.Bet;
-import com.piter.api.commons.domain.MatchResult;
-import com.piter.bet.api.config.BetApiTestConfig;
 import com.piter.bet.api.repository.BetRepository;
-import org.awaitility.Awaitility;
-import org.awaitility.core.ThrowingRunnable;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.context.annotation.Import;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.KafkaNull;
+import org.springframework.messaging.Message;
+import reactor.core.publisher.Mono;
 
-@Tag("EmbeddedMongoDBTest")
-@DataMongoTest
-@ActiveProfiles("TEST")
-@ExtendWith(SpringExtension.class)
-@Import(BetApiTestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class BetKafkaConsumerTest {
 
-  private static final int TIMEOUT_IN_SECONDS = 20;
-  private static final int POLL_INTERVAL_IN_SECONDS = 2;
+  @Mock
+  private BetRepository betRepository;
 
-  @Autowired
+  @Captor
+  private ArgumentCaptor<Bet> betArgumentCaptor;
+
   private BetKafkaConsumer betKafkaConsumer;
 
-  @Autowired
-  private BetRepository betRepository;
+  @BeforeEach
+  void init() {
+    betKafkaConsumer = new BetKafkaConsumer(betRepository);
+  }
 
   @Test
   void shouldSaveBet() {
     //given
-    var id = "1";
     var bet = Bet.builder()
-        .id(id)
-        .matchPredictedResult(new MatchResult(1, 1))
+        .id("1")
         .build();
+
     var betMessage = MessageBuilder
         .withPayload(bet)
         .build();
+
+    mockSave(bet);
 
     //when
     betKafkaConsumer.bets().accept(betMessage);
 
     //then
-    assertAsync(() -> assertSavedBet(id, bet));
+    verify(betRepository).save(betArgumentCaptor.capture());
+    Bet savedBet = betArgumentCaptor.getValue();
+    assertThat(savedBet).isEqualTo(bet);
   }
 
-  private void assertSavedBet(String id, Bet expectedBet) {
-    var savedBet = betRepository.findById(id).block();
-    assertThat(savedBet).isEqualTo(expectedBet);
+  @Test
+  void shouldDeleteBet() {
+    //given
+    var messageKey = "123";
+    Message tombstoneMessage = MessageBuilder
+        .withPayload(KafkaNull.INSTANCE)
+        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, messageKey)
+        .build();
+
+    mockDelete();
+
+    //when
+    betKafkaConsumer.bets().accept(tombstoneMessage);
+
+    //then
+    verify(betRepository).deleteById(messageKey);
   }
 
-  private void assertAsync(ThrowingRunnable assertion) {
-    Awaitility.await()
-        .atMost(TIMEOUT_IN_SECONDS, SECONDS)
-        .pollInterval(POLL_INTERVAL_IN_SECONDS, SECONDS)
-        .untilAsserted(assertion);
+  private void mockSave(Bet bet) {
+    when(betRepository.save(bet)).thenReturn(Mono.just(bet));
+  }
+
+  private void mockDelete() {
+    when(betRepository.deleteById(anyString())).thenReturn(Mono.empty());
   }
 }
