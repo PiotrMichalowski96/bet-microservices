@@ -7,11 +7,11 @@ import static org.mockito.Mockito.when;
 
 import com.piter.api.commons.domain.Match;
 import com.piter.match.api.repository.MatchRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -29,12 +29,8 @@ class MatchKafkaConsumerTest {
   @Captor
   private ArgumentCaptor<Match> matchArgumentCaptor;
 
+  @InjectMocks
   private MatchKafkaConsumer matchKafkaConsumer;
-
-  @BeforeEach
-  void init() {
-    matchKafkaConsumer = new MatchKafkaConsumer(matchRepository);
-  }
 
   @Test
   void shouldSaveMatch() {
