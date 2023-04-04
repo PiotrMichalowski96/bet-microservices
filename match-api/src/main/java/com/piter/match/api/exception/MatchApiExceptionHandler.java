@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class MatchApiExceptionHandler {
 
   @ExceptionHandler(MatchNotFoundException.class)
-  ResponseEntity<?> betNotFound(MatchNotFoundException ex) {
+  ResponseEntity<Object> betNotFound(MatchNotFoundException ex) {
     logger.debug("Handling exception: {}", ex.toString());
     return ResponseEntity.notFound().build();
   }

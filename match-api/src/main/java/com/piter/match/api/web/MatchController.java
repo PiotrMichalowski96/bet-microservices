@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -78,10 +77,8 @@ public class MatchController {
   }
 
   @Operation(summary = "Find match by id")
-  @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "successful found match by id", content = @Content(schema = @Schema(implementation = Match.class))),
-      @ApiResponse(responseCode = "404", description = "match not found")
-  })
+  @ApiResponse(responseCode = "200", description = "successful found match by id", content = @Content(schema = @Schema(implementation = Match.class)))
+  @ApiResponse(responseCode = "404", description = "match not found")
   @GetMapping("/matches/{id}")
   Mono<Match> findById(
       @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
@@ -100,10 +97,8 @@ public class MatchController {
   }
 
   @Operation(summary = "Delete match")
-  @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "successful deleted match by id", content = @Content(schema = @Schema(implementation = Match.class))),
-      @ApiResponse(responseCode = "404", description = "match not found")
-  })
+  @ApiResponse(responseCode = "200", description = "successful deleted match by id", content = @Content(schema = @Schema(implementation = Match.class)))
+  @ApiResponse(responseCode = "404", description = "match not found")
   @DeleteMapping("/matches/{id}")
   Mono<Void> delete(
       @Parameter(in = ParameterIn.PATH, name = "id", example = "1")

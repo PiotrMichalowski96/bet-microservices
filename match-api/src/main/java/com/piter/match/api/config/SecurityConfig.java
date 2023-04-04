@@ -19,6 +19,10 @@ public class SecurityConfig {
 
   private static final String BET_ADMIN = "BET_ADMIN";
 
+  private static final String MATCHES_ENDPOINT = "/matches/**";
+  private static final String ACTUATOR_ENDPOINT = "/actuator/**";
+  private static final String SWAGGER_ENDPOINT = "/swagger-doc/**";
+
   @Bean
   @Profile("!INT-TEST")
   public ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
@@ -36,8 +40,8 @@ public class SecurityConfig {
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
     return http
         .authorizeExchange()
-        .pathMatchers(HttpMethod.POST, "/matches/**").hasAuthority(BET_ADMIN)
-        .pathMatchers(HttpMethod.DELETE, "/matches/**").hasAuthority(BET_ADMIN)
+        .pathMatchers(HttpMethod.POST, MATCHES_ENDPOINT).hasAuthority(BET_ADMIN)
+        .pathMatchers(HttpMethod.DELETE, MATCHES_ENDPOINT).hasAuthority(BET_ADMIN)
         .anyExchange().permitAll()
         .and()
         .oauth2ResourceServer()
@@ -52,7 +56,7 @@ public class SecurityConfig {
     return http
         .csrf().disable()
         .authorizeExchange()
-        .pathMatchers("/actuator/**", "/matches/**", "/swagger-doc/**").permitAll()
+        .pathMatchers(MATCHES_ENDPOINT, ACTUATOR_ENDPOINT, SWAGGER_ENDPOINT).permitAll()
         .and().build();
   }
 }
