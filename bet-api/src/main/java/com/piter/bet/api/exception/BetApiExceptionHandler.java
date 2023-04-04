@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class BetApiExceptionHandler {
 
   @ExceptionHandler(BetNotFoundException.class)
-  ResponseEntity<?> betNotFound(BetNotFoundException ex) {
+  ResponseEntity<Object> betNotFound(BetNotFoundException ex) {
     logger.debug("Handling exception: {}", ex.toString());
     return ResponseEntity.notFound().build();
   }

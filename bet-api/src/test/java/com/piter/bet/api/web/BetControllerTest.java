@@ -125,7 +125,7 @@ class BetControllerTest {
   private void mockFindAllByMatchId(Long matchId) {
     Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
         .filter(bet -> Objects.equals(bet.getMatch().getId(), matchId));
-    when(betRepository.findAllByMatchId(eq(matchId))).thenReturn(mockedBetFlux);
+    when(betRepository.findAllByMatchId(matchId)).thenReturn(mockedBetFlux);
   }
 
   @Test
@@ -151,7 +151,7 @@ class BetControllerTest {
   private void mockFindAllByUserNickName(String userNickname) {
     Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
         .filter(bet -> Objects.equals(bet.getUser().getNickname(), userNickname));
-    when(betRepository.findAllByUserNicknameOrderByMatchStartTimeDesc(eq(userNickname))).thenReturn(mockedBetFlux);
+    when(betRepository.findAllByUserNicknameOrderByMatchStartTimeDesc(userNickname)).thenReturn(mockedBetFlux);
   }
 
   private WebTestClientConfigurer mockBearerToken(User user) {
