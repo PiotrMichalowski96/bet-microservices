@@ -50,7 +50,7 @@ class BetKafkaProducerTest {
 
     Message<?> expectedMessage = MessageBuilder
         .withPayload(bet)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, matchId)
+        .setHeader(KafkaHeaders.KEY, matchId)
         .build();
 
     //when
