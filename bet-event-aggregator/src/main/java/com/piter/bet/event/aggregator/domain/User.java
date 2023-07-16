@@ -1,6 +1,6 @@
 package com.piter.bet.event.aggregator.domain;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
