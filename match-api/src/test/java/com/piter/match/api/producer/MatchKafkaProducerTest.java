@@ -46,7 +46,7 @@ class MatchKafkaProducerTest {
 
     Message<?> expectedMessage = MessageBuilder
         .withPayload(match)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, matchId)
+        .setHeader(KafkaHeaders.KEY, matchId)
         .build();
 
     //when
@@ -66,7 +66,7 @@ class MatchKafkaProducerTest {
 
     Message<?> expectedMessage = MessageBuilder
         .withPayload(KafkaNull.INSTANCE)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, matchId)
+        .setHeader(KafkaHeaders.KEY, matchId)
         .build();
 
     //when

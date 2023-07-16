@@ -66,7 +66,7 @@ class MatchKafkaConsumerIntegrationTest {
         .build();
 
     var updatedMatchMessage = MessageBuilder.withPayload(updatedMatch)
-        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, id)
+        .setHeader(KafkaHeaders.RECEIVED_KEY, id)
         .build();
 
     //when

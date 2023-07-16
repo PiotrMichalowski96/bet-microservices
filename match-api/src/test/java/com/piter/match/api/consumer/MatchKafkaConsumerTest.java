@@ -60,7 +60,7 @@ class MatchKafkaConsumerTest {
     var messageKey = 123L;
     Message tombstoneMessage = org.springframework.integration.support.MessageBuilder
         .withPayload(KafkaNull.INSTANCE)
-        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, messageKey)
+        .setHeader(KafkaHeaders.RECEIVED_KEY, messageKey)
         .build();
 
     mockDelete();

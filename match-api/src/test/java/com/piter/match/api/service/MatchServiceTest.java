@@ -39,7 +39,7 @@ import reactor.test.StepVerifier;
 @ActiveProfiles("TEST")
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @Import(MatchApiTestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+//@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 class MatchServiceTest {
 
