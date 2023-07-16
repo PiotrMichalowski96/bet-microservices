@@ -18,7 +18,7 @@ public abstract class KafkaMessageProducer {
 
     Message<?> event = MessageBuilder
         .withPayload(payload)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, key)
+        .setHeader(KafkaHeaders.KEY, key)
         .build();
 
     streamBridge.send(producerBinding, event);
