@@ -1,6 +1,6 @@
 package com.piter.api.commons.domain;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 
 @Value

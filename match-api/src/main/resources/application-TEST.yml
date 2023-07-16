@@ -1,8 +1,5 @@
 spring:
   main.web-application-type: REACTIVE
-  mongodb:
-    embedded:
-      version: 5.0.6
   data:
     mongodb:
       port: 0
@@ -10,3 +7,5 @@ spring:
   cloud.config.enabled: false
 
 security.mode: true
+
+de.flapdoodle.mongodb.embedded.version: 5.0.6

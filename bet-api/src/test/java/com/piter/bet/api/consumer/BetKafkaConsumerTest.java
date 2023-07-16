@@ -60,7 +60,7 @@ class BetKafkaConsumerTest {
     var messageKey = "123";
     Message tombstoneMessage = MessageBuilder
         .withPayload(KafkaNull.INSTANCE)
-        .setHeader(KafkaHeaders.RECEIVED_MESSAGE_KEY, messageKey)
+        .setHeader(KafkaHeaders.RECEIVED_KEY, messageKey)
         .build();
 
     mockDelete();
