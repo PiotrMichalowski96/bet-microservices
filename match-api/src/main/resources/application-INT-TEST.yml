@@ -1,21 +1,9 @@
-server:
-  port: 7777
-
 spring:
-  application.name: match-api
   main:
     web-application-type: REACTIVE
   data:
     mongodb:
-      port: 27018
-      host: localhost
-      username: piter
-      password: S3cret
       authentication-database: admin
-  kafka:
-    consumer:
-      properties:
-        spring.json.trusted.packages: "*"
   cloud.config.enabled: false
 
 security.mode: false
@@ -24,20 +12,6 @@ security.mode: false
 # Cloud stream
 ########################
 spring.cloud.stream:
-  kafka:
-    binder:
-      brokers: localhost:29092
-    bindings:
-      matches-out-0:
-        producer:
-          configuration:
-            key.serializer: org.apache.kafka.common.serialization.LongSerializer
-            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      matches-in-0:
-        consumer:
-          configuration:
-            key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
-            value.deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
   bindings:
     matches-out-0:
       destination: match-topic
@@ -45,9 +19,8 @@ spring.cloud.stream:
       destination: match-topic
 
 ########################
-# Kafka Match producer
+# Logging
 ########################
-match.producer.binding: matches-out-0
-
-cache:
-  expiry-in-hours: 2
+logging.level:
+  com.piter.match.api: DEBUG
+  org.apache.kafka.clients: WARN

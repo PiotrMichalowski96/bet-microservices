@@ -23,7 +23,7 @@
     <project.lombok.version>1.18.24</project.lombok.version>
     <spring-doc.version>1.6.15</spring-doc.version>
     <spring.contract.version>4.0.0</spring.contract.version>
-    <testcontainers.version>1.17.3</testcontainers.version>
+    <testcontainers.version>1.18.3</testcontainers.version>
     <cucumber.version>7.6.0</cucumber.version>
     <rest-assured.version>5.1.1</rest-assured.version>
     <awaitility.version>4.2.0</awaitility.version>
@@ -127,6 +127,12 @@
 
     <!-- Integration tests -->
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>${testcontainers.version}</version>
@@ -138,6 +144,19 @@
       <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>

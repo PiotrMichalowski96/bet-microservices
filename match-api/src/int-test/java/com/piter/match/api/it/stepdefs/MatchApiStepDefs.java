@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.piter.api.commons.domain.Match;
-import com.piter.match.api.it.docker.AbstractDockerIntegrationTest;
+import com.piter.match.api.it.testcontainers.EnableTestcontainers;
 import com.piter.match.api.repository.MatchRepository;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -23,11 +23,17 @@ import io.restassured.response.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 
-@RequiredArgsConstructor
+@ActiveProfiles("INT-TEST")
+@EnableTestcontainers
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties="spring.autoconfigure.exclude=de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration")
 @CucumberContextConfiguration
-public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
+public class MatchApiStepDefs {
 
   private static final String MATCHES_ENDPOINT = "/matches";
   private static final String MATCH_ENDPOINT = "/matches/{id}";
@@ -35,7 +41,11 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   private static final String SAMPLES_DIRECTORY = "src/int-test/resources/samples/";
   private static final String INIT_DB_SAMPLE = "fill_out_database.json";
 
-  private final MatchRepository matchRepository;
+  @LocalServerPort
+  private int port;
+
+  @Autowired
+  private MatchRepository matchRepository;
 
   //To keep response state between steps
   private Response response;
@@ -50,7 +60,7 @@ public class MatchApiStepDefs extends AbstractDockerIntegrationTest {
   @Before
   public void initRestCaller() {
     RestAssured.baseURI = "http://localhost";
-    RestAssured.port = 7777;
+    RestAssured.port = port;
   }
 
   @Given("match {string} is saved in database")
