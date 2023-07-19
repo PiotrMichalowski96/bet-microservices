@@ -21,6 +21,9 @@ public enum MatchEventType {
   private final Predicate<Message<?>> eventTypePredicate;
 
   private static boolean hasPayloadType(Message<?> message, Class<?> payloadType) {
+    if (message == null) {
+      return false;
+    }
     return payloadType.isInstance(message.getPayload());
   }
 

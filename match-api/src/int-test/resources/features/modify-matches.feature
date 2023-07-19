@@ -41,6 +41,8 @@ Feature: Testing a Match REST API. Users should be able to create, update and de
       | ExistingMatchPath                       | UpdatedMatchPath                              |
       | "modify_scenario/existing_match_2.json" | "modify_scenario/invalid_update_match_2.json" |
 
+  #TODO: bug in spring cloud was reported: https://github.com/spring-cloud/spring-cloud-function/issues/1060
+  @ignore
   Scenario Outline: Delete existing match
     Given match <MatchToDeletePath> is saved in database
     And match <MatchToDeletePath> exists in service
