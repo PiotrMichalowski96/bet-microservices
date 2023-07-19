@@ -33,7 +33,7 @@
     <sonar.projectKey>piotrmichalowski96_match-api</sonar.projectKey>
     <sonar.organization>piotrmichalowski96</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.coverage.exclusions>**/config/*, **/exception/*</sonar.coverage.exclusions>
+    <sonar.coverage.exclusions>**/config/*, **/exception/*, **/it/**</sonar.coverage.exclusions>
   </properties>
 
   <dependencies>
