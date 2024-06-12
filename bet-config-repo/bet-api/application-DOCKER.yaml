@@ -24,4 +24,6 @@ spring.security.oauth2.resourceserver.opaqueToken:
 logging.level:
   com.piter.bet.api: DEBUG
   org.apache.kafka.clients: WARN
+  org.springframework.security.oauth2.server.resource.introspection: TRACE
+  org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
 
