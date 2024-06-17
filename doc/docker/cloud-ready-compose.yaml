@@ -1,0 +1,328 @@
+version: "3.8"
+
+volumes:
+  postgres_data:
+    driver: local
+  zookeeper_log:
+    driver: local
+  zookeeper_data:
+    driver: local
+  broker_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: <postgres_username>
+      POSTGRES_PASSWORD: <postgres_password>
+    container_name: keycloak-db
+    ports:
+      - "5432:5432"
+    networks:
+      - keycloak-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  keycloak:
+    image: quay.io/keycloak/keycloak:19.0.2
+    container_name: "keycloak"
+    environment:
+      KC_DB: postgres
+      KC_DB_USERNAME: <postgres_username>
+      KC_DB_PASSWORD: <postgres_password>
+      KC_DB_SCHEMA: public
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_PORT: 5432
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: <keycloak_admin_password>
+      KC_HOSTNAME: <public_IP>
+    ports:
+      - "8080:8080"
+    networks:
+      - keycloak-network
+    command: "start-dev"
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
+  mongodatabase:
+    image: mongo:latest
+    container_name: "mongodatabase"
+    ports:
+      - "27017:27017"
+    networks:
+      - keycloak-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: <mongo_username>
+      MONGO_INITDB_ROOT_PASSWORD: <mongo_password>
+    volumes:
+      - mongodb_data:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - keycloak-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
+  broker:
+    image: confluentinc/cp-kafka:7.1.1
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    networks:
+      - keycloak-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    restart: on-failure
+    volumes:
+      - broker_data:/var/lib/kafka/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 1024m
+        reservations:
+          memory: 512m
+  eureka:
+    image: pmich96/bet-eureka
+    container_name: "eureka"
+    ports:
+      - "8761:8761"
+    networks:
+      - keycloak-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  config-server:
+    image: pmich96/bet-config-server
+    container_name: "config-server"
+    ports:
+      - "8888:8888"
+    networks:
+      - keycloak-network
+    depends_on:
+      - eureka
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      OAUTH_SECRET: <bet_client_password>
+      EUREKA_URL: http://eureka:8761/eureka/
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  match-api:
+    image: pmich96/match-api
+    ports:
+      - "8082:8082"
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+      - eureka
+      - broker
+      - mongodatabase
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "<mongo_username>"
+      SPRING_DATA_MONGODB_PASSWORD: "<mongo_password>"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      CONFIG_SERVER_URL: http://config-server:8888
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      OAUTH_SECRET: <bet_client_password>
+      EUREKA_URL: http://eureka:8761/eureka/
+    links:
+      - mongodatabase
+      - config-server
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 512m
+        reservations:
+          memory: 256m
+  bet-api:
+    image: pmich96/bet-api
+    ports:
+      - "8083:8083"
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+      - eureka
+      - broker
+      - mongodatabase
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "broker:9092"
+      SPRING_DATA_MONGODB_HOST: mongodatabase
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_USERNAME: "<mongo_username>"
+      SPRING_DATA_MONGODB_PASSWORD: "<mongo_password>"
+      SPRING_DATA_MONGODB_DATABASE: "betLeague"
+      SPRING_DATA_MONGODB_AUTHENTICATIONDATABASE: "admin"
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      CONFIG_SERVER_URL: http://config-server:8888
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      OAUTH_SECRET: <bet_client_password>
+      EUREKA_URL: http://eureka:8761/eureka/
+    links:
+      - mongodatabase
+      - config-server
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.4'
+          memory: 512m
+        reservations:
+          memory: 256m
+  bet-event-aggregator:
+    image: pmich96/bet-event-aggregator
+    depends_on:
+      - eureka
+      - broker
+    networks:
+      - keycloak-network
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      SPRING_KAFKA_BOOTSTRAPSERVERS: "broker:9092"
+      CONFIG_SERVER_URL: http://config-server:8888
+      EUREKA_URL: http://eureka:8761/eureka/
+    links:
+      - config-server
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 512m
+        reservations:
+          memory: 256m
+  gateway:
+    image: pmich96/bet-gateway
+    ports:
+      - "9090:9090"
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+      - eureka
+      - match-api
+      - bet-api
+      - bet-event-aggregator
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      FRONTEND_APP_URI: "http://<public_IP>:<frontend_port>"
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      OAUTH_SECRET: <bet_client_password>
+      EUREKA_URL: http://eureka:8761/eureka/
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  match-management:
+    image: pmich96/match-management
+    ports:
+      - "8081:8081"
+    networks:
+      - keycloak-network
+    depends_on:
+      - keycloak
+      - gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: DOCKER
+      MATCHAPI_URL: "gateway:9090"
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      MANAGEMENT_BASE_URL: http://<public_IP>:8081
+      OAUTH_SECRET: <match_management_client_password>
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
+  bet-frontend:
+    image: pmich96/bet-frontend
+    ports:
+      - "4201:80"
+    depends_on:
+      - keycloak
+      - gateway
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 256m
+        reservations:
+          memory: 128m
