@@ -63,14 +63,14 @@ public class BetService {
   }
 
   private boolean isBetVisibleForUser(User user, Bet bet) {
-    return doesUserOwnBet(user, bet) || isMatchStarted(bet.getMatch());
+    return doesUserOwnBet(user, bet) || isMatchStarted(bet.match());
   }
 
   private boolean isMatchStarted(Match match) {
-    return LocalDateTime.now().isAfter(match.getStartTime());
+    return LocalDateTime.now().isAfter(match.startTime());
   }
 
   private boolean doesUserOwnBet(User user, Bet bet) {
-    return Objects.equals(user, bet.getUser());
+    return Objects.equals(user, bet.user());
   }
 }
