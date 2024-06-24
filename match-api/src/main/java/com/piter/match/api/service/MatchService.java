@@ -7,8 +7,6 @@ import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -49,14 +47,12 @@ public class MatchService {
         .orElse(false);
   }
 
-//  @Cacheable(value = "match", key = "#id")
   public Mono<Match> findById(Long id) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
         .cache();
   }
 
-//  @CacheEvict(value = "match", key = "#match.id", condition = "#match.id != null")
   public Mono<Match> saveMatch(Match match) {
     if (match.id() != null) {
       return Mono.just(matchProducer.sendSaveMatchEvent(match));
