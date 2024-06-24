@@ -78,7 +78,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
     var key = RandomUtils.nextLong();
     List<Record<String, Bet>> expectedRecords = Stream.generate(TestData::createBetWithoutResult)
         .limit(numberOfBetRequests)
-        .map(betResult -> new Record<>(betResult.getId(), betResult, 1L))
+        .map(betResult -> new Record<>(betResult.id(), betResult, 1L))
         .toList();
 
     //when
@@ -98,7 +98,7 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
   @MethodSource("provideBetRequestAndBetResult")
   void shouldProcessBetWithResult(Bet betRequestWithPrediction, Bet betWithResult) {
     //given
-    var matchWithoutResult = betRequestWithPrediction.getMatch();
+    var matchWithoutResult = betRequestWithPrediction.match();
     var matchWithResult = createMatchWithResult();
     var key = RandomUtils.nextLong();
 
@@ -111,8 +111,8 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
 
     //then
     Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
-            new Record<>(betRequestWithPrediction.getId(), betRequestWithPrediction, 4L),
-            new Record<>(betWithResult.getId(), betWithResult, 5L)
+            new Record<>(betRequestWithPrediction.id(), betRequestWithPrediction, 4L),
+            new Record<>(betWithResult.id(), betWithResult, 5L)
     );
     testAndAssertTopology(topicSender, asserter);
   }
@@ -149,8 +149,8 @@ class BetTopologyConfigTest extends AbstractTopologyTest {
 
     //then
     Consumer<MockProcessor<String, Bet, Void, Void>> asserter = processor -> processor.checkAndClearProcessedRecords(
-        new Record<>(firstBetResult.getId(), firstBetResult, 1L),
-        new Record<>(secondBetResult.getId(), secondBetResult, 1L)
+        new Record<>(firstBetResult.id(), firstBetResult, 1L),
+        new Record<>(secondBetResult.id(), secondBetResult, 1L)
     );
     testAndAssertTopology(topicSender, asserter);
   }

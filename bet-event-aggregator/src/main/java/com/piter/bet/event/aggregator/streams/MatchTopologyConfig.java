@@ -22,16 +22,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-public class MatchTopologyConfig {
+class MatchTopologyConfig {
 
   private final Duration windowJoiningTime;
 
-  public MatchTopologyConfig(@Value("${bet.joining.window.hours}") Integer joiningTimeInHours) {
+  MatchTopologyConfig(@Value("${bet.joining.window.hours}") Integer joiningTimeInHours) {
     windowJoiningTime = Duration.ofHours(joiningTimeInHours);
   }
 
   @Bean
-  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> matches() {
+  BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> matches() {
     return (bets, matches) -> matches
         .peek((k, match) -> logger.debug("Key: {}, Received match: {}", k, ObjectUtils.defaultIfNull(match, "null")))
         .filter((k, match) -> isTombstoneMatchRecord(match))

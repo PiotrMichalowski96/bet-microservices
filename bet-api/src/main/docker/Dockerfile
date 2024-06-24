@@ -1,9 +1,10 @@
-FROM openjdk:21-alpine as builder
+FROM alpine/java:21-jdk as builder
 WORKDIR application
 ADD maven/${project.build.finalName}.jar ${project.build.finalName}.jar
 RUN java -Djarmode=layertools -jar ${project.build.finalName}.jar extract
 
-FROM openjdk:21-alpine
+FROM alpine/java:21-jdk
+
 LABEL PROJECT_NAME=${project.artifactId} \
       PROJECT=${project.id}
 

@@ -3,9 +3,9 @@ spring.application.name: bet-event-aggregator
 ########################
 # Cloud stream
 ########################
-spring.cloud.stream:
+spring.cloud:
   function.definition: bets;matches
-  kafka.streams.binder:
+  stream.kafka.streams.binder:
     deserializationExceptionHandler: logAndContinue
     functions:
       bets.application-id: bets

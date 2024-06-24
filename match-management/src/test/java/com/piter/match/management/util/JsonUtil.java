@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class JsonUtil {
@@ -36,7 +35,7 @@ public class JsonUtil {
   }
 
   private static <T> T convertJson(String json, Class<T> clazz) throws JsonProcessingException {
-    if (StringUtils.isBlank(json)) {
+    if (json == null || json.isEmpty()) {
       return null;
     }
     return OBJECT_MAPPER.readValue(json, clazz);
@@ -48,7 +47,7 @@ public class JsonUtil {
   }
 
   private static <T> List<T> convertJsonArray(String json, Class<T> clazz) throws JsonProcessingException {
-    if (StringUtils.isBlank(json)) {
+    if (json == null || json.isEmpty()) {
       return null;
     }
     CollectionType collectionType = OBJECT_MAPPER.getTypeFactory().constructCollectionType(List.class, clazz);

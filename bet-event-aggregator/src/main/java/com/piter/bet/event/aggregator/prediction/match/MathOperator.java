@@ -1,20 +1,19 @@
 package com.piter.bet.event.aggregator.prediction.match;
 
-
-public enum MathOperator {
+enum MathOperator {
 
   EQUAL() {
     @Override
-    public Boolean compare(int a, int b) {
+    Boolean compare(int a, int b) {
       return a == b;
     }
   },
   NOT_EQUAL() {
     @Override
-    public Boolean compare(int a, int b) {
+    Boolean compare(int a, int b) {
       return a != b;
     }
   };
 
-  public abstract Boolean compare(int a, int b);
+  abstract Boolean compare(int a, int b);
 }

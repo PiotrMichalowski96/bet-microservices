@@ -27,7 +27,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-public class MatchController {
+class MatchController {
 
   private static final String MATCH_TIME_PARAM_VALUE = "match-time";
   private static final String ROUND_TIME_PARAM_VALUE = "round-time";
@@ -39,7 +39,7 @@ public class MatchController {
   private final Map<String, Supplier<Flux<Match>>> findAllMapSuppliers;
   private final Map<String, Supplier<Flux<Match>>> findUpcomingMapSuppliers;
 
-  public MatchController(MatchService matchService, Validator validator) {
+  MatchController(MatchService matchService, Validator validator) {
     this.matchService = matchService;
     this.validator = validator;
     this.findAllMapSuppliers = Map.of(

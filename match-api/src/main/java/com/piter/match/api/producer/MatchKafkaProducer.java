@@ -17,13 +17,13 @@ public class MatchKafkaProducer extends KafkaMessageProducer {
   }
 
   public Match sendSaveMatchEvent(Match match) {
-    sendEvent(match::getId, match);
+    sendEvent(match::id, match);
     logger.debug("Sent match to save: {}", match);
     return match;
   }
 
   public void sendDeleteMatchEvent(Match match) {
-    sendEvent(match::getId, KafkaNull.INSTANCE);
+    sendEvent(match::id, KafkaNull.INSTANCE);
     logger.debug("Sent match to delete: {}", match);
   }
 }

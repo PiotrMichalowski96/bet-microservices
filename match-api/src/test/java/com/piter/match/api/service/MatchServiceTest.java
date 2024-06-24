@@ -73,9 +73,9 @@ class MatchServiceTest {
   void shouldGetMatchesOrderedByRoundTime() {
     Flux<Match> matchFlux = matchService.findAllByOrderByMatchRoundStartTime();
     StepVerifier.create(matchFlux)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(3L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(3L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
         .verifyComplete();
   }
 
@@ -83,9 +83,9 @@ class MatchServiceTest {
   void shouldGetMatchesOrderedByMatchTime() {
     Flux<Match> matchFlux = matchService.findAllByOrderByMatchStartTime();
     StepVerifier.create(matchFlux)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(3L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(3L))
         .verifyComplete();
   }
 
@@ -93,8 +93,8 @@ class MatchServiceTest {
   void shouldGetUpcomingMatchesOrderedByMatchTimeDesc() {
     Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeDesc();
     StepVerifier.create(matchFlux)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
         .verifyComplete();
   }
 
@@ -102,8 +102,8 @@ class MatchServiceTest {
   void shouldGetUpcomingMatchesOrderedByMatchTimeAsc() {
     Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeAsc();
     StepVerifier.create(matchFlux)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(2L))
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(1L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .verifyComplete();
   }
 
@@ -112,7 +112,7 @@ class MatchServiceTest {
     var id = 2L;
     Mono<Match> matchMono = matchService.findById(id);
     StepVerifier.create(matchMono)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(id))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
         .verifyComplete();
   }
 
@@ -136,7 +136,7 @@ class MatchServiceTest {
 
     //then
     StepVerifier.create(matchMono)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(id))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
         .verifyComplete();
     assertSavedMatchById(matchToSave);
   }
@@ -150,7 +150,7 @@ class MatchServiceTest {
   }
 
   private void assertSavedMatchById(Match expectedMatch) {
-    var savedMatch = matchRepository.findById(expectedMatch.getId()).block();
+    var savedMatch = matchRepository.findById(expectedMatch.id()).block();
     assertThat(savedMatch).isEqualTo(expectedMatch);
   }
 
@@ -175,7 +175,7 @@ class MatchServiceTest {
 
     //then
     StepVerifier.create(matchMono)
-        .assertNext(match -> assertThat(match.getId()).isEqualTo(generatedId))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(generatedId))
         .verifyComplete();
     assertSavedMatchWithoutId(generatedId, matchToSave);
   }
