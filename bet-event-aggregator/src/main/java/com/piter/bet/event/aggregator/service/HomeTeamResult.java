@@ -6,30 +6,30 @@ import com.piter.bet.event.aggregator.domain.MatchResult;
 import java.util.stream.Stream;
 import lombok.NonNull;
 
-public enum HomeTeamResult {
+enum HomeTeamResult {
 
   WIN() {
     @Override
     protected boolean isResult(@NonNull MatchResult matchResult) {
-      return matchResult.getHomeTeamGoals() > matchResult.getAwayTeamGoals();
+      return matchResult.homeTeamGoals() > matchResult.awayTeamGoals();
     }
   },
   DRAW {
     @Override
     protected boolean isResult(@NonNull MatchResult matchResult) {
-      return matchResult.getHomeTeamGoals().equals(matchResult.getAwayTeamGoals());
+      return matchResult.homeTeamGoals().equals(matchResult.awayTeamGoals());
     }
   },
   LOSE {
     @Override
     protected boolean isResult(@NonNull MatchResult matchResult) {
-      return matchResult.getHomeTeamGoals() < matchResult.getAwayTeamGoals();
+      return matchResult.homeTeamGoals() < matchResult.awayTeamGoals();
     }
   };
 
   protected abstract boolean isResult(@NonNull MatchResult matchResult);
 
-  public static HomeTeamResult getResult(@NonNull MatchResult matchResult) {
+  static HomeTeamResult getResult(@NonNull MatchResult matchResult) {
     return Stream.of(HomeTeamResult.values())
         .filter(result -> result.isResult(matchResult))
         .findFirst()

@@ -58,6 +58,6 @@ public abstract class AbstractServiceTest {
   }
 
   protected void deleteBet(Bet bet) {
-    betRepository.deleteById(bet.getId()).block();
+    betRepository.deleteById(bet.id()).block();
   }
 }

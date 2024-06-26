@@ -4,7 +4,6 @@ import static com.piter.bet.api.util.BetTestData.createBetList;
 import static com.piter.bet.api.util.UserTestData.createFourthUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
@@ -91,7 +90,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldGetAllVisibleBets() {
-    var user = BETS.get(0).getUser();
+    var user = BETS.getFirst().user();
     webClient
         .mutateWith(mockBearerToken(user))
         .get()
@@ -105,7 +104,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldGetAllVisibleBetsByMatchId() {
-    var user = BETS.get(0).getUser();
+    var user = BETS.getFirst().user();
     var matchId = 1L;
     var expectedBetId = "1";
     mockFindAllByMatchId(matchId);
@@ -118,21 +117,21 @@ class BetControllerTest {
         .expectBodyList(Bet.class)
         .value(bets -> {
           assertThat(bets).hasSize(1);
-          assertThat(bets.get(0).getId()).isEqualTo(expectedBetId);
+          assertThat(bets.getFirst().id()).isEqualTo(expectedBetId);
         });
   }
 
   private void mockFindAllByMatchId(Long matchId) {
     Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
-        .filter(bet -> Objects.equals(bet.getMatch().getId(), matchId));
+        .filter(bet -> Objects.equals(bet.match().id(), matchId));
     when(betRepository.findAllByMatchId(matchId)).thenReturn(mockedBetFlux);
   }
 
   @Test
   @WithMockUser
   void shouldGetAllVisibleBetsByUserNickname() {
-    var user = BETS.get(0).getUser();
-    var nickname = BETS.get(2).getUser().getNickname();
+    var user = BETS.getFirst().user();
+    var nickname = BETS.get(2).user().nickname();
     mockFindAllByUserNickName(nickname);
     var expectedBetId = "3";
     webClient
@@ -144,20 +143,20 @@ class BetControllerTest {
         .expectBodyList(Bet.class)
         .value(bets -> {
           assertThat(bets).hasSize(1);
-          assertThat(bets.get(0).getId()).isEqualTo(expectedBetId);
+          assertThat(bets.getFirst().id()).isEqualTo(expectedBetId);
         });
   }
 
   private void mockFindAllByUserNickName(String userNickname) {
     Flux<Bet> mockedBetFlux = Flux.fromIterable(BETS)
-        .filter(bet -> Objects.equals(bet.getUser().getNickname(), userNickname));
+        .filter(bet -> Objects.equals(bet.user().nickname(), userNickname));
     when(betRepository.findAllByUserNicknameOrderByMatchStartTimeDesc(userNickname)).thenReturn(mockedBetFlux);
   }
 
   private WebTestClientConfigurer mockBearerToken(User user) {
     Consumer<Map<String, Object>> attributesConsumer = attributes -> {
       attributes.put("name", createFullNameFrom(user));
-      attributes.put("username", user.getNickname());
+      attributes.put("username", user.nickname());
     };
     return mockOpaqueToken()
         .authorities(new SimpleGrantedAuthority(BET_USER))
@@ -165,14 +164,14 @@ class BetControllerTest {
   }
 
   private String createFullNameFrom(User user) {
-    return user.getFirstName() + StringUtils.SPACE + user.getLastName();
+    return user.firstName() + StringUtils.SPACE + user.lastName();
   }
 
   @Test
   @WithMockUser
   void shouldGetBetById() {
     var id = "2";
-    var userOwningBet = BETS.get(1).getUser();
+    var userOwningBet = BETS.get(1).user();
     mockFindById(id);
     webClient
         .mutateWith(mockBearerToken(userOwningBet))
@@ -181,14 +180,14 @@ class BetControllerTest {
         .exchange()
         .expectStatus().isOk()
         .expectBody(Bet.class)
-        .value(bet -> assertThat(bet.getId()).isEqualTo(id));
+        .value(bet -> assertThat(bet.id()).isEqualTo(id));
   }
 
   @Test
   @WithMockUser
   void shouldNotGetBetByIdBecauseUserIsNotBetOwner() {
     var id = "2";
-    var userNotOwningBet = BETS.get(0).getUser();
+    var userNotOwningBet = BETS.getFirst().user();
     mockFindById(id);
     webClient
         .mutateWith(mockBearerToken(userNotOwningBet))
@@ -200,7 +199,7 @@ class BetControllerTest {
 
   private void mockFindById(String id) {
     Bet bet = BETS.stream()
-        .filter(b -> Objects.equals(id, b.getId()))
+        .filter(b -> Objects.equals(id, b.id()))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Bet with this id does not exist"));
     when(betRepository.findById(id)).thenReturn(Mono.just(bet));
@@ -209,7 +208,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldSaveBet() {
-    var userOwningBet = BETS.get(1).getUser();
+    var userOwningBet = BETS.get(1).user();
     var bet = Bet.builder()
         .id("4")
         .matchPredictedResult(new MatchResult(3, 3))
@@ -243,7 +242,7 @@ class BetControllerTest {
   @Test
   @WithMockUser
   void shouldNotSaveBecauseBetIsInvalid() {
-    var userOwningBet = BETS.get(1).getUser();
+    var userOwningBet = BETS.get(1).user();
     var invalidBet = Bet.builder()
         .id("4")
         .build();
@@ -262,8 +261,8 @@ class BetControllerTest {
   @WithMockUser
   void shouldDeleteBet() {
     var bet = BETS.get(1);
-    var id = bet.getId();
-    var userOwningBet = bet.getUser();
+    var id = bet.id();
+    var userOwningBet = bet.user();
     mockFindById(id);
     mockDeleteBy(bet);
 
@@ -284,7 +283,7 @@ class BetControllerTest {
   @WithMockUser
   void shouldNotDeleteBetBecauseUserDoesNotOwnIt() {
     var bet = BETS.get(1);
-    var id = bet.getId();
+    var id = bet.id();
     mockFindById(id);
     var userNotOwningBet = createFourthUser();
 

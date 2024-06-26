@@ -35,17 +35,17 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
     return http
-        .authorizeExchange()
-        .pathMatchers(HttpMethod.GET, BETS_ENDPOINT).hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.POST, BETS_ENDPOINT).hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.DELETE, BETS_ENDPOINT).hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.GET, CURRENT_USER_ENDPOINT).hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.GET, USERS_RESULT_ENDPOINT).permitAll()
-        .anyExchange().permitAll()
-        .and()
-        .oauth2ResourceServer()
-        .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector))
-        .and()
+        .authorizeExchange(exchanges -> exchanges
+            .pathMatchers(HttpMethod.GET, BETS_ENDPOINT).hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.POST, BETS_ENDPOINT).hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.DELETE, BETS_ENDPOINT).hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.GET, CURRENT_USER_ENDPOINT).hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.GET, USERS_RESULT_ENDPOINT).permitAll()
+            .anyExchange().permitAll()
+        )
+        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+                .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector))
+        )
         .build();
   }
 }

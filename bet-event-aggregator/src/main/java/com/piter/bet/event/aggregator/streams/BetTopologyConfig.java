@@ -23,13 +23,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-public class BetTopologyConfig {
+class BetTopologyConfig {
 
   private final Duration windowJoiningTime;
   private final BetValidator betValidator;
   private final BetService betService;
 
-  public BetTopologyConfig(@Value("${bet.joining.window.hours}") Integer joiningTimeInHours,
+  BetTopologyConfig(@Value("${bet.joining.window.hours}") Integer joiningTimeInHours,
       BetValidator betValidator, BetService betService) {
     this.windowJoiningTime = Duration.ofHours(joiningTimeInHours);
     this.betValidator = betValidator;
@@ -37,7 +37,7 @@ public class BetTopologyConfig {
   }
 
   @Bean
-  public BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> bets() {
+  BiFunction<KStream<Long, Bet>, KStream<Long, Match>, KStream<String, Bet>> bets() {
     return (bets, matches) -> bets
         .peek((k, bet) -> logger.debug("Key: {}, Received bet: {}", k, bet))
         .filter((key, bet) -> betValidator.validate(bet))
@@ -54,11 +54,11 @@ public class BetTopologyConfig {
   }
 
   private Bet joinByMatchId(Bet bet, Match match) {
-    Match betMatch = bet.getMatch();
+    Match betMatch = bet.match();
     if (betMatch == null || !betMatch.equals(match)) {
       return null;
     }
-    if (Optional.ofNullable(match.getResult()).isEmpty()) {
+    if (Optional.ofNullable(match.result()).isEmpty()) {
       return bet;
     }
     return mapToBetWithMatchResult(bet, match);
@@ -66,11 +66,11 @@ public class BetTopologyConfig {
 
   private Bet mapToBetWithMatchResult(Bet bet, Match match) {
     return Bet.builder()
-        .id(bet.getId())
-        .matchPredictedResult(bet.getMatchPredictedResult())
+        .id(bet.id())
+        .matchPredictedResult(bet.matchPredictedResult())
         .match(match)
-        .user(bet.getUser())
-        .betResult(bet.getBetResult())
+        .user(bet.user())
+        .betResult(bet.betResult())
         .build();
   }
 
@@ -79,17 +79,17 @@ public class BetTopologyConfig {
     String id = betIdGenerator.generateId();
     Bet betWithId = Bet.builder()
         .id(id)
-        .matchPredictedResult(bet.getMatchPredictedResult())
-        .match(bet.getMatch())
-        .user(bet.getUser())
-        .betResult(bet.getBetResult())
+        .matchPredictedResult(bet.matchPredictedResult())
+        .match(bet.match())
+        .user(bet.user())
+        .betResult(bet.betResult())
         .build();
     return new KeyValue<>(id, betWithId);
   }
 
   private Bet fetchBetResult(Bet bet) {
-    if (Optional.ofNullable(bet.getMatch())
-        .map(Match::getResult)
+    if (Optional.ofNullable(bet.match())
+        .map(Match::result)
         .isEmpty()) {
       return bet;
     }

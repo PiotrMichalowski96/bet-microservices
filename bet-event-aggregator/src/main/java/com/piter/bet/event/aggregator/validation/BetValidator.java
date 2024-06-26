@@ -47,20 +47,20 @@ public class BetValidator {
   }
 
   private boolean isMatchNotStarted(Bet bet) {
-    return Optional.ofNullable(bet.getMatch())
-        .map(Match::getStartTime)
+    return Optional.ofNullable(bet.match())
+        .map(Match::startTime)
         .map(startTime -> LocalDateTime.now().isBefore(startTime))
         .orElse(false);
   }
 
   private boolean doesNotHaveMatchResult(Bet bet) {
-    return Optional.ofNullable(bet.getMatch())
-        .map(Match::getResult)
+    return Optional.ofNullable(bet.match())
+        .map(Match::result)
         .isEmpty();
   }
 
   private boolean doesNotHaveBetResult(Bet bet) {
-    return UNRESOLVED_BET_RESULTS.equals(bet.getBetResult());
+    return UNRESOLVED_BET_RESULTS.equals(bet.betResult());
   }
 
   @FunctionalInterface

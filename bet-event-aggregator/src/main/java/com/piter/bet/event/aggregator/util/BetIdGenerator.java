@@ -17,18 +17,18 @@ public class BetIdGenerator {
   private final User user;
 
   public BetIdGenerator(Bet bet) {
-    this.matchId = Optional.ofNullable(bet.getMatch())
-        .map(Match::getId)
+    this.matchId = Optional.ofNullable(bet.match())
+        .map(Match::id)
         .orElseThrow(() -> BetAggregatorException.missingFieldException("Match ID", bet));
-    this.user = Optional.ofNullable(bet.getUser())
+    this.user = Optional.ofNullable(bet.user())
         .orElseThrow(() -> BetAggregatorException.missingFieldException("User", bet));
   }
 
   public String generateId() {
     String concatMatchIdAndUser = StringUtils.join(matchId,
-        user.getFirstName(),
-        user.getLastName(),
-        user.getNickname());
+        user.firstName(),
+        user.lastName(),
+        user.nickname());
 
     UUID uuid = UUID.nameUUIDFromBytes(concatMatchIdAndUser.getBytes());
     return uuid.toString();

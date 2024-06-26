@@ -58,7 +58,7 @@ class UserControllerTest {
   @Test
   void shouldFindUserResultByNickname() {
     UserResultProjection userResult = createFirstUserResult();
-    String nickname = userResult.getUser().getNickname();
+    String nickname = userResult.user().nickname();
     mockFindByNickname(nickname, userResult);
     webClient
         .get()

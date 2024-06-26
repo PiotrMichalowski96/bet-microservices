@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.piter.api.commons.domain.Match;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 class JsonUtilTest {
@@ -30,7 +31,8 @@ class JsonUtilTest {
     List<Match> matches = JsonUtil.readJsonArrayFile(jsonArrayPath, Match.class);
 
     //then
-    assertThat(matches).hasSize(3);
-    matches.forEach(stock -> assertThat(stock).isNotNull());
+    assertThat(matches)
+        .hasSize(3)
+        .allMatch(Objects::nonNull);
   }
 }

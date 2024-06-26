@@ -40,45 +40,45 @@ class BetServiceTest extends AbstractServiceTest {
   @Test
   void shouldGetAllVisibleBets() {
     //given
-    var user = super.getBets().get(0).getUser();
+    var user = super.getBets().getFirst().user();
 
     //when
     Flux<Bet> betFlux = betService.findAll(user);
 
     //then
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("1"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("3"))
         .verifyComplete();
   }
 
   @Test
   void shouldGetAllVisibleBetsOrderedByMatchStartTimeAsc() {
     //given
-    var user = super.getBets().get(0).getUser();
+    var user = super.getBets().getFirst().user();
 
     //when
     Flux<Bet> betFlux = betService.findAllByOrderByMatchStartTimeAsc(user);
 
     //then
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("3"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("1"))
         .verifyComplete();
   }
 
   @Test
   void shouldGetAllVisibleBetsOrderedByMatchStartTimeDesc() {
     //given
-    var user = super.getBets().get(0).getUser();
+    var user = super.getBets().getFirst().user();
 
     //when
     Flux<Bet> betFlux = betService.findAllByOrderByMatchStartTimeDesc(user);
 
     //then
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("1"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("3"))
         .verifyComplete();
   }
 
@@ -86,29 +86,29 @@ class BetServiceTest extends AbstractServiceTest {
   void shouldGetAllVisibleBetsByMatchId() {
     //given
     var matchId = 1L;
-    var user = super.getBets().get(0).getUser();
+    var user = super.getBets().getFirst().user();
 
     //when
     Flux<Bet> betFlux = betService.findAllByMatchId(matchId, user);
 
     //then
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("1"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("1"))
         .verifyComplete();
   }
 
   @Test
   void shouldGetAllVisibleBetsByUserNickname() {
     //given
-    var nickname = super.getBets().get(2).getUser().getNickname();
-    var user = super.getBets().get(0).getUser();
+    var nickname = super.getBets().get(2).user().nickname();
+    var user = super.getBets().get(0).user();
 
     //when
     Flux<Bet> betFlux = betService.findAllByUserNickname(nickname, user);
 
     //then
     StepVerifier.create(betFlux)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo("3"))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo("3"))
         .verifyComplete();
   }
 
@@ -130,14 +130,14 @@ class BetServiceTest extends AbstractServiceTest {
   void shouldGetBetById() {
     //given
     var id = "2";
-    var user = super.getBets().get(1).getUser();
+    var user = super.getBets().get(1).user();
 
     //when
     Mono<Bet> betMono = betService.findById(id, user);
 
     //then
     StepVerifier.create(betMono)
-        .assertNext(bet -> assertThat(bet.getId()).isEqualTo(id))
+        .assertNext(bet -> assertThat(bet.id()).isEqualTo(id))
         .verifyComplete();
   }
 
@@ -171,7 +171,7 @@ class BetServiceTest extends AbstractServiceTest {
 
     //then
     StepVerifier.create(responseBetMono)
-        .assertNext(responseBet -> assertThat(responseBet.getId()).isEqualTo(id))
+        .assertNext(responseBet -> assertThat(responseBet.id()).isEqualTo(id))
         .verifyComplete();
   }
 

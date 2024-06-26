@@ -87,19 +87,19 @@ public class MatchApiStepDefs {
 
   private boolean doesMatchExistInDatabase(String matchPath) throws IOException {
     Match match = readJsonFile(SAMPLES_DIRECTORY + matchPath, Match.class);
-    if (match.getId() == null) {
+    if (match.id() == null) {
       return matchRepository.findAll()
           .toStream()
           .anyMatch(m -> isSameMatchCompareByTeams(match, m));
     } else {
-      return matchRepository.findById(match.getId())
+      return matchRepository.findById(match.id())
           .blockOptional()
           .isPresent();
     }
   }
 
   private boolean isSameMatchCompareByTeams(Match m1, Match m2) {
-    return m1.getHomeTeam().equals(m2.getHomeTeam()) && m1.getAwayTeam().equals(m2.getAwayTeam());
+    return m1.homeTeam().equals(m2.homeTeam()) && m1.awayTeam().equals(m2.awayTeam());
   }
 
   @When("user sends request to get all matches")
@@ -177,7 +177,7 @@ public class MatchApiStepDefs {
   }
 
   private Match findMatchInDb(Match searchMatch) {
-    return Optional.ofNullable(searchMatch.getId())
+    return Optional.ofNullable(searchMatch.id())
         .map(id -> matchRepository.findById(id).block())
         .orElse(matchRepository.findAll()
             .filter(m -> isSameMatchCompareByTeams(searchMatch, m))

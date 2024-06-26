@@ -53,7 +53,7 @@ class BetServiceImplTest {
 
     //when
     Bet actualBet = betService.fetchBetResult(bet);
-    BetResult actualBetResult = actualBet.getBetResult();
+    BetResult actualBetResult = actualBet.betResult();
 
     //then
     assertThat(actualBetResult).isEqualTo(expectedBetResult);

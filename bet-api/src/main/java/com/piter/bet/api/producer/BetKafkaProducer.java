@@ -20,8 +20,8 @@ public class BetKafkaProducer extends KafkaMessageProducer {
   }
 
   public Bet sendSaveBetEvent(Bet bet) {
-    Supplier<Long> keySupplier = () -> Optional.ofNullable(bet.getMatch())
-        .map(Match::getId)
+    Supplier<Long> keySupplier = () -> Optional.ofNullable(bet.match())
+        .map(Match::id)
         .orElseThrow(() -> new MissingFieldException("Match ID is missing", bet));
     sendEvent(keySupplier, bet);
     logger.debug("Sent bet to save: {}", bet);

@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(value = PredictionProperties.class)
-public class PredictionConfig {
+class PredictionConfig {
 
   @Bean
-  public BetPredictionFetcher betPredictionFetcher(PredictionProperties predictionProperties) {
+  BetPredictionFetcher betPredictionFetcher(PredictionProperties predictionProperties) {
     return new BetPredictionFetcher(predictionProperties.getRules());
   }
 }

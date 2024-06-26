@@ -67,7 +67,7 @@ class MatchControllerTest {
 
   private void mockFindOrderedByRoundTime() {
     Comparator<Match> roundTimeComparator = Comparator.comparing(
-        match -> match.getRound().getStartTime());
+        match -> match.round().startTime());
     List<Match> matchesOrderedByRoundTime = MATCHES.stream()
         .sorted(roundTimeComparator.reversed())
         .toList();
@@ -77,7 +77,7 @@ class MatchControllerTest {
 
   private void mockFindOrderedByMatchTimeDesc() {
     List<Match> matchesOrderedByMatchTime = MATCHES.stream()
-        .sorted(Comparator.comparing(Match::getStartTime).reversed())
+        .sorted(Comparator.comparing(Match::startTime).reversed())
         .toList();
     when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
         Flux.fromIterable(matchesOrderedByMatchTime));
@@ -85,7 +85,7 @@ class MatchControllerTest {
 
   private void mockFindOrderedByMatchTimeAsc() {
     List<Match> matchesOrderedByMatchTime = MATCHES.stream()
-        .sorted(Comparator.comparing(Match::getStartTime))
+        .sorted(Comparator.comparing(Match::startTime))
         .toList();
     when(matchRepository.findAllByOrderByStartTimeAsc()).thenReturn(
         Flux.fromIterable(matchesOrderedByMatchTime));
@@ -114,9 +114,9 @@ class MatchControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Match.class)
         .value(matches -> {
-          assertThat(matches.get(0).getId()).isEqualTo(1L);
-          assertThat(matches.get(1).getId()).isEqualTo(2L);
-          assertThat(matches.get(2).getId()).isEqualTo(3L);
+          assertThat(matches.get(0).id()).isEqualTo(1L);
+          assertThat(matches.get(1).id()).isEqualTo(2L);
+          assertThat(matches.get(2).id()).isEqualTo(3L);
         });
   }
 
@@ -130,9 +130,9 @@ class MatchControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Match.class)
         .value(matches -> {
-          assertThat(matches.get(0).getId()).isEqualTo(1L);
-          assertThat(matches.get(1).getId()).isEqualTo(2L);
-          assertThat(matches.get(2).getId()).isEqualTo(3L);
+          assertThat(matches.get(0).id()).isEqualTo(1L);
+          assertThat(matches.get(1).id()).isEqualTo(2L);
+          assertThat(matches.get(2).id()).isEqualTo(3L);
         });
   }
 
@@ -146,9 +146,9 @@ class MatchControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Match.class)
         .value(matches -> {
-          assertThat(matches.get(0).getId()).isEqualTo(1L);
-          assertThat(matches.get(1).getId()).isEqualTo(3L);
-          assertThat(matches.get(2).getId()).isEqualTo(2L);
+          assertThat(matches.get(0).id()).isEqualTo(1L);
+          assertThat(matches.get(1).id()).isEqualTo(3L);
+          assertThat(matches.get(2).id()).isEqualTo(2L);
         });
   }
 
@@ -162,8 +162,8 @@ class MatchControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Match.class)
         .value(matches -> {
-          assertThat(matches.get(0).getId()).isEqualTo(1L);
-          assertThat(matches.get(1).getId()).isEqualTo(2L);
+          assertThat(matches.get(0).id()).isEqualTo(1L);
+          assertThat(matches.get(1).id()).isEqualTo(2L);
         });
   }
 
@@ -177,8 +177,8 @@ class MatchControllerTest {
         .expectStatus().isOk()
         .expectBodyList(Match.class)
         .value(matches -> {
-          assertThat(matches.get(0).getId()).isEqualTo(2L);
-          assertThat(matches.get(1).getId()).isEqualTo(1L);
+          assertThat(matches.get(0).id()).isEqualTo(2L);
+          assertThat(matches.get(1).id()).isEqualTo(1L);
         });
   }
 
@@ -193,12 +193,12 @@ class MatchControllerTest {
         .exchange()
         .expectStatus().isOk()
         .expectBody(Match.class)
-        .value(match -> assertThat(match.getId()).isEqualTo(id));
+        .value(match -> assertThat(match.id()).isEqualTo(id));
   }
 
   private void mockFindById(Long id) {
     Match match = MATCHES.stream()
-        .filter(m -> Objects.equals(id, m.getId()))
+        .filter(m -> Objects.equals(id, m.id()))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Match with this id does not exist"));
     when(matchRepository.findById(id)).thenReturn(Mono.just(match));

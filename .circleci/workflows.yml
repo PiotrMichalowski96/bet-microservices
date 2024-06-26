@@ -14,7 +14,7 @@ parameters:
 jobs:
   bet-api-build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
     working_directory: ~/bet-microservices/bet-api
     steps:
       - checkout:
@@ -29,7 +29,7 @@ jobs:
           command: mvn -DexcludedGroups=EmbeddedMongoDBTest verify sonar:sonar
   bet-event-aggregator-build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
     steps:
       - checkout:
           path: ~/bet-microservices
@@ -39,7 +39,7 @@ jobs:
           command: mvn verify sonar:sonar
   match-api-build-and-test:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
     steps:
       - checkout:
           path: ~/bet-microservices

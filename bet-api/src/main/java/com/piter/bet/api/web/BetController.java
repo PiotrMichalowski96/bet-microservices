@@ -58,7 +58,7 @@ public class BetController {
   @GetMapping("/bets/my-own")
   Flux<Bet> findAllByUser(BearerTokenAuthentication token) {
     User user = TokenUtil.getUserFrom(token);
-    return betService.findAllByUserNickname(user.getNickname(), user);
+    return betService.findAllByUserNickname(user.nickname(), user);
   }
 
   @GetMapping("/bets/{id}")
@@ -84,11 +84,11 @@ public class BetController {
 
   private Bet mapWithUser(Bet bet, User user) {
     return Bet.builder()
-        .id(bet.getId())
-        .matchPredictedResult(bet.getMatchPredictedResult())
-        .match(bet.getMatch())
+        .id(bet.id())
+        .matchPredictedResult(bet.matchPredictedResult())
+        .match(bet.match())
         .user(user)
-        .betResult(bet.getBetResult())
+        .betResult(bet.betResult())
         .build();
   }
 

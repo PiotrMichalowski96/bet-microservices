@@ -5,46 +5,46 @@ import com.piter.bet.event.aggregator.domain.Match;
 import com.piter.bet.event.aggregator.domain.MatchResult;
 import java.util.Optional;
 
-public enum PredictionType {
+enum PredictionType {
 
   AWAY_TEAM_PREDICTION() {
     @Override
-    public int getGoals(Bet bet) {
+    int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getMatchPredictedResult)
-          .map(MatchResult::getAwayTeamGoals)
+          .map(Bet::matchPredictedResult)
+          .map(MatchResult::awayTeamGoals)
           .orElse(0);
     }
   },
   HOME_TEAM_PREDICTION {
     @Override
-    public int getGoals(Bet bet) {
+    int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getMatchPredictedResult)
-          .map(MatchResult::getHomeTeamGoals)
+          .map(Bet::matchPredictedResult)
+          .map(MatchResult::homeTeamGoals)
           .orElse(0);
     }
   },
   AWAY_TEAM_RESULT {
     @Override
-    public int getGoals(Bet bet) {
+    int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getMatch)
-          .map(Match::getResult)
-          .map(MatchResult::getAwayTeamGoals)
+          .map(Bet::match)
+          .map(Match::result)
+          .map(MatchResult::awayTeamGoals)
           .orElse(0);
     }
   },
   HOME_TEAM_RESULT {
     @Override
-    public int getGoals(Bet bet) {
+    int getGoals(Bet bet) {
       return Optional.ofNullable(bet)
-          .map(Bet::getMatch)
-          .map(Match::getResult)
-          .map(MatchResult::getHomeTeamGoals)
+          .map(Bet::match)
+          .map(Match::result)
+          .map(MatchResult::homeTeamGoals)
           .orElse(0);
     }
   };
 
-  public abstract int getGoals(Bet bet);
+  abstract int getGoals(Bet bet);
 }

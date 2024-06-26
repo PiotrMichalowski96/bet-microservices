@@ -57,12 +57,12 @@ class MatchKafkaConsumerIntegrationTest {
     matchRepository.save(match).block();
 
     var updatedMatch = Match.builder()
-        .id(match.getId())
-        .homeTeam(match.getHomeTeam())
-        .awayTeam(match.getAwayTeam())
-        .startTime(match.getStartTime())
+        .id(match.id())
+        .homeTeam(match.homeTeam())
+        .awayTeam(match.awayTeam())
+        .startTime(match.startTime())
         .result(new MatchResult(4, 2))
-        .round(match.getRound())
+        .round(match.round())
         .build();
 
     var updatedMatchMessage = MessageBuilder.withPayload(updatedMatch)
@@ -84,7 +84,7 @@ class MatchKafkaConsumerIntegrationTest {
   }
 
   private void assertSavedMatchById(Match expectedMatch) {
-    var savedMatch = matchRepository.findById(expectedMatch.getId()).block();
+    var savedMatch = matchRepository.findById(expectedMatch.id()).block();
     assertThat(savedMatch).isEqualTo(expectedMatch);
   }
 }

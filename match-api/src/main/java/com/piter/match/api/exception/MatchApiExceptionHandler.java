@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class MatchApiExceptionHandler {
+class MatchApiExceptionHandler {
 
   @ExceptionHandler(MatchNotFoundException.class)
   ResponseEntity<Object> betNotFound(MatchNotFoundException ex) {

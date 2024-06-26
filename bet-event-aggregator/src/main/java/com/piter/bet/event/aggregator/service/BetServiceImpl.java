@@ -35,25 +35,25 @@ public class BetServiceImpl implements BetService {
   }
 
   private boolean isPredictedMatchResultCorrect(Bet bet) {
-    HomeTeamResult predictedResult = getResult(bet.getMatchPredictedResult());
-    HomeTeamResult actualResult = getActualResult(bet.getMatch());
+    HomeTeamResult predictedResult = getResult(bet.matchPredictedResult());
+    HomeTeamResult actualResult = getActualResult(bet.match());
     return predictedResult.equals(actualResult);
   }
 
   private HomeTeamResult getActualResult(Match match) {
-    return Optional.ofNullable(match.getResult())
-        .filter(matchResult -> Objects.nonNull(matchResult.getHomeTeamGoals()))
-        .filter(matchResult -> Objects.nonNull(matchResult.getAwayTeamGoals()))
+    return Optional.ofNullable(match.result())
+        .filter(matchResult -> Objects.nonNull(matchResult.homeTeamGoals()))
+        .filter(matchResult -> Objects.nonNull(matchResult.awayTeamGoals()))
         .map(HomeTeamResult::getResult)
         .orElseThrow(() -> cannotRetrieveResultException(match));
   }
 
   private Bet mapBet(Bet bet, BetResult betResult) {
     return Bet.builder()
-        .id(bet.getId())
-        .matchPredictedResult(bet.getMatchPredictedResult())
-        .match(bet.getMatch())
-        .user(bet.getUser())
+        .id(bet.id())
+        .matchPredictedResult(bet.matchPredictedResult())
+        .match(bet.match())
+        .user(bet.user())
         .betResult(betResult)
         .build();
   }

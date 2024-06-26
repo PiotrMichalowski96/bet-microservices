@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class LoadBalancedRoutesConfig {
+class LoadBalancedRoutesConfig {
 
   @Bean
-  public RouteLocator loadBalancedRoutes(RouteLocatorBuilder builder){
+  RouteLocator loadBalancedRoutes(RouteLocatorBuilder builder){
     return builder.routes()
         .route(r -> r.path("/matches/**")
             .uri("lb://match-api"))

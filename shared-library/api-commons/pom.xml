@@ -7,13 +7,13 @@
   <parent>
     <artifactId>shared-library</artifactId>
     <groupId>com.piter</groupId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>api-commons</artifactId>
 
   <properties>
-    <spring-cloud.version>2022.0.3</spring-cloud.version>
+    <spring-cloud.version>2023.0.2</spring-cloud.version>
   </properties>
 
   <dependencyManagement>

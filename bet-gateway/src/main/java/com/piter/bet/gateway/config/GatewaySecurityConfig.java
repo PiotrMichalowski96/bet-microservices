@@ -17,13 +17,13 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @EnableWebFluxSecurity
 @Configuration
-public class GatewaySecurityConfig {
+class GatewaySecurityConfig {
 
   private static final String BET_ADMIN = "BET_ADMIN";
   private static final String BET_USER = "BET_USER";
 
   @Bean
-  public ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
+  ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
 
     var delegate = new NimbusReactiveOpaqueTokenIntrospector(
         props.getOpaquetoken().getIntrospectionUri(),
@@ -34,25 +34,26 @@ public class GatewaySecurityConfig {
   }
 
   @Bean
-  public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
+  SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
+      ReactiveOpaqueTokenIntrospector introspector) {
     return http
-        .authorizeExchange()
-        .pathMatchers(HttpMethod.POST, "/matches/**").hasAuthority(BET_ADMIN)
-        .pathMatchers(HttpMethod.DELETE, "/matches/**").hasAuthority(BET_ADMIN)
-        .pathMatchers(HttpMethod.GET, "/bets/**").hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.POST, "/bets/**").hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.DELETE, "/bets/**").hasAuthority(BET_USER)
-        .pathMatchers(HttpMethod.GET, "/users/current").hasAuthority(BET_USER)
-        .anyExchange().permitAll()
-        .and()
-        .oauth2ResourceServer()
-        .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector))
-        .and()
+        .authorizeExchange(exchanges -> exchanges
+            .pathMatchers(HttpMethod.POST, "/matches/**").hasAuthority(BET_ADMIN)
+            .pathMatchers(HttpMethod.DELETE, "/matches/**").hasAuthority(BET_ADMIN)
+            .pathMatchers(HttpMethod.GET, "/bets/**").hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.POST, "/bets/**").hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.DELETE, "/bets/**").hasAuthority(BET_USER)
+            .pathMatchers(HttpMethod.GET, "/users/current").hasAuthority(BET_USER)
+            .anyExchange().permitAll()
+        )
+        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+            .opaqueToken(opaqueToken -> opaqueToken.introspector(introspector))
+        )
         .build();
   }
 
   @Bean
-  public CorsWebFilter corsWebFilter(@Value("${frontend.app.uri}") String frontendUri) {
+  CorsWebFilter corsWebFilter(@Value("${frontend.app.uri}") String frontendUri) {
     var corsConfig = new CorsConfiguration();
     corsConfig.setAllowCredentials(true);
     corsConfig.addAllowedOrigin(frontendUri);

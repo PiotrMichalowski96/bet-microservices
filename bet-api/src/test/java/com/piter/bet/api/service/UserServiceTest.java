@@ -42,7 +42,7 @@ class UserServiceTest extends AbstractServiceTest {
   }
 
   private void assertNicknameAndPoints(UserResultProjection userResult, String nickname, Long points) {
-    assertThat(userResult.getUser().getNickname()).isEqualTo(nickname);
-    assertThat(userResult.getPoints()).isEqualTo(points);
+    assertThat(userResult.user().nickname()).isEqualTo(nickname);
+    assertThat(userResult.points()).isEqualTo(points);
   }
 }
