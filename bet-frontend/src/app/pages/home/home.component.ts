@@ -9,6 +9,7 @@ import {MatchesService} from "../../services/matches.service";
 })
 export class HomeComponent implements OnInit {
 
+  ongoingMatches: Match[] = [];
   upcomingMatches: Match[] = [];
   allMatches: Match[] = [];
 
@@ -16,6 +17,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.matchesService.getOngoingMatches().subscribe((matches: Match[]) => {
+      this.ongoingMatches = matches;
+    });
     this.matchesService.getUpcomingMatches().subscribe((matches: Match[]) => {
       this.upcomingMatches = matches;
     });
