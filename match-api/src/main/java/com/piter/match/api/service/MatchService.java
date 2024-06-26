@@ -73,7 +73,6 @@ public class MatchService {
         .build();
   }
 
-//  @CacheEvict(value = "match", key = "#id")
   public Mono<Void> deleteMatch(Long id) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
