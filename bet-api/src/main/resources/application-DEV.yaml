@@ -3,6 +3,10 @@ spring:
   data.mongodb:
     port: 27017
     host: localhost
+    username: mongoUsername
+    password: mongoPassword
+    database: betLeague
+    authentication-database: admin
   cloud.config.enabled: false
 
 ########################
