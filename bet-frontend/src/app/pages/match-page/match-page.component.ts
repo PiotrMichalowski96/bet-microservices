@@ -50,6 +50,6 @@ export class MatchPageComponent implements OnInit {
   }
 
   canCreateBet(): boolean {
-    return !MatchTimeHelper.isMatchStarted(this.match);
+    return !MatchTimeHelper.isMatchStarted(this.match) && this.bets.length === 0;
   }
 }
