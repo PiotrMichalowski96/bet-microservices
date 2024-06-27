@@ -6,7 +6,7 @@ import {RESPONSIVE_CAROUSEL_OPTIONS} from "../../util/carousel-properties";
 @Component({
   selector: 'app-bets-page',
   templateUrl: './bets-page.component.html',
-  styleUrls: ['./bets-page.component.css']
+  styleUrls: ['./bets-page.component.scss']
 })
 export class BetsPageComponent implements OnInit {
 
