@@ -1,6 +1,6 @@
 <div class="container">
   <h2>My Own Bets</h2>
-  <p-carousel [value]="myOwnBets" [numVisible]="50" *ngIf="myOwnBets.length != 0"
+  <p-carousel [value]="myOwnBets" [numVisible]="5" *ngIf="myOwnBets.length != 0"
               [responsiveOptions]="responsiveOptions">
     <ng-template let-myBet pTemplate="bet">
       <div class="carousel-item-padding">
