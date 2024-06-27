@@ -13,7 +13,7 @@
     </div>
   </div>
   <div>
-    <p-paginator [rows]="10" [totalRecords]="1500" (onPageChange)="paginate($event)"
+    <p-paginator [rows]="BetsService.itemsOnPage" [totalRecords]="totalBets" (onPageChange)="paginate($event)"
                  [showJumpToPageDropdown]="true" [showPageLinks]="false"></p-paginator>
   </div>
 </div>

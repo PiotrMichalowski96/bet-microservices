@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Cookie} from "ng2-cookies";
 import {ACCESS_TOKEN, TOKEN_HEADER_PREFIX} from "../util/token-properties";
-import {catchError, Observable, of, switchMap, throwError} from "rxjs";
+import {catchError, map, Observable, of, switchMap, throwError} from "rxjs";
 import {Bet} from "../model/bet";
 import {AppConfig} from "../config/app.config";
 
@@ -12,12 +12,23 @@ import {AppConfig} from "../config/app.config";
 export class BetsService {
 
   private static readonly betEndpoint: string = '/bets';
-  private static readonly itemsOnPage: number = 10;
+  static readonly itemsOnPage: number = 10;
 
   private readonly betUri: string;
 
   constructor(private http: HttpClient, private appConfig: AppConfig) {
     this.betUri = this.appConfig.getConfig()?.backendBaseUrl + BetsService.betEndpoint;
+  }
+
+  getNumberOfBets(): Observable<number> {
+    let options = {
+      params: new HttpParams().set('matchOrder', 'desc'),
+      headers: this.createAuthHeader()
+    };
+    return this.http.get<Bet[]>(this.betUri, options)
+    .pipe(
+      map(bets => bets.length)
+    );
   }
 
   getBets(page: number = 0): Observable<Bet[]> {
