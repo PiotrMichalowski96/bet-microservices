@@ -5,7 +5,7 @@
     </div>
   </div>
   <div>
-    <p-paginator [rows]="10" [totalRecords]="100" (onPageChange)="paginate($event)"
+    <p-paginator [rows]="MatchesService.itemsOnPage" [totalRecords]="totalMatches" (onPageChange)="paginate($event)"
                  [showJumpToPageDropdown]="true" [showPageLinks]="false"></p-paginator>
   </div>
 </div>
