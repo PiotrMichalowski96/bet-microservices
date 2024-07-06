@@ -10,12 +10,20 @@ import {MatchesService} from "../../services/matches.service";
 export class MatchesPageComponent implements OnInit {
 
   matches: Match[] = [];
+  totalMatches: number = 0;
 
   constructor(private matchesService: MatchesService) {
   }
 
   ngOnInit(): void {
     this.getPagedMatches();
+    this.getTotalMatches();
+  }
+
+  private getTotalMatches(): void {
+    this.matchesService.getNumberOfMatches().subscribe(matchesNumber => {
+      this.totalMatches = matchesNumber;
+    });
   }
 
   private getPagedMatches(page: number = 0): void {
@@ -27,4 +35,6 @@ export class MatchesPageComponent implements OnInit {
   paginate(event: any): void {
     this.getPagedMatches(event.page);
   }
+
+  protected readonly MatchesService = MatchesService;
 }

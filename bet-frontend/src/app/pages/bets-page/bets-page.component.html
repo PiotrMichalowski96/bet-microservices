@@ -1,9 +1,10 @@
 <div class="container">
   <h2>My Own Bets</h2>
-  <p-carousel [value]="myOwnBets" [numVisible]="5" [numScroll]="3" *ngIf="myOwnBets.length != 0"
-              [responsiveOptions]="responsiveOptions">
+  <p-carousel [value]="myOwnBets" *ngIf="myOwnBets.length != 0" [responsiveOptions]="responsiveOptions">
     <ng-template let-myBet pTemplate="bet">
-      <app-bet [bet]="myBet"></app-bet>
+      <div class="carousel-item-padding">
+        <app-bet [bet]="myBet"></app-bet>
+      </div>
     </ng-template>
   </p-carousel>
   <h2>All Bets</h2>
@@ -13,7 +14,7 @@
     </div>
   </div>
   <div>
-    <p-paginator [rows]="10" [totalRecords]="1500" (onPageChange)="paginate($event)"
+    <p-paginator [rows]="BetsService.itemsOnPage" [totalRecords]="totalBets" (onPageChange)="paginate($event)"
                  [showJumpToPageDropdown]="true" [showPageLinks]="false"></p-paginator>
   </div>
 </div>

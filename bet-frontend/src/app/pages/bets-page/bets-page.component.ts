@@ -6,7 +6,7 @@ import {RESPONSIVE_CAROUSEL_OPTIONS} from "../../util/carousel-properties";
 @Component({
   selector: 'app-bets-page',
   templateUrl: './bets-page.component.html',
-  styleUrls: ['./bets-page.component.css']
+  styleUrls: ['./bets-page.component.scss']
 })
 export class BetsPageComponent implements OnInit {
 
@@ -14,6 +14,7 @@ export class BetsPageComponent implements OnInit {
 
   myOwnBets: Bet[] = [];
   allBets: Bet[] = [];
+  totalBets: number = 0;
 
   constructor(private betsService: BetsService) {
     this.responsiveOptions = RESPONSIVE_CAROUSEL_OPTIONS;
@@ -22,6 +23,7 @@ export class BetsPageComponent implements OnInit {
   ngOnInit(): void {
     this.getMyOwnBets();
     this.getPagedAllBets();
+    this.getTotalBets();
   }
 
   private getMyOwnBets(): void {
@@ -36,7 +38,15 @@ export class BetsPageComponent implements OnInit {
     });
   }
 
+  private getTotalBets(): void {
+    this.betsService.getNumberOfBets().subscribe(betsNumber => {
+      this.totalBets = betsNumber;
+    });
+  }
+
   paginate(event: any): void {
     this.getPagedAllBets(event.page);
   }
+
+  protected readonly BetsService = BetsService;
 }
