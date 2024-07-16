@@ -26,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
@@ -39,7 +37,6 @@ import reactor.test.StepVerifier;
 @ActiveProfiles("TEST")
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @Import(MatchApiTestConfig.class)
-//@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 class MatchServiceTest {
 
@@ -65,7 +62,7 @@ class MatchServiceTest {
   void shouldGetMatchesWithoutOrder() {
     Flux<Match> matchFlux = matchService.findAll();
     StepVerifier.create(matchFlux)
-        .expectNextCount(3)
+        .expectNextCount(4)
         .verifyComplete();
   }
 
@@ -75,6 +72,7 @@ class MatchServiceTest {
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(3L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(4L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
         .verifyComplete();
   }
@@ -85,6 +83,7 @@ class MatchServiceTest {
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(4L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(3L))
         .verifyComplete();
   }
@@ -104,6 +103,14 @@ class MatchServiceTest {
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
+        .verifyComplete();
+  }
+
+  @Test
+  void shouldGetOngoingMatches() {
+    Flux<Match> matchFlux = matchService.findAllOngoing();
+    StepVerifier.create(matchFlux)
+        .assertNext(match -> assertThat(match.id()).isEqualTo(4L))
         .verifyComplete();
   }
 

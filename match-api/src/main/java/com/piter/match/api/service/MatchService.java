@@ -1,5 +1,7 @@
 package com.piter.match.api.service;
 
+import static java.util.function.Predicate.not;
+
 import com.piter.api.commons.domain.Match;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
@@ -33,18 +35,29 @@ public class MatchService {
 
   public Flux<Match> findAllUpcomingOrderByStartTimeDesc() {
     return matchRepository.findAllByOrderByStartTimeDesc()
-        .filter(this::isNotStarted);
+        .filter(not(this::isStarted));
   }
 
   public Flux<Match> findAllUpcomingOrderByStartTimeAsc() {
     return matchRepository.findAllByOrderByStartTimeAsc()
-        .filter(this::isNotStarted);
+        .filter(not(this::isStarted));
   }
 
-  private boolean isNotStarted(Match match) {
+  public Flux<Match> findAllOngoing() {
+    return matchRepository.findAll()
+        .filter(this::isStarted)
+        .filter(this::notFinished);
+  }
+
+  private boolean isStarted(Match match) {
     return Optional.ofNullable(match.startTime())
-        .map(startTime -> LocalDateTime.now().isBefore(startTime))
+        .map(startTime -> LocalDateTime.now().isAfter(startTime))
         .orElse(false);
+  }
+
+  private boolean notFinished(Match match) {
+    return Optional.ofNullable(match.result())
+        .isEmpty();
   }
 
   public Mono<Match> findById(Long id) {

@@ -76,6 +76,13 @@ class MatchController {
         .orElse(matchService.findAllUpcomingOrderByStartTimeAsc());
   }
 
+  @Operation(summary = "Find all matches that have been started but not finished yet")
+  @ApiResponse(responseCode = "200", description = "successful found ongoing match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
+  @GetMapping("/matches/ongoing")
+  Flux<Match> findOngoing() {
+    return matchService.findAllOngoing();
+  }
+
   @Operation(summary = "Find match by id")
   @ApiResponse(responseCode = "200", description = "successful found match by id", content = @Content(schema = @Schema(implementation = Match.class)))
   @ApiResponse(responseCode = "404", description = "match not found")
