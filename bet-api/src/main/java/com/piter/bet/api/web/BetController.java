@@ -22,7 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-public class BetController {
+class BetController {
 
   private static final String ASC_ORDER_MATCH_TIME = "asc";
   private static final String DESC_ORDER_MATCH_TIME = "desc";
@@ -31,7 +31,7 @@ public class BetController {
   private final Validator validator;
   private final Map<String, BetFetcher> findAllMapSuppliers;
 
-  public BetController(BetService betService, Validator validator) {
+  BetController(BetService betService, Validator validator) {
     this.betService = betService;
     this.validator = validator;
     this.findAllMapSuppliers = Map.of(

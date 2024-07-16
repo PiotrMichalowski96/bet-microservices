@@ -13,7 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @EnableWebFluxSecurity
 @Configuration
-public class SecurityConfig {
+class SecurityConfig {
 
   private static final String BET_USER = "BET_USER";
 
@@ -22,7 +22,7 @@ public class SecurityConfig {
   private static final String USERS_RESULT_ENDPOINT = "/users-results/**";
 
   @Bean
-  public ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
+  ReactiveOpaqueTokenIntrospector keycloakIntrospector(OAuth2ResourceServerProperties props) {
 
     var delegate = new NimbusReactiveOpaqueTokenIntrospector(
         props.getOpaquetoken().getIntrospectionUri(),
@@ -33,7 +33,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
+  SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveOpaqueTokenIntrospector introspector) {
     return http
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.GET, BETS_ENDPOINT).hasAuthority(BET_USER)

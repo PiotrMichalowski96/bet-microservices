@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+class UserController {
 
   private final UserService userService;
 
