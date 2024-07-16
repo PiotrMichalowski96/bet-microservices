@@ -11,7 +11,7 @@ import org.springframework.messaging.Message;
 
 @Getter
 @RequiredArgsConstructor
-public enum BetEventType {
+enum BetEventType {
 
   SAVE(message -> hasPayloadType(message, Bet.class)),
   // kafka convention takes record with null value (tombstone record) as delete operation
@@ -24,7 +24,7 @@ public enum BetEventType {
     return payloadType.isInstance(message.getPayload());
   }
 
-  public static BetEventType getEventType(Message<?> message) {
+  static BetEventType getEventType(Message<?> message) {
     return Stream.of(BetEventType.values())
         .filter(betEventType -> betEventType.getEventTypePredicate().test(message))
         .findFirst()

@@ -7,7 +7,6 @@ import com.piter.bet.api.consumer.BetKafkaConsumer;
 import com.piter.bet.api.producer.BetKafkaProducer;
 import com.piter.bet.api.service.BetService;
 import com.piter.bet.api.service.UserService;
-import com.piter.bet.api.web.BetController;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Opaquetoken;
@@ -20,8 +19,7 @@ import org.springframework.validation.Validator;
 @TestConfiguration
 @Import({BetKafkaConsumer.class,
     BetService.class,
-    UserService.class,
-    BetController.class
+    UserService.class
 })
 public class BetApiTestConfig {
 

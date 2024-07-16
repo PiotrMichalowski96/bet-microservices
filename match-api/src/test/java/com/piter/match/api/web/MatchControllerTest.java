@@ -132,7 +132,8 @@ class MatchControllerTest {
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
-          assertThat(matches.get(2).id()).isEqualTo(3L);
+          assertThat(matches.get(2).id()).isEqualTo(4L);
+          assertThat(matches.get(3).id()).isEqualTo(3L);
         });
   }
 
@@ -148,7 +149,8 @@ class MatchControllerTest {
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(3L);
-          assertThat(matches.get(2).id()).isEqualTo(2L);
+          assertThat(matches.get(2).id()).isEqualTo(4L);
+          assertThat(matches.get(3).id()).isEqualTo(2L);
         });
   }
 
@@ -179,6 +181,20 @@ class MatchControllerTest {
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(2L);
           assertThat(matches.get(1).id()).isEqualTo(1L);
+        });
+  }
+
+  @Test
+  void shouldGetOngoingMatches() {
+    webClient
+        .mutateWith(mockUser().authorities(BET_ADMIN))
+        .get()
+        .uri("/matches/ongoing")
+        .exchange()
+        .expectStatus().isOk()
+        .expectBodyList(Match.class)
+        .value(matches -> {
+          assertThat(matches.get(0).id()).isEqualTo(4L);
         });
   }
 
