@@ -98,7 +98,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser())
         .delete()
-        .uri("/matches/1")
+        .uri("/api/v2/matches/1")
         .exchange()
         .expectStatus().isForbidden();
   }
@@ -109,7 +109,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches")
+        .uri("/api/v2/matches")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -125,7 +125,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches?order=match-time")
+        .uri("/api/v2/matches?order=match-time")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -142,7 +142,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches?order=round-time")
+        .uri("/api/v2/matches?order=round-time")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -159,7 +159,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/upcoming?startTime=desc")
+        .uri("/api/v2/matches/upcoming?startTime=desc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -174,7 +174,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/upcoming?startTime=asc")
+        .uri("/api/v2/matches/upcoming?startTime=asc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -189,7 +189,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/ongoing")
+        .uri("/api/v2/matches/ongoing")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(Match.class)
@@ -205,7 +205,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/" + id)
+        .uri("/api/v2/matches/" + id)
         .exchange()
         .expectStatus().isOk()
         .expectBody(Match.class)
@@ -237,7 +237,7 @@ class MatchControllerTest {
         .mutateWith(mockBearerToken())
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
+        .uri("/api/v2/matches")
         .body(Mono.just(match), Match.class)
         .exchange()
         .expectStatus().isOk();
@@ -264,7 +264,7 @@ class MatchControllerTest {
         .mutateWith(mockBearerToken())
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
+        .uri("/api/v2/matches")
         .body(Mono.just(invalidMatch), Match.class)
         .exchange()
         .expectStatus().isBadRequest();
@@ -276,7 +276,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
+        .uri("/api/v2/matches")
         .body(Mono.just(match), Match.class)
         .exchange()
         .expectStatus().isUnauthorized();

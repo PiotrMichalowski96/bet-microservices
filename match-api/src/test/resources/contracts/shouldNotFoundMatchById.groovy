@@ -5,7 +5,7 @@ Contract.make {
 
     request {
         method GET()
-        url("/matches/99")
+        url("/api/v2/matches/99")
     }
 
     response {

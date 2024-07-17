@@ -20,7 +20,7 @@ class SecurityConfig {
 
   private static final String BET_ADMIN = "BET_ADMIN";
 
-  private static final String MATCHES_ENDPOINT = "/matches/**";
+  private static final String MATCHES_ENDPOINT = "/api/v2/matches/**";
   private static final String ACTUATOR_ENDPOINT = "/actuator/**";
   private static final String SWAGGER_ENDPOINT = "/swagger-doc/**";
 
