@@ -32,7 +32,7 @@ class MatchEventTypeTest {
         .build();
 
     return Stream.of(
-        Arguments.of(matchMessage, MatchEventType.SAVE),
+        Arguments.of(matchMessage, MatchEventType.UPSERT),
         Arguments.of(tombstoneMessage, MatchEventType.DELETE)
     );
   }

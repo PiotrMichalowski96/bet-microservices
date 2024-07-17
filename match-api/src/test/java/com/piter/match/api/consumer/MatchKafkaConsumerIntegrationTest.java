@@ -42,7 +42,7 @@ class MatchKafkaConsumerIntegrationTest {
   private MatchRepository matchRepository;
 
   @Test
-  void shouldSaveMatch() {
+  void shouldUpsertMatch() {
     //given
     var id = 99L;
     var match = Match.builder()

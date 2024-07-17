@@ -13,7 +13,7 @@ import org.springframework.messaging.Message;
 @RequiredArgsConstructor
 enum MatchEventType {
 
-  SAVE(message -> hasPayloadType(message, Match.class)),
+  UPSERT(message -> hasPayloadType(message, Match.class)),
   // kafka convention takes record with null value (tombstone record) as delete operation
   // see (https://www.linkedin.com/pulse/tombstone-record-kafka-under-hood-sumon-mal/)
   DELETE(message -> hasPayloadType(message, KafkaNull.class)),;

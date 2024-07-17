@@ -25,7 +25,7 @@ public class MatchKafkaConsumer {
   public MatchKafkaConsumer(MatchRepository matchRepository) {
     this.matchRepository = matchRepository;
     this.eventTypeProcessor = Map.of(
-        MatchEventType.SAVE, this::saveMatch,
+        MatchEventType.UPSERT, this::upsertMatch,
         MatchEventType.DELETE, this::deleteMatch
     );
   }
@@ -38,7 +38,7 @@ public class MatchKafkaConsumer {
     };
   }
 
-  private void saveMatch(Message<?> matchMessage) {
+  private void upsertMatch(Message<?> matchMessage) {
     logReceivedMessage(matchMessage);
     Match match = (Match) matchMessage.getPayload();
     matchRepository.save(match).block(DB_TIMEOUT); //block is used to ensure saving order

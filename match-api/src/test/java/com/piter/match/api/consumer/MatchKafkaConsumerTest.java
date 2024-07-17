@@ -33,7 +33,7 @@ class MatchKafkaConsumerTest {
   private MatchKafkaConsumer matchKafkaConsumer;
 
   @Test
-  void shouldSaveMatch() {
+  void shouldUpsertMatch() {
     //given
     var match = Match.builder()
         .id(123L)
