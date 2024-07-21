@@ -3,6 +3,7 @@ package com.piter.match.api.service;
 import static java.util.function.Predicate.not;
 
 import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
@@ -67,9 +68,6 @@ public class MatchService {
   }
 
   public Mono<Match> saveMatch(Match match) {
-    if (match.id() != null) {
-      return Mono.just(matchProducer.sendSaveMatchEvent(match));
-    }
     return sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)
         .map(id -> mapToMatchWithId(match, id))
         .map(matchProducer::sendSaveMatchEvent);
@@ -82,6 +80,31 @@ public class MatchService {
         .awayTeam(match.awayTeam())
         .startTime(match.startTime())
         .result(match.result())
+        .round(match.round())
+        .build();
+  }
+
+  public Mono<Match> updateMatch(Long id, Match match) {
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .map(existingMatch -> mapToMatchWithId(match, existingMatch.id()))
+        .map(matchProducer::sendSaveMatchEvent);
+  }
+
+  public Mono<Match> updateMatchResult(Long id, MatchResult matchResult) {
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .map(match -> mapToMatchWithResult(match, matchResult))
+        .map(matchProducer::sendSaveMatchEvent);
+  }
+
+  private Match mapToMatchWithResult(Match match, MatchResult matchResult) {
+    return Match.builder()
+        .id(match.id())
+        .homeTeam(match.homeTeam())
+        .awayTeam(match.awayTeam())
+        .startTime(match.startTime())
+        .result(matchResult)
         .round(match.round())
         .build();
   }

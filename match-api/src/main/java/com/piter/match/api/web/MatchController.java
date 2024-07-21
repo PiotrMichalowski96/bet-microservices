@@ -1,6 +1,7 @@
 package com.piter.match.api.web;
 
 import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
 import com.piter.match.api.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,8 +18,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,13 +99,40 @@ class MatchController {
     return matchService.findById(id);
   }
 
-  @Operation(summary = "Save match")
-  @ApiResponse(responseCode = "200", description = "successful saved match", content = @Content(schema = @Schema(implementation = Match.class)))
+  @Operation(summary = "Create new match")
+  @ApiResponse(responseCode = "200", description = "ID of match to create", content = @Content(schema = @Schema(implementation = Long.class)))
   @PostMapping("/matches")
-  Mono<Match> save(@RequestBody Match match) {
+  Mono<Long> save(@RequestBody Match match) {
     return Mono.just(match)
-        .doOnNext(this::validate)
-        .flatMap(matchService::saveMatch);
+        .doOnNext(m -> validate("match", m))
+        .flatMap(matchService::saveMatch)
+        .map(Match::id);
+  }
+
+  @Operation(summary = "Update match")
+  @ApiResponse(responseCode = "200", description = "ID of match to updated", content = @Content(schema = @Schema(implementation = Long.class)))
+  @PutMapping("/matches/{id}")
+  Mono<Long> update(
+      @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
+      @PathVariable Long id,
+      @RequestBody Match match) {
+    return Mono.just(match)
+        .doOnNext(m -> validate("match", m))
+        .flatMap(m -> matchService.updateMatch(id, m))
+        .map(Match::id);
+  }
+
+  @Operation(summary = "Update match result")
+  @ApiResponse(responseCode = "200", description = "ID of match to update result", content = @Content(schema = @Schema(implementation = Long.class)))
+  @PatchMapping("/matches/{id}")
+  Mono<Long> updateResult(
+      @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
+      @PathVariable Long id,
+      @RequestBody MatchResult matchResult) {
+    return Mono.just(matchResult)
+        .doOnNext(result -> validate("matchResult", result))
+        .flatMap(result -> matchService.updateMatchResult(id, matchResult))
+        .map(Match::id);
   }
 
   @Operation(summary = "Delete match")
@@ -116,9 +146,9 @@ class MatchController {
     return matchService.deleteMatch(id);
   }
 
-  private void validate(Match match) {
-    Errors errors = new BeanPropertyBindingResult(match, "match");
-    validator.validate(match, errors);
+  private <T> void validate(String name, T objectToValidate) {
+    Errors errors = new BeanPropertyBindingResult(objectToValidate, name);
+    validator.validate(objectToValidate, errors);
 
     if (errors.hasErrors()) {
       throw new ServerWebInputException(errors.toString());

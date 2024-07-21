@@ -9,16 +9,19 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
 import com.piter.api.commons.domain.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.config.SecurityTestConfig;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
+import com.piter.match.api.service.SequenceGeneratorService;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -42,13 +44,13 @@ class MatchControllerTest {
   private static final List<Match> MATCHES = createMatchList();
 
   @MockBean
-  private ReactiveMongoOperations reactiveMongoOperations;
-
-  @MockBean
   private MatchRepository matchRepository;
 
   @MockBean
   private MatchKafkaProducer matchKafkaProducer;
+
+  @MockBean
+  private SequenceGeneratorService sequenceGeneratorService;
 
   @Autowired
   private WebTestClient webClient;
@@ -224,14 +226,14 @@ class MatchControllerTest {
   @WithMockUser
   void shouldSaveMatch() {
     var match = Match.builder()
-        .id(9876L)
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.of(2022, 10, 23, 21, 0, 0))
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.of(2022, 10, 22, 14, 0, 0)))
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
         .build();
 
-    mockSavingMatchEventByProducer(match);
+    mockSequenceGeneratorServiceCreateId();
+    mockSavingMatchEventByProducer();
 
     webClient
         .mutateWith(mockBearerToken())
@@ -243,9 +245,15 @@ class MatchControllerTest {
         .expectStatus().isOk();
   }
 
-  private void mockSavingMatchEventByProducer(Match match) {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenReturn(match);
+  private void mockSequenceGeneratorServiceCreateId() {
+    var randomId = new Random().nextLong();
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
+        Mono.just(randomId));
   }
+
+  private void mockSavingMatchEventByProducer() {
+    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenAnswer(
+        answer -> answer.getArgument(0, Match.class));  }
 
   private WebTestClientConfigurer mockBearerToken() {
     Consumer<Map<String, Object>> attributesConsumer = attributes -> {
@@ -280,5 +288,118 @@ class MatchControllerTest {
         .body(Mono.just(match), Match.class)
         .exchange()
         .expectStatus().isUnauthorized();
+  }
+
+  @Test
+  void shouldUpdateMatch() {
+    var id = 1L;
+    var match = Match.builder()
+        .id(id)
+        .homeTeam("FC Barcelona")
+        .awayTeam("Athletic Bilbao")
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .build();
+
+    mockFindById(id);
+    mockSavingMatchEventByProducer();
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(match), Match.class)
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  @Test
+  void shouldNotUpdateMatchBecauseNotFound() {
+    var nonExistingId = 12324L;
+    var match = Match.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Girona")
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .build();
+
+    mockNotFoundById(nonExistingId);
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + nonExistingId)
+        .body(Mono.just(match), Match.class)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
+
+  private void mockNotFoundById(long nonExistingId) {
+    when(matchRepository.findById(nonExistingId)).thenReturn(Mono.empty());
+  }
+
+  @Test
+  void shouldNotUpdateMatchBecauseInvalid() {
+    var id = 1L;
+    var invalidMatch = Match.builder().build();
+
+    mockFindById(id);
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(invalidMatch), Match.class)
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void shouldUpdateMatchResult() {
+    var id = 1L;
+    var matchResult = new MatchResult(2, 1);
+
+    mockFindById(id);
+    mockSavingMatchEventByProducer();
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(matchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  @Test
+  void shouldNotUpdateMatchResultBecauseNotFound() {
+    var nonExistingId = 12324L;
+    var matchResult = new MatchResult(2, 1);
+
+    mockNotFoundById(nonExistingId);
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + nonExistingId)
+        .body(Mono.just(matchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
+
+  @Test
+  void shouldNotUpdateMatchResultBecauseIsInvalid() {
+    var id = 1L;
+    var invalidMatchResult = new MatchResult(-1, 1);
+
+    mockFindById(id);
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(invalidMatchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isBadRequest();
   }
 }

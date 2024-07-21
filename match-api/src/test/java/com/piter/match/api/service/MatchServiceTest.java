@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.domain.MatchResult;
 import com.piter.api.commons.domain.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.exception.MatchNotFoundException;
@@ -125,45 +126,7 @@ class MatchServiceTest {
 
   @Test
   @Order(Integer.MAX_VALUE)
-  void shouldSaveMatchWithId() {
-    //given
-    var id = 10L;
-    var matchToSave = Match.builder()
-        .id(id)
-        .homeTeam("FC Barcelona")
-        .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.of(2022, 10, 23, 21, 0, 0))
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.of(2022, 10, 22, 14, 0, 0)))
-        .build();
-
-    mockMatchKafkaProducerSavingInDatabase();
-
-    //when
-    Mono<Match> matchMono = matchService.saveMatch(matchToSave);
-
-    //then
-    StepVerifier.create(matchMono)
-        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
-        .verifyComplete();
-    assertSavedMatchById(matchToSave);
-  }
-
-  private void mockMatchKafkaProducerSavingInDatabase() {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenAnswer(answer -> {
-      Match matchArgument = answer.getArgument(0, Match.class);
-      matchRepository.save(matchArgument).block();
-      return matchArgument;
-    });
-  }
-
-  private void assertSavedMatchById(Match expectedMatch) {
-    var savedMatch = matchRepository.findById(expectedMatch.id()).block();
-    assertThat(savedMatch).isEqualTo(expectedMatch);
-  }
-
-  @Test
-  @Order(Integer.MAX_VALUE)
-  void shouldSaveMatchWithoutId() {
+  void shouldSaveMatch() {
     //given
     var matchToSave = Match.builder()
         .homeTeam("FC Barcelona")
@@ -184,7 +147,6 @@ class MatchServiceTest {
     StepVerifier.create(matchMono)
         .assertNext(match -> assertThat(match.id()).isEqualTo(generatedId))
         .verifyComplete();
-    assertSavedMatchWithoutId(generatedId, matchToSave);
   }
 
   private void mockSequenceGeneratorServiceCreateId(long generatedId) {
@@ -192,17 +154,107 @@ class MatchServiceTest {
         Mono.just(generatedId));
   }
 
-  private void assertSavedMatchWithoutId(Long generatedId, Match expectedMatch) {
-    var savedMatch = matchRepository.findById(generatedId).block();
-    assertThat(savedMatch).usingRecursiveComparison()
-        .ignoringFields("id")
-        .isEqualTo(expectedMatch);
+  private void mockMatchKafkaProducerSavingInDatabase() {
+    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenAnswer(
+        answer -> answer.getArgument(0, Match.class));
+  }
+
+  @Test
+  @Order(Integer.MAX_VALUE)
+  void shouldUpdateMatch() {
+    //given
+    var id = 100L;
+    var matchToSave = Match.builder()
+        .id(id)
+        .homeTeam("FC Barcelona")
+        .awayTeam("Athletic Bilbao")
+        .startTime(LocalDateTime.of(2022, 10, 23, 21, 0, 0))
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.of(2022, 10, 22, 14, 0, 0)))
+        .build();
+
+    matchRepository.save(matchToSave).block();
+
+    var matchToUpdate = Match.builder()
+        .homeTeam(matchToSave.homeTeam())
+        .awayTeam(matchToSave.awayTeam())
+        .startTime(matchToSave.startTime().plusDays(1))
+        .round(matchToSave.round())
+        .build();
+
+    mockMatchKafkaProducerSavingInDatabase();
+
+    //when
+    Mono<Match> matchMono = matchService.updateMatch(id, matchToUpdate);
+
+    //then
+    StepVerifier.create(matchMono)
+        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
+        .verifyComplete();
+  }
+
+  @Test
+  void shouldReturnErrorDuringMatchUpdateIfNotFound() {
+    //given
+    var nonExistingId = 12324L;
+    var matchToUpdate = Match.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Girona")
+        .startTime(LocalDateTime.now())
+        .build();
+
+    //when
+    Mono<Match> matchMono = matchService.updateMatch(nonExistingId, matchToUpdate);
+
+    //then
+    StepVerifier.create(matchMono)
+        .expectError(MatchNotFoundException.class)
+        .verify();
+  }
+
+  @Test
+  void shouldUpdateMatchResult() {
+    //given
+    var id = 1L;
+    var matchResult = new MatchResult(3, 0);
+
+    mockMatchKafkaProducerSavingInDatabase();
+
+    //when
+    Mono<Match> matchMono = matchService.updateMatchResult(id, matchResult);
+
+    //then
+    StepVerifier.create(matchMono)
+        .assertNext(match -> {
+          assertThat(match.id()).isEqualTo(id);
+          assertThat(match.result()).isEqualTo(matchResult);
+        })
+        .verifyComplete();
+  }
+
+  @Test
+  void shouldReturnErrorDuringMatchResultUpdateIfNotFound() {
+    //given
+    var nonExistingId = 12324L;
+    var matchResult = new MatchResult(3, 0);
+
+    //when
+    Mono<Match> matchMono = matchService.updateMatchResult(nonExistingId, matchResult);
+
+    //then
+    StepVerifier.create(matchMono)
+        .expectError(MatchNotFoundException.class)
+        .verify();
   }
 
   @Test
   void shouldReturnErrorDuringDeletingMatch() {
+    //given
     var nonExistingId = 12324L;
+
+    //when
     Mono<Void> voidMono = matchService.deleteMatch(nonExistingId);
+
+    //then
     StepVerifier.create(voidMono)
         .expectError(MatchNotFoundException.class)
         .verify();
