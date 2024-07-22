@@ -1,44 +1,44 @@
 [
   {
     "id": 1,
-    "homeTeam": "Real Madrid",
-    "awayTeam": "FC Barcelona",
-    "startTime": "2022-08-07T21:00:00",
+    "home_team": "Real Madrid",
+    "away_team": "FC Barcelona",
+    "start_time": "2022-08-07 21:00:00",
     "result": {
-      "homeTeamGoals": 0,
-      "awayTeamGoals": 4
+      "home_team_score": 0,
+      "away_team_score": 4
     },
-    "round": {
-      "roundName": "LaLiga round 1",
-      "startTime": "2022-02-06T21:00:00"
+    "tournament_round": {
+      "name": "LaLiga tournament_round 1",
+      "start_time": "2022-02-06 21:00:00"
     }
   },
   {
     "id": 2,
-    "homeTeam": "Atletico Madrid",
-    "awayTeam": "Betis Sevilla",
-    "startTime": "2022-08-15T18:30:00",
+    "home_team": "Atletico Madrid",
+    "away_team": "Betis Sevilla",
+    "start_time": "2022-08-15 18:30:00",
     "result": {
-      "homeTeamGoals": 1,
-      "awayTeamGoals": 1
+      "home_team_score": 1,
+      "away_team_score": 1
     },
-    "round": {
-      "roundName": "LaLiga round 1",
-      "startTime": "2022-02-06T21:00:00"
+    "tournament_round": {
+      "name": "LaLiga tournament_round 1",
+      "start_time": "2022-02-06 21:00:00"
     }
   },
   {
     "id": 6,
-    "homeTeam": "Real Sociedad",
-    "awayTeam": "FC Barcelona",
-    "startTime": "2022-08-21T22:00:00",
+    "home_team": "Real Sociedad",
+    "away_team": "FC Barcelona",
+    "start_time": "2022-08-21 22:00:00",
     "result": {
-      "homeTeamGoals": 1,
-      "awayTeamGoals": 4
+      "home_team_score": 1,
+      "away_team_score": 4
     },
-    "round": {
-      "roundName": "LaLiga round 2",
-      "startTime": "2022-02-19T21:00:00"
+    "tournament_round": {
+      "name": "LaLiga tournament_round 2",
+      "start_time": "2022-02-19 21:00:00"
     }
   }
 ]
