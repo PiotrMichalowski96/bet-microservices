@@ -2,8 +2,8 @@ package com.piter.match.api.service;
 
 import static java.util.function.Predicate.not;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchResult;
+import com.piter.api.commons.model.Match;
+import com.piter.api.commons.model.MatchResult;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;

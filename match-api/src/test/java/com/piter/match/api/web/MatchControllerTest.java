@@ -8,9 +8,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchResult;
-import com.piter.api.commons.domain.MatchRound;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.config.SecurityTestConfig;
 import com.piter.match.api.producer.MatchKafkaProducer;
@@ -41,7 +39,7 @@ import reactor.core.publisher.Mono;
 class MatchControllerTest {
 
   private static final String BET_ADMIN = "BET_ADMIN";
-  private static final List<Match> MATCHES = createMatchList();
+  private static final List<Match> PERSISTED_MATCHES = createMatchList();
 
   @MockBean
   private MatchRepository matchRepository;
@@ -64,13 +62,13 @@ class MatchControllerTest {
   }
 
   private void mockFindAll() {
-    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(MATCHES));
+    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(PERSISTED_MATCHES));
   }
 
   private void mockFindOrderedByRoundTime() {
     Comparator<Match> roundTimeComparator = Comparator.comparing(
         match -> match.round().startTime());
-    List<Match> matchesOrderedByRoundTime = MATCHES.stream()
+    List<Match> matchesOrderedByRoundTime = PERSISTED_MATCHES.stream()
         .sorted(roundTimeComparator.reversed())
         .toList();
     when(matchRepository.findAllByOrderByRoundStartTimeDesc()).thenReturn(
@@ -78,7 +76,7 @@ class MatchControllerTest {
   }
 
   private void mockFindOrderedByMatchTimeDesc() {
-    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
+    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
         .sorted(Comparator.comparing(Match::startTime).reversed())
         .toList();
     when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
@@ -86,7 +84,7 @@ class MatchControllerTest {
   }
 
   private void mockFindOrderedByMatchTimeAsc() {
-    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
+    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
         .sorted(Comparator.comparing(Match::startTime))
         .toList();
     when(matchRepository.findAllByOrderByStartTimeAsc()).thenReturn(
@@ -114,7 +112,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -130,7 +128,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches?order=match-time")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -147,7 +145,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches?order=round-time")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(3L);
@@ -164,7 +162,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches/upcoming?startTime=desc")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -179,7 +177,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches/upcoming?startTime=asc")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(2L);
           assertThat(matches.get(1).id()).isEqualTo(1L);
@@ -194,7 +192,7 @@ class MatchControllerTest {
         .uri("/api/v2/matches/ongoing")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(4L);
         });
@@ -215,7 +213,7 @@ class MatchControllerTest {
   }
 
   private void mockFindById(Long id) {
-    Match match = MATCHES.stream()
+    Match match = PERSISTED_MATCHES.stream()
         .filter(m -> Objects.equals(id, m.id()))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Match with this id does not exist"));
@@ -225,7 +223,7 @@ class MatchControllerTest {
   @Test
   @WithMockUser
   void shouldSaveMatch() {
-    var match = Match.builder()
+    var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
         .startTime(LocalDateTime.now())
@@ -240,7 +238,7 @@ class MatchControllerTest {
         .mutateWith(csrf())
         .post()
         .uri("/api/v2/matches")
-        .body(Mono.just(match), Match.class)
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isOk();
   }
@@ -267,25 +265,25 @@ class MatchControllerTest {
 
   @Test
   void shouldNotSaveBecauseMatchIsInvalid() {
-    var invalidMatch = Match.builder().build();
+    var invalidMatchRequest = MatchRequest.builder().build();
     webClient
         .mutateWith(mockBearerToken())
         .mutateWith(csrf())
         .post()
         .uri("/api/v2/matches")
-        .body(Mono.just(invalidMatch), Match.class)
+        .body(Mono.just(invalidMatchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isBadRequest();
   }
 
   @Test
   void shouldNotSaveBecauseUserIsNotAnAdmin() {
-    var match = Match.builder().build();
+    var matchRequest = MatchRequest.builder().build();
     webClient
         .mutateWith(csrf())
         .post()
         .uri("/api/v2/matches")
-        .body(Mono.just(match), Match.class)
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isUnauthorized();
   }
@@ -293,8 +291,7 @@ class MatchControllerTest {
   @Test
   void shouldUpdateMatch() {
     var id = 1L;
-    var match = Match.builder()
-        .id(id)
+    var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
         .startTime(LocalDateTime.now())
@@ -308,7 +305,7 @@ class MatchControllerTest {
         .mutateWith(csrf())
         .put()
         .uri("/api/v2/matches/" + id)
-        .body(Mono.just(match), Match.class)
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isOk();
   }
@@ -316,7 +313,7 @@ class MatchControllerTest {
   @Test
   void shouldNotUpdateMatchBecauseNotFound() {
     var nonExistingId = 12324L;
-    var match = Match.builder()
+    var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Girona")
         .startTime(LocalDateTime.now())
@@ -329,7 +326,7 @@ class MatchControllerTest {
         .mutateWith(csrf())
         .put()
         .uri("/api/v2/matches/" + nonExistingId)
-        .body(Mono.just(match), Match.class)
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isNotFound();
   }
@@ -341,7 +338,7 @@ class MatchControllerTest {
   @Test
   void shouldNotUpdateMatchBecauseInvalid() {
     var id = 1L;
-    var invalidMatch = Match.builder().build();
+    var invalidMatchRequest = MatchRequest.builder().build();
 
     mockFindById(id);
 
@@ -349,7 +346,7 @@ class MatchControllerTest {
         .mutateWith(csrf())
         .put()
         .uri("/api/v2/matches/" + id)
-        .body(Mono.just(invalidMatch), Match.class)
+        .body(Mono.just(invalidMatchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isBadRequest();
   }

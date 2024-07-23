@@ -3,9 +3,9 @@ package com.piter.match.api.consumer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchResult;
-import com.piter.api.commons.domain.MatchRound;
+import com.piter.api.commons.model.Match;
+import com.piter.api.commons.model.MatchResult;
+import com.piter.api.commons.model.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;

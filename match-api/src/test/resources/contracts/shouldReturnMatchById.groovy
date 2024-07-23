@@ -16,16 +16,16 @@ Contract.make {
         body("""
                 {
                     "id": 1,
-                    "homeTeam": "Argentina",
-                    "awayTeam": "France",
-                    "startTime": "2022-12-18T16:00:00",
+                    "home_team": "Argentina",
+                    "away_team": "France",
+                    "start_time": "2022-12-18 16:00:00",
                     "result": {
-                      "homeTeamGoals": 3,
-                      "awayTeamGoals": 3
+                      "home_team_goals": 3,
+                      "away_team_goals": 3
                     },
                     "round": {
-                      "roundName": "Final",
-                      "startTime": "2022-12-18T16:00:00"
+                      "round_name": "Final",
+                      "start_time": "2022-12-18 16:00:00"
                     }
                 }
                 """)

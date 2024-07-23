@@ -1,6 +1,6 @@
 package com.piter.match.api.consumer;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.exception.MatchKafkaException;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.Duration;

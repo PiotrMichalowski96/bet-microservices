@@ -3,7 +3,7 @@ package com.piter.match.api.service;
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-import com.piter.api.commons.domain.DatabaseSequence;
+import com.piter.api.commons.model.DatabaseSequence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Query;

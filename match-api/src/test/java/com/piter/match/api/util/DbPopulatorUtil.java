@@ -1,6 +1,6 @@
 package com.piter.match.api.util;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.repository.MatchRepository;
 import java.util.List;
 import lombok.experimental.UtilityClass;

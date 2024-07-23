@@ -1,7 +1,6 @@
 package com.piter.match.api.web;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchResult;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,79 +59,89 @@ class MatchController {
   @Operation(summary = "Find all matches ordered")
   @ApiResponse(responseCode = "200", description = "successful found match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches")
-  Flux<Match> findAll(
+  Flux<MatchResponse> findAll(
       @Parameter(in = ParameterIn.QUERY, name = "order", example = "match-time, round-time")
       @RequestParam Optional<String> order) {
 
     return order.map(findAllMapSuppliers::get)
         .map(Supplier::get)
-        .orElse(matchService.findAll());
+        .orElse(matchService.findAll())
+        .map(MatchResponse::of);
   }
 
   @Operation(summary = "Find all not started matches")
   @ApiResponse(responseCode = "200", description = "successful found upcoming match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches/upcoming")
-  Flux<Match> findUpcoming(
+  Flux<MatchResponse> findUpcoming(
       @Parameter(in = ParameterIn.QUERY, name = "startTime", example = "desc, asc")
       @RequestParam Optional<String> startTime) {
 
     return startTime.map(findUpcomingMapSuppliers::get)
         .map(Supplier::get)
-        .orElse(matchService.findAllUpcomingOrderByStartTimeAsc());
+        .orElse(matchService.findAllUpcomingOrderByStartTimeAsc())
+        .map(MatchResponse::of);
   }
 
   @Operation(summary = "Find all matches that have been started but not finished yet")
   @ApiResponse(responseCode = "200", description = "successful found ongoing match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches/ongoing")
-  Flux<Match> findOngoing() {
-    return matchService.findAllOngoing();
+  Flux<MatchResponse> findOngoing() {
+    return matchService.findAllOngoing()
+        .map(MatchResponse::of);
   }
 
   @Operation(summary = "Find match by id")
   @ApiResponse(responseCode = "200", description = "successful found match by id", content = @Content(schema = @Schema(implementation = Match.class)))
   @ApiResponse(responseCode = "404", description = "match not found")
   @GetMapping("/matches/{id}")
-  Mono<Match> findById(
+  Mono<MatchResponse> findById(
       @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
       @PathVariable Long id) {
 
-    return matchService.findById(id);
+    return matchService.findById(id)
+        .map(MatchResponse::of);
   }
 
   @Operation(summary = "Create new match")
   @ApiResponse(responseCode = "200", description = "ID of match to create", content = @Content(schema = @Schema(implementation = Long.class)))
   @PostMapping("/matches")
-  Mono<Long> save(@RequestBody Match match) {
-    return Mono.just(match)
+  Mono<MatchIdResponse> save(@RequestBody MatchRequest matchRequest) {
+    return Mono.just(matchRequest)
         .doOnNext(m -> validate("match", m))
+        .map(MatchRequest::toMatch)
         .flatMap(matchService::saveMatch)
-        .map(Match::id);
+        .map(Match::id)
+        .map(MatchIdResponse::new);
   }
 
   @Operation(summary = "Update match")
   @ApiResponse(responseCode = "200", description = "ID of match to updated", content = @Content(schema = @Schema(implementation = Long.class)))
   @PutMapping("/matches/{id}")
-  Mono<Long> update(
+  Mono<MatchIdResponse> update(
       @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
       @PathVariable Long id,
-      @RequestBody Match match) {
-    return Mono.just(match)
+      @RequestBody MatchRequest matchRequest) {
+    return Mono.just(matchRequest)
         .doOnNext(m -> validate("match", m))
+        .map(MatchRequest::toMatch)
         .flatMap(m -> matchService.updateMatch(id, m))
-        .map(Match::id);
+        .map(Match::id)
+        .map(MatchIdResponse::new);
   }
 
   @Operation(summary = "Update match result")
   @ApiResponse(responseCode = "200", description = "ID of match to update result", content = @Content(schema = @Schema(implementation = Long.class)))
   @PatchMapping("/matches/{id}")
-  Mono<Long> updateResult(
+  Mono<MatchIdResponse> updateResult(
       @Parameter(in = ParameterIn.PATH, name = "id", example = "1")
       @PathVariable Long id,
       @RequestBody MatchResult matchResult) {
     return Mono.just(matchResult)
         .doOnNext(result -> validate("matchResult", result))
-        .flatMap(result -> matchService.updateMatchResult(id, matchResult))
-        .map(Match::id);
+        .map(MatchResult::toMatchResult)
+        .flatMap(result -> matchService.updateMatchResult(id, result))
+        .map(Match::id)
+        .map(MatchIdResponse::new);
   }
 
   @Operation(summary = "Delete match")

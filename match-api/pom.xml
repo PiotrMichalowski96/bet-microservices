@@ -27,7 +27,7 @@
     <cucumber.version>7.18.0</cucumber.version>
     <rest-assured.version>5.4.0</rest-assured.version>
     <awaitility.version>4.2.1</awaitility.version>
-    <bet.commons.version>0.0.8-SNAPSHOT</bet.commons.version>
+    <bet.commons.version>0.0.9-SNAPSHOT</bet.commons.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
     <sonar.projectKey>piotrmichalowski96_match-api</sonar.projectKey>

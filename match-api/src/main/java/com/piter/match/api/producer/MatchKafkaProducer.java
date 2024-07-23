@@ -1,6 +1,6 @@
 package com.piter.match.api.producer;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import com.piter.api.commons.producer.KafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
 package com.piter.match.api.repository;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 

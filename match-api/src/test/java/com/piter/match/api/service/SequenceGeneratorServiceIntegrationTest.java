@@ -2,7 +2,7 @@ package com.piter.match.api.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
