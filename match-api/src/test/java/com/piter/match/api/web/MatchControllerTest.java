@@ -8,17 +8,19 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchRound;
+import com.piter.api.commons.event.MatchEvent;
+import com.piter.api.commons.model.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.config.SecurityTestConfig;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
+import com.piter.match.api.service.SequenceGeneratorService;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -39,16 +40,16 @@ import reactor.core.publisher.Mono;
 class MatchControllerTest {
 
   private static final String BET_ADMIN = "BET_ADMIN";
-  private static final List<Match> MATCHES = createMatchList();
-
-  @MockBean
-  private ReactiveMongoOperations reactiveMongoOperations;
+  private static final List<Match> PERSISTED_MATCHES = createMatchList();
 
   @MockBean
   private MatchRepository matchRepository;
 
   @MockBean
   private MatchKafkaProducer matchKafkaProducer;
+
+  @MockBean
+  private SequenceGeneratorService sequenceGeneratorService;
 
   @Autowired
   private WebTestClient webClient;
@@ -62,13 +63,13 @@ class MatchControllerTest {
   }
 
   private void mockFindAll() {
-    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(MATCHES));
+    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(PERSISTED_MATCHES));
   }
 
   private void mockFindOrderedByRoundTime() {
     Comparator<Match> roundTimeComparator = Comparator.comparing(
         match -> match.round().startTime());
-    List<Match> matchesOrderedByRoundTime = MATCHES.stream()
+    List<Match> matchesOrderedByRoundTime = PERSISTED_MATCHES.stream()
         .sorted(roundTimeComparator.reversed())
         .toList();
     when(matchRepository.findAllByOrderByRoundStartTimeDesc()).thenReturn(
@@ -76,7 +77,7 @@ class MatchControllerTest {
   }
 
   private void mockFindOrderedByMatchTimeDesc() {
-    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
+    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
         .sorted(Comparator.comparing(Match::startTime).reversed())
         .toList();
     when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
@@ -84,7 +85,7 @@ class MatchControllerTest {
   }
 
   private void mockFindOrderedByMatchTimeAsc() {
-    List<Match> matchesOrderedByMatchTime = MATCHES.stream()
+    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
         .sorted(Comparator.comparing(Match::startTime))
         .toList();
     when(matchRepository.findAllByOrderByStartTimeAsc()).thenReturn(
@@ -98,7 +99,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser())
         .delete()
-        .uri("/matches/1")
+        .uri("/api/v2/matches/1")
         .exchange()
         .expectStatus().isForbidden();
   }
@@ -109,10 +110,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches")
+        .uri("/api/v2/matches")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -125,10 +126,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches?order=match-time")
+        .uri("/api/v2/matches?order=match-time")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -142,10 +143,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches?order=round-time")
+        .uri("/api/v2/matches?order=round-time")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(3L);
@@ -159,10 +160,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/upcoming?startTime=desc")
+        .uri("/api/v2/matches/upcoming?startTime=desc")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
@@ -174,10 +175,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/upcoming?startTime=asc")
+        .uri("/api/v2/matches/upcoming?startTime=asc")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(2L);
           assertThat(matches.get(1).id()).isEqualTo(1L);
@@ -189,10 +190,10 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/ongoing")
+        .uri("/api/v2/matches/ongoing")
         .exchange()
         .expectStatus().isOk()
-        .expectBodyList(Match.class)
+        .expectBodyList(MatchResponse.class)
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(4L);
         });
@@ -205,7 +206,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/matches/" + id)
+        .uri("/api/v2/matches/" + id)
         .exchange()
         .expectStatus().isOk()
         .expectBody(Match.class)
@@ -213,7 +214,7 @@ class MatchControllerTest {
   }
 
   private void mockFindById(Long id) {
-    Match match = MATCHES.stream()
+    Match match = PERSISTED_MATCHES.stream()
         .filter(m -> Objects.equals(id, m.id()))
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Match with this id does not exist"));
@@ -223,28 +224,35 @@ class MatchControllerTest {
   @Test
   @WithMockUser
   void shouldSaveMatch() {
-    var match = Match.builder()
-        .id(9876L)
+    var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.of(2022, 10, 23, 21, 0, 0))
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.of(2022, 10, 22, 14, 0, 0)))
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
         .build();
 
-    mockSavingMatchEventByProducer(match);
+    mockSequenceGeneratorServiceCreateId();
+    mockSavingMatchEventByProducer();
 
     webClient
         .mutateWith(mockBearerToken())
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
-        .body(Mono.just(match), Match.class)
+        .uri("/api/v2/matches")
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isOk();
   }
 
-  private void mockSavingMatchEventByProducer(Match match) {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenReturn(match);
+  private void mockSequenceGeneratorServiceCreateId() {
+    var randomId = new Random().nextLong();
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
+        Mono.just(randomId));
+  }
+
+  private void mockSavingMatchEventByProducer() {
+    when(matchKafkaProducer.sendSaveMatchEvent(any(MatchEvent.class))).thenAnswer(
+        answer -> answer.getArgument(0, MatchEvent.class));
   }
 
   private WebTestClientConfigurer mockBearerToken() {
@@ -259,26 +267,138 @@ class MatchControllerTest {
 
   @Test
   void shouldNotSaveBecauseMatchIsInvalid() {
-    var invalidMatch = Match.builder().build();
+    var invalidMatchRequest = MatchRequest.builder().build();
     webClient
         .mutateWith(mockBearerToken())
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
-        .body(Mono.just(invalidMatch), Match.class)
+        .uri("/api/v2/matches")
+        .body(Mono.just(invalidMatchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isBadRequest();
   }
 
   @Test
   void shouldNotSaveBecauseUserIsNotAnAdmin() {
-    var match = Match.builder().build();
+    var matchRequest = MatchRequest.builder().build();
     webClient
         .mutateWith(csrf())
         .post()
-        .uri("/matches")
-        .body(Mono.just(match), Match.class)
+        .uri("/api/v2/matches")
+        .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isUnauthorized();
+  }
+
+  @Test
+  void shouldUpdateMatch() {
+    var id = 1L;
+    var matchRequest = MatchRequest.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Athletic Bilbao")
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .build();
+
+    mockFindById(id);
+    mockSavingMatchEventByProducer();
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(matchRequest), MatchRequest.class)
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  @Test
+  void shouldNotUpdateMatchBecauseNotFound() {
+    var nonExistingId = 12324L;
+    var matchRequest = MatchRequest.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Girona")
+        .startTime(LocalDateTime.now())
+        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .build();
+
+    mockNotFoundById(nonExistingId);
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + nonExistingId)
+        .body(Mono.just(matchRequest), MatchRequest.class)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
+
+  private void mockNotFoundById(long nonExistingId) {
+    when(matchRepository.findById(nonExistingId)).thenReturn(Mono.empty());
+  }
+
+  @Test
+  void shouldNotUpdateMatchBecauseInvalid() {
+    var id = 1L;
+    var invalidMatchRequest = MatchRequest.builder().build();
+
+    mockFindById(id);
+
+    webClient
+        .mutateWith(csrf())
+        .put()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(invalidMatchRequest), MatchRequest.class)
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  void shouldUpdateMatchResult() {
+    var id = 1L;
+    var matchResult = new MatchResult(2, 1);
+
+    mockFindById(id);
+    mockSavingMatchEventByProducer();
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(matchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  @Test
+  void shouldNotUpdateMatchResultBecauseNotFound() {
+    var nonExistingId = 12324L;
+    var matchResult = new MatchResult(2, 1);
+
+    mockNotFoundById(nonExistingId);
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + nonExistingId)
+        .body(Mono.just(matchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isNotFound();
+  }
+
+  @Test
+  void shouldNotUpdateMatchResultBecauseIsInvalid() {
+    var id = 1L;
+    var invalidMatchResult = new MatchResult(-1, 1);
+
+    mockFindById(id);
+
+    webClient
+        .mutateWith(csrf())
+        .patch()
+        .uri("/api/v2/matches/" + id)
+        .body(Mono.just(invalidMatchResult), MatchResult.class)
+        .exchange()
+        .expectStatus().isBadRequest();
   }
 }

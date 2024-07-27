@@ -1,4 +1,4 @@
-package com.piter.api.commons.domain;
+package com.piter.api.commons.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

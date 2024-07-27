@@ -3,9 +3,12 @@ package com.piter.match.api.consumer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.api.commons.domain.Match;
-import com.piter.api.commons.domain.MatchResult;
-import com.piter.api.commons.domain.MatchRound;
+import com.piter.api.commons.event.MatchEvent;
+import com.piter.api.commons.event.MatchScore;
+import com.piter.api.commons.event.TournamentRound;
+import com.piter.api.commons.model.Match;
+import com.piter.api.commons.model.MatchResult;
+import com.piter.api.commons.model.MatchRound;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
@@ -42,7 +45,7 @@ class MatchKafkaConsumerIntegrationTest {
   private MatchRepository matchRepository;
 
   @Test
-  void shouldSaveMatch() {
+  void shouldUpsertMatch() {
     //given
     var id = 99L;
     var match = Match.builder()
@@ -56,16 +59,18 @@ class MatchKafkaConsumerIntegrationTest {
 
     matchRepository.save(match).block();
 
-    var updatedMatch = Match.builder()
+    var updatedMatchResult = new MatchScore(4, 2);
+
+    var updatedMatchEvent = MatchEvent.builder()
         .id(match.id())
         .homeTeam(match.homeTeam())
         .awayTeam(match.awayTeam())
         .startTime(match.startTime())
-        .result(new MatchResult(4, 2))
-        .round(match.round())
+        .result(updatedMatchResult)
+        .tournamentRound(new TournamentRound(match.round().roundName(), match.round().startTime()))
         .build();
 
-    var updatedMatchMessage = MessageBuilder.withPayload(updatedMatch)
+    var updatedMatchMessage = MessageBuilder.withPayload(updatedMatchEvent)
         .setHeader(KafkaHeaders.RECEIVED_KEY, id)
         .build();
 
@@ -73,7 +78,7 @@ class MatchKafkaConsumerIntegrationTest {
     matchKafkaConsumer.matches().accept(updatedMatchMessage);
 
     //then
-    assertAsync(() -> assertSavedMatchById(updatedMatch));
+    assertAsync(() -> assertMatchResultIsUpdated(id, updatedMatchResult));
   }
 
   private void assertAsync(ThrowingRunnable assertion) {
@@ -83,8 +88,10 @@ class MatchKafkaConsumerIntegrationTest {
         .untilAsserted(assertion);
   }
 
-  private void assertSavedMatchById(Match expectedMatch) {
-    var savedMatch = matchRepository.findById(expectedMatch.id()).block();
-    assertThat(savedMatch).isEqualTo(expectedMatch);
+  private void assertMatchResultIsUpdated(Long id, MatchScore expectedMatchResult) {
+    var matchResult = new MatchResult(expectedMatchResult.homeTeamScore(), expectedMatchResult.awayTeamScore());
+    var savedMatch = matchRepository.findById(id).block();
+    assertThat(savedMatch).isNotNull();
+    assertThat(savedMatch.result()).isEqualTo(matchResult);
   }
 }

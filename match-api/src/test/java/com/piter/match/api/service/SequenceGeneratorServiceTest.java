@@ -5,8 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import com.piter.api.commons.domain.DatabaseSequence;
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.DatabaseSequence;
+import com.piter.api.commons.model.Match;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -2,7 +2,9 @@ package com.piter.match.api.service;
 
 import static java.util.function.Predicate.not;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
+import com.piter.api.commons.model.Match;
+import com.piter.api.commons.model.MatchResult;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
@@ -67,12 +69,9 @@ public class MatchService {
   }
 
   public Mono<Match> saveMatch(Match match) {
-    if (match.id() != null) {
-      return Mono.just(matchProducer.sendSaveMatchEvent(match));
-    }
     return sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)
         .map(id -> mapToMatchWithId(match, id))
-        .map(matchProducer::sendSaveMatchEvent);
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
   }
 
   private Match mapToMatchWithId(Match match, Long id) {
@@ -86,11 +85,36 @@ public class MatchService {
         .build();
   }
 
+  public Mono<Match> updateMatch(Long id, Match match) {
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .map(existingMatch -> mapToMatchWithId(match, existingMatch.id()))
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
+  }
+
+  public Mono<Match> updateMatchResult(Long id, MatchResult matchResult) {
+    return matchRepository.findById(id)
+        .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
+        .map(m -> mapToMatchWithResult(m, matchResult))
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
+  }
+
+  private Match mapToMatchWithResult(Match match, MatchResult matchResult) {
+    return Match.builder()
+        .id(match.id())
+        .homeTeam(match.homeTeam())
+        .awayTeam(match.awayTeam())
+        .startTime(match.startTime())
+        .result(matchResult)
+        .round(match.round())
+        .build();
+  }
+
   public Mono<Void> deleteMatch(Long id) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
         .flatMap(match -> {
-          matchProducer.sendDeleteMatchEvent(match);
+          matchProducer.sendDeleteMatchEvent(MatchEvent.of(match));
           return Mono.empty();
         });
   }

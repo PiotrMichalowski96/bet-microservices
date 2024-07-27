@@ -1,6 +1,6 @@
 package com.piter.match.api.contract;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.model.Match;
 import com.piter.api.commons.util.JsonUtil;
 import com.piter.match.api.repository.MatchRepository;
 import com.piter.match.api.util.DbPopulatorUtil;

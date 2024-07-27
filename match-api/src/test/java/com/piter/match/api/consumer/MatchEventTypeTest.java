@@ -2,7 +2,7 @@ package com.piter.match.api.consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,14 +25,14 @@ class MatchEventTypeTest {
   }
 
   private static Stream<Arguments> provideMessagesAndEvents() {
-    Message<?> matchMessage = MessageBuilder.withPayload(Match.builder().build())
+    Message<?> matchMessage = MessageBuilder.withPayload(MatchEvent.builder().build())
         .build();
 
     Message<?> tombstoneMessage = MessageBuilder.withPayload(KafkaNull.INSTANCE)
         .build();
 
     return Stream.of(
-        Arguments.of(matchMessage, MatchEventType.SAVE),
+        Arguments.of(matchMessage, MatchEventType.UPSERT),
         Arguments.of(tombstoneMessage, MatchEventType.DELETE)
     );
   }

@@ -1,6 +1,6 @@
 package com.piter.match.api.producer;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.producer.KafkaMessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,14 +16,14 @@ public class MatchKafkaProducer extends KafkaMessageProducer {
     super(producerBinding, streamBridge);
   }
 
-  public Match sendSaveMatchEvent(Match match) {
-    sendEvent(match::id, match);
-    logger.debug("Sent match to save: {}", match);
-    return match;
+  public MatchEvent sendSaveMatchEvent(MatchEvent matchEvent) {
+    sendEvent(matchEvent::id, matchEvent);
+    logger.debug("Sent match to save: {}", matchEvent);
+    return matchEvent;
   }
 
-  public void sendDeleteMatchEvent(Match match) {
-    sendEvent(match::id, KafkaNull.INSTANCE);
-    logger.debug("Sent match to delete: {}", match);
+  public void sendDeleteMatchEvent(MatchEvent matchEvent) {
+    sendEvent(matchEvent::id, KafkaNull.INSTANCE);
+    logger.debug("Sent match to delete: {}", matchEvent);
   }
 }

@@ -1,8 +1,5 @@
-package com.piter.api.commons.domain;
+package com.piter.api.commons.model;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
@@ -14,16 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Match(
     @Id
     Long id,
-    @NotBlank
     String homeTeam,
-    @NotBlank
     String awayTeam,
-    @NotNull
     LocalDateTime startTime,
-    @Valid
     MatchResult result,
-    @NotNull
-    @Valid
     MatchRound round
 ) {
 

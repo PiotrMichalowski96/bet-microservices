@@ -1,6 +1,6 @@
 package com.piter.match.api.consumer;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.match.api.exception.MatchKafkaException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -13,7 +13,7 @@ import org.springframework.messaging.Message;
 @RequiredArgsConstructor
 enum MatchEventType {
 
-  SAVE(message -> hasPayloadType(message, Match.class)),
+  UPSERT(message -> hasPayloadType(message, MatchEvent.class)),
   // kafka convention takes record with null value (tombstone record) as delete operation
   // see (https://www.linkedin.com/pulse/tombstone-record-kafka-under-hood-sumon-mal/)
   DELETE(message -> hasPayloadType(message, KafkaNull.class)),;

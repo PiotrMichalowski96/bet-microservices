@@ -2,7 +2,7 @@ package com.piter.api.commons.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +16,7 @@ class JsonUtilTest {
     var jsonPath = "src/test/resources/samples/single.json";
 
     //when
-    Match match = JsonUtil.readJsonFile(jsonPath, Match.class);
+    MatchEvent match = JsonUtil.readJsonFile(jsonPath, MatchEvent.class);
 
     //then
     assertThat(match).isNotNull();
@@ -28,7 +28,7 @@ class JsonUtilTest {
     var jsonArrayPath = "src/test/resources/samples/array.json";
 
     //when
-    List<Match> matches = JsonUtil.readJsonArrayFile(jsonArrayPath, Match.class);
+    List<MatchEvent> matches = JsonUtil.readJsonArrayFile(jsonArrayPath, MatchEvent.class);
 
     //then
     assertThat(matches)

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import com.piter.api.commons.domain.Match;
+import com.piter.api.commons.event.MatchEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ class MatchKafkaProducerTest {
   private StreamBridge streamBridge;
 
   @Captor
-  private ArgumentCaptor<Message<Match>> messageCaptor;
+  private ArgumentCaptor<Message<MatchEvent>> messageCaptor;
 
   private MatchKafkaProducer matchKafkaProducer;
 
@@ -40,7 +40,7 @@ class MatchKafkaProducerTest {
   void shouldSendSaveMatchEvent() {
     //given
     var matchId = 1L;
-    var match = Match.builder()
+    var match = MatchEvent.builder()
         .id(matchId)
         .build();
 
@@ -60,7 +60,7 @@ class MatchKafkaProducerTest {
   void shouldSendDeleteMatchEvent() {
     //given
     var matchId = 1L;
-    var match = Match.builder()
+    var match = MatchEvent.builder()
         .id(matchId)
         .build();
 
@@ -79,7 +79,7 @@ class MatchKafkaProducerTest {
   private void assertMessageWasSent(Message<?> expectedMessage) {
     verify(streamBridge).send(eq(PRODUCER_BINDING), messageCaptor.capture());
 
-    Message<Match> actualMessage = messageCaptor.getValue();
+    Message<MatchEvent> actualMessage = messageCaptor.getValue();
     assertThat(actualMessage).usingRecursiveComparison()
         .ignoringFields("headers.id", "headers.timestamp") //kafka key is only important header to check
         .isEqualTo(expectedMessage);

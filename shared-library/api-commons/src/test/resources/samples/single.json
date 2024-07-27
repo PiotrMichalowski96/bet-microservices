@@ -1,14 +1,14 @@
 {
   "id": 1,
-  "homeTeam": "Real Madrid",
-  "awayTeam": "FC Barcelona",
-  "startTime": "2022-08-07T21:00:00",
+  "home_team": "Real Madrid",
+  "away_team": "FC Barcelona",
+  "start_time": "2022-08-07 21:00:00",
   "result": {
-    "homeTeamGoals": 0,
-    "awayTeamGoals": 4
+    "home_team_score": 0,
+    "away_team_score": 4
   },
-  "round": {
-    "roundName": "LaLiga round 1",
-    "startTime": "2022-02-06T21:00:00"
+  "tournament_round": {
+    "name": "LaLiga round 1",
+    "start_time": "2022-02-06 21:00:00"
   }
 }

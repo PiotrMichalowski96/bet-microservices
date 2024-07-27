@@ -5,7 +5,7 @@ Contract.make {
 
     request {
         method GET()
-        url("/matches")
+        url("/api/v2/matches")
     }
 
     response {
@@ -17,44 +17,44 @@ Contract.make {
                     [
                       {
                         "id": 1,
-                        "homeTeam": "Argentina",
-                        "awayTeam": "France",
-                        "startTime": "2022-12-18T16:00:00",
+                        "home_team": "Argentina",
+                        "away_team": "France",
+                        "start_time": "2022-12-18 16:00:00",
                         "result": {
-                          "homeTeamGoals": 3,
-                          "awayTeamGoals": 3
+                          "home_team_goals": 3,
+                          "away_team_goals": 3
                         },
                         "round": {
-                          "roundName": "Final",
-                          "startTime": "2022-12-18T16:00:00"
+                          "round_name": "Final",
+                          "start_time": "2022-12-18 16:00:00"
                         }
                       },
                       {
                         "id": 2,
-                        "homeTeam": "Argentina",
-                        "awayTeam": "Croatia",
-                        "startTime": "2022-12-13T20:00:00",
+                        "home_team": "Argentina",
+                        "away_team": "Croatia",
+                        "start_time": "2022-12-13 20:00:00",
                         "result": {
-                          "homeTeamGoals": 3,
-                          "awayTeamGoals": 0
+                          "home_team_goals": 3,
+                          "away_team_goals": 0
                         },
                         "round": {
-                          "roundName": "Semi-finals",
-                          "startTime": "2022-12-13T20:00:00"
+                          "round_name": "Semi-finals",
+                          "start_time": "2022-12-13 20:00:00"
                         }
                       },
                       {
                         "id": 3,
-                        "homeTeam": "Marocco",
-                        "awayTeam": "France",
-                        "startTime": "2022-12-14T20:00:00",
+                        "home_team": "Marocco",
+                        "away_team": "France",
+                        "start_time": "2022-12-14 20:00:00",
                         "result": {
-                          "homeTeamGoals": 2,
-                          "awayTeamGoals": 0
+                          "home_team_goals": 2,
+                          "away_team_goals": 0
                         },
                         "round": {
-                          "roundName": "Semi-finals",
-                          "startTime": "2022-12-13T20:00:00"
+                          "round_name": "Semi-finals",
+                          "start_time": "2022-12-13 20:00:00"
                         }
                       }
                     ]
