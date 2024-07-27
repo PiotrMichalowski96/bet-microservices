@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.model.Match;
 import com.piter.match.api.repository.MatchRepository;
 import org.junit.jupiter.api.Test;
@@ -35,12 +36,14 @@ class MatchKafkaConsumerTest {
   @Test
   void shouldUpsertMatch() {
     //given
-    var match = Match.builder()
+    var matchEvent = MatchEvent.builder()
         .id(123L)
         .build();
 
+    Match match = matchEvent.toMatch();
+
     var matchMessage = MessageBuilder
-        .withPayload(match)
+        .withPayload(matchEvent)
         .build();
 
     mockSave(match);

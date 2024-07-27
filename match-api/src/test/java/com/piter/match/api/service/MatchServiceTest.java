@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.model.Match;
 import com.piter.api.commons.model.MatchResult;
 import com.piter.api.commons.model.MatchRound;
@@ -155,8 +156,8 @@ class MatchServiceTest {
   }
 
   private void mockMatchKafkaProducerSavingInDatabase() {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenAnswer(
-        answer -> answer.getArgument(0, Match.class));
+    when(matchKafkaProducer.sendSaveMatchEvent(any(MatchEvent.class))).thenAnswer(
+        answer -> answer.getArgument(0, MatchEvent.class));
   }
 
   @Test

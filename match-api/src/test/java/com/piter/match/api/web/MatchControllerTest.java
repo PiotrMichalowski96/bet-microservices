@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockOpaqueToken;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.model.Match;
 import com.piter.match.api.config.MatchApiTestConfig;
 import com.piter.match.api.config.SecurityTestConfig;
@@ -250,8 +251,9 @@ class MatchControllerTest {
   }
 
   private void mockSavingMatchEventByProducer() {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(Match.class))).thenAnswer(
-        answer -> answer.getArgument(0, Match.class));  }
+    when(matchKafkaProducer.sendSaveMatchEvent(any(MatchEvent.class))).thenAnswer(
+        answer -> answer.getArgument(0, MatchEvent.class));
+  }
 
   private WebTestClientConfigurer mockBearerToken() {
     Consumer<Map<String, Object>> attributesConsumer = attributes -> {

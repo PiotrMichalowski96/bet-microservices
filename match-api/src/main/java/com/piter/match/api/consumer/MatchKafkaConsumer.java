@@ -1,6 +1,6 @@
 package com.piter.match.api.consumer;
 
-import com.piter.api.commons.model.Match;
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.match.api.exception.MatchKafkaException;
 import com.piter.match.api.repository.MatchRepository;
 import java.time.Duration;
@@ -31,7 +31,7 @@ public class MatchKafkaConsumer {
   }
 
   @Bean
-  public Consumer<Message<Match>> matches() {
+  public Consumer<Message<MatchEvent>> matches() {
     return matchMessage -> {
       MatchEventType matchEventType = MatchEventType.getEventType(matchMessage);
       eventTypeProcessor.get(matchEventType).accept(matchMessage);
@@ -40,15 +40,15 @@ public class MatchKafkaConsumer {
 
   private void upsertMatch(Message<?> matchMessage) {
     logReceivedMessage(matchMessage);
-    Match match = (Match) matchMessage.getPayload();
-    matchRepository.save(match).block(DB_TIMEOUT); //block is used to ensure saving order
+    MatchEvent matchEvent = (MatchEvent) matchMessage.getPayload();
+    matchRepository.save(matchEvent.toMatch()).block(DB_TIMEOUT); //block is used to ensure saving order
   }
 
   private void logReceivedMessage(Message<?> matchMessage) {
     Optional.ofNullable(matchMessage.getHeaders().get(KafkaHeaders.RECEIVED_KEY, Long.class))
         .ifPresent(key -> {
-          Match match = (Match) matchMessage.getPayload();
-          logger.debug("Received match to save. Key: {} match: {}", key, match);
+          MatchEvent matchEvent = (MatchEvent) matchMessage.getPayload();
+          logger.debug("Received match to save. Key: {} match: {}", key, matchEvent);
         });
   }
 

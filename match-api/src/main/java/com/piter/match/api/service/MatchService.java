@@ -2,6 +2,7 @@ package com.piter.match.api.service;
 
 import static java.util.function.Predicate.not;
 
+import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.model.Match;
 import com.piter.api.commons.model.MatchResult;
 import com.piter.match.api.exception.MatchNotFoundException;
@@ -70,7 +71,7 @@ public class MatchService {
   public Mono<Match> saveMatch(Match match) {
     return sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)
         .map(id -> mapToMatchWithId(match, id))
-        .map(matchProducer::sendSaveMatchEvent);
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
   }
 
   private Match mapToMatchWithId(Match match, Long id) {
@@ -88,14 +89,14 @@ public class MatchService {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
         .map(existingMatch -> mapToMatchWithId(match, existingMatch.id()))
-        .map(matchProducer::sendSaveMatchEvent);
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
   }
 
   public Mono<Match> updateMatchResult(Long id, MatchResult matchResult) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
-        .map(match -> mapToMatchWithResult(match, matchResult))
-        .map(matchProducer::sendSaveMatchEvent);
+        .map(m -> mapToMatchWithResult(m, matchResult))
+        .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
   }
 
   private Match mapToMatchWithResult(Match match, MatchResult matchResult) {
@@ -113,7 +114,7 @@ public class MatchService {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
         .flatMap(match -> {
-          matchProducer.sendDeleteMatchEvent(match);
+          matchProducer.sendDeleteMatchEvent(MatchEvent.of(match));
           return Mono.empty();
         });
   }
