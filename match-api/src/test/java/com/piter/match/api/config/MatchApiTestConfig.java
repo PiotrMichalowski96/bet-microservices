@@ -17,7 +17,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.validation.Validator;
 
 @TestConfiguration
-@Import({MatchKafkaConsumer.class,
+@Import({
+    CacheConfig.class,
+    MatchKafkaConsumer.class,
     MatchService.class,
     SequenceGeneratorService.class
 })

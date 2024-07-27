@@ -27,6 +27,7 @@
     <cucumber.version>7.18.0</cucumber.version>
     <rest-assured.version>5.4.0</rest-assured.version>
     <awaitility.version>4.2.1</awaitility.version>
+    <cache-caffeine.version>3.1.8</cache-caffeine.version>
     <bet.commons.version>0.0.9-SNAPSHOT</bet.commons.version>
     <docker.image.prefix>pmich96</docker.image.prefix>
     <docker.image.name>${project.artifactId}</docker.image.name>
@@ -87,6 +88,11 @@
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-webflux-ui</artifactId>
       <version>${spring-doc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>${cache-caffeine.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
