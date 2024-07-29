@@ -22,7 +22,7 @@ spring.cloud.stream.kafka.bindings:
 match.producer.binding: matches-out-0
 
 cache:
-  expiry-in-hours: 2
+  expiry-in-hours: 8
 
 ########################
 # Actuator

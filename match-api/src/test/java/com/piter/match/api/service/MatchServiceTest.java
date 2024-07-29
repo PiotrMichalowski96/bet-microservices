@@ -2,6 +2,7 @@ package com.piter.match.api.service;
 
 import static com.piter.match.api.util.MatchTestData.createMatchList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -47,6 +49,9 @@ class MatchServiceTest {
 
   @Autowired
   private MatchService matchService;
+
+  @Autowired
+  private CacheManager cacheManager;
 
   @MockBean
   private MatchKafkaProducer matchKafkaProducer;
@@ -259,5 +264,51 @@ class MatchServiceTest {
     StepVerifier.create(voidMono)
         .expectError(MatchNotFoundException.class)
         .verify();
+  }
+
+  @Test
+  void shouldCacheMatchById() {
+    //given
+    var id = 1L;
+
+    //when
+    Mono<Match> matchMono = matchService.findById(id);
+
+    //then
+    StepVerifier.create(matchMono)
+        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
+        .verifyComplete();
+    assertThat(cacheManager.getCache("matches")).isNotNull();
+    assertThat(cacheManager.getCache("matches").get(id)).isNotNull();
+  }
+
+  @Test
+  void shouldRemoveCacheAfterUpdate() {
+    //given
+    var id = 1L;
+    assumeMatchIsCached(id);
+
+    var matchToUpdate = Match.builder()
+        .homeTeam("FC Barcelona")
+        .awayTeam("Girona")
+        .startTime(LocalDateTime.now())
+        .build();
+
+    mockMatchKafkaProducerSavingInDatabase();
+
+    //when
+    Mono<Match> matchMono = matchService.updateMatch(id, matchToUpdate);
+
+    //then
+    StepVerifier.create(matchMono)
+        .assertNext(match -> assertThat(match.id()).isEqualTo(id))
+        .verifyComplete();
+    assertThat(cacheManager.getCache("matches")).isNotNull();
+    assertThat(cacheManager.getCache("matches").get(id)).isNull();
+  }
+
+  private void assumeMatchIsCached(long id) {
+    matchService.findById(id).block();
+    assumeThat(cacheManager.getCache("matches").get(id)).isNotNull();
   }
 }

@@ -11,6 +11,8 @@ import com.piter.match.api.repository.MatchRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,6 +64,7 @@ public class MatchService {
         .isEmpty();
   }
 
+  @Cacheable(value = "matches", key = "#id")
   public Mono<Match> findById(Long id) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
@@ -85,6 +88,7 @@ public class MatchService {
         .build();
   }
 
+  @CacheEvict(value = "matches", key = "#id")
   public Mono<Match> updateMatch(Long id, Match match) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
@@ -92,6 +96,7 @@ public class MatchService {
         .map(m -> matchProducer.sendSaveMatchEvent(MatchEvent.of(m)).toMatch());
   }
 
+  @CacheEvict(value = "matches", key = "#id")
   public Mono<Match> updateMatchResult(Long id, MatchResult matchResult) {
     return matchRepository.findById(id)
         .switchIfEmpty(Mono.error(new MatchNotFoundException(id)))
