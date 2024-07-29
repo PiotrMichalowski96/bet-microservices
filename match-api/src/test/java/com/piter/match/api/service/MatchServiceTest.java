@@ -15,6 +15,7 @@ import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
 import com.piter.match.api.util.DbPopulatorUtil;
+import com.piter.match.api.web.RequestParams;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -66,16 +69,30 @@ class MatchServiceTest {
   }
 
   @Test
-  void shouldGetMatchesWithoutOrder() {
-    Flux<Match> matchFlux = matchService.findAll();
+  void shouldGetMatches() {
+    var requestParams = new RequestParams(null, null, RequestParams.Order.MATCH_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllBy(requestParams);
     StepVerifier.create(matchFlux)
         .expectNextCount(4)
         .verifyComplete();
   }
 
+  @ParameterizedTest
+  @CsvSource({"0, 1, 2", "1, 4, 3"})
+  void shouldGetMatchesPages(int page, long expectedFirstMatchId, int expectedSecondMatchId) {
+    int pageSize = 2;
+    var requestParams = new RequestParams(page, pageSize, RequestParams.Order.MATCH_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllBy(requestParams);
+    StepVerifier.create(matchFlux)
+        .assertNext(match -> assertThat(match.id()).isEqualTo(expectedFirstMatchId))
+        .assertNext(match -> assertThat(match.id()).isEqualTo(expectedSecondMatchId))
+        .verifyComplete();
+  }
+
   @Test
   void shouldGetMatchesOrderedByRoundTime() {
-    Flux<Match> matchFlux = matchService.findAllByOrderByMatchRoundStartTime();
+    var requestParams = new RequestParams(null, null, RequestParams.Order.ROUND_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllBy(requestParams);
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(3L))
@@ -86,7 +103,8 @@ class MatchServiceTest {
 
   @Test
   void shouldGetMatchesOrderedByMatchTime() {
-    Flux<Match> matchFlux = matchService.findAllByOrderByMatchStartTime();
+    var requestParams = new RequestParams(null, null, RequestParams.Order.MATCH_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllBy(requestParams);
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
@@ -97,7 +115,8 @@ class MatchServiceTest {
 
   @Test
   void shouldGetUpcomingMatchesOrderedByMatchTimeDesc() {
-    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeDesc();
+    var requestParams = new RequestParams(null, null, RequestParams.Order.MATCH_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllUpcomingBy(requestParams);
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
@@ -106,7 +125,8 @@ class MatchServiceTest {
 
   @Test
   void shouldGetUpcomingMatchesOrderedByMatchTimeAsc() {
-    Flux<Match> matchFlux = matchService.findAllUpcomingOrderByStartTimeAsc();
+    var requestParams = new RequestParams(null, null, RequestParams.Order.MATCH_TIME_ASC);
+    Flux<Match> matchFlux = matchService.findAllUpcomingBy(requestParams);
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(2L))
         .assertNext(match -> assertThat(match.id()).isEqualTo(1L))
@@ -115,7 +135,8 @@ class MatchServiceTest {
 
   @Test
   void shouldGetOngoingMatches() {
-    Flux<Match> matchFlux = matchService.findAllOngoing();
+    var requestParams = new RequestParams(null, null, RequestParams.Order.MATCH_TIME_DESC);
+    Flux<Match> matchFlux = matchService.findAllOngoingBy(requestParams);
     StepVerifier.create(matchFlux)
         .assertNext(match -> assertThat(match.id()).isEqualTo(4L))
         .verifyComplete();

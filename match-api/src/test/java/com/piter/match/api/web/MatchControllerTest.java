@@ -1,6 +1,7 @@
 package com.piter.match.api.web;
 
 import static com.piter.match.api.util.MatchTestData.createMatchList;
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -57,41 +60,89 @@ class MatchControllerTest {
   @BeforeEach
   void initMocks() {
     mockFindAll();
-    mockFindOrderedByRoundTime();
-    mockFindOrderedByMatchTimeDesc();
-    mockFindOrderedByMatchTimeAsc();
   }
 
   private void mockFindAll() {
-    when(matchRepository.findAll()).thenReturn(Flux.fromIterable(PERSISTED_MATCHES));
+    when(matchRepository.findAllBy(any(Pageable.class))).thenAnswer(answer -> {
+      Pageable pageable = answer.getArgument(0, Pageable.class);
+      Order order = pageable.getSort()
+          .stream()
+          .findFirst()
+          .orElseThrow();
+      if (order.getProperty().equals("round.startTime")) {
+        return Flux.fromIterable(matchesOrderByRound(order.isDescending()));
+      } else if (order.getProperty().equals("startTime")) {
+        return Flux.fromIterable(matchesOrderByMatchTime(order.isDescending()));
+      } else {
+        return Flux.fromIterable(PERSISTED_MATCHES);
+      }
+    });
   }
 
-  private void mockFindOrderedByRoundTime() {
-    Comparator<Match> roundTimeComparator = Comparator.comparing(
-        match -> match.round().startTime());
-    List<Match> matchesOrderedByRoundTime = PERSISTED_MATCHES.stream()
-        .sorted(roundTimeComparator.reversed())
+  private List<Match> matchesOrderByRound(boolean isReversed) {
+    Comparator<Match> roundTimeComparator = Comparator.comparing(m -> m.round().startTime());
+    return PERSISTED_MATCHES.stream()
+        .sorted(isReversed ? roundTimeComparator.reversed() : roundTimeComparator)
         .toList();
-    when(matchRepository.findAllByOrderByRoundStartTimeDesc()).thenReturn(
-        Flux.fromIterable(matchesOrderedByRoundTime));
   }
 
-  private void mockFindOrderedByMatchTimeDesc() {
-    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
-        .sorted(Comparator.comparing(Match::startTime).reversed())
+  private List<Match> matchesOrderByMatchTime(boolean isReversed) {
+    Comparator<Match> matchTimeComparator = Comparator.comparing(Match::startTime);
+    return PERSISTED_MATCHES.stream()
+        .sorted(isReversed ? matchTimeComparator.reversed() : matchTimeComparator)
         .toList();
-    when(matchRepository.findAllByOrderByStartTimeDesc()).thenReturn(
-        Flux.fromIterable(matchesOrderedByMatchTime));
   }
 
-  private void mockFindOrderedByMatchTimeAsc() {
-    List<Match> matchesOrderedByMatchTime = PERSISTED_MATCHES.stream()
-        .sorted(Comparator.comparing(Match::startTime))
-        .toList();
-    when(matchRepository.findAllByOrderByStartTimeAsc()).thenReturn(
-        Flux.fromIterable(matchesOrderedByMatchTime));
+  private void mockFindUpcomingMatchesBy(boolean isReversed) {
+    when(matchRepository.findByStartTimeAfter(any(LocalDateTime.class), any(Pageable.class)))
+        .thenReturn(Flux.fromIterable(matchesOrderByMatchTime(isReversed)
+            .stream()
+            .filter(m -> m.startTime().isAfter(now()))
+            .toList()
+        ));
   }
 
+  private void mockOngoingMatches() {
+    when(matchRepository.findByStartTimeBeforeAndResultIsNull(any(LocalDateTime.class), any(Pageable.class)))
+        .thenReturn(Flux.fromIterable(PERSISTED_MATCHES.stream()
+            .filter(m -> m.startTime().isBefore(now()))
+            .filter(m -> m.result() == null)
+            .toList()
+        ));
+  }
+
+  private void mockFindById(Long id) {
+    Match match = PERSISTED_MATCHES.stream()
+        .filter(m -> Objects.equals(id, m.id()))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Match with this id does not exist"));
+    when(matchRepository.findById(id)).thenReturn(Mono.just(match));
+  }
+
+  private void mockNotFoundById(long nonExistingId) {
+    when(matchRepository.findById(nonExistingId)).thenReturn(Mono.empty());
+  }
+
+  private void mockSequenceGeneratorServiceCreateId() {
+    var randomId = new Random().nextLong();
+    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
+        Mono.just(randomId));
+  }
+
+  private void mockSavingMatchEventByProducer() {
+    when(matchKafkaProducer.sendSaveMatchEvent(any(MatchEvent.class))).thenAnswer(
+        answer -> answer.getArgument(0, MatchEvent.class));
+  }
+
+  private WebTestClientConfigurer mockBearerToken() {
+    Consumer<Map<String, Object>> attributesConsumer = attributes -> {
+      attributes.put("name", "Arya Stark");
+      attributes.put("username", "needle");
+    };
+    return mockOpaqueToken()
+        .authorities(new SimpleGrantedAuthority(BET_ADMIN))
+        .attributes(attributesConsumer);
+  }
 
   @Test
   @WithMockUser
@@ -117,7 +168,7 @@ class MatchControllerTest {
         .value(matches -> {
           assertThat(matches.get(0).id()).isEqualTo(1L);
           assertThat(matches.get(1).id()).isEqualTo(2L);
-          assertThat(matches.get(2).id()).isEqualTo(3L);
+          assertThat(matches.get(2).id()).isEqualTo(4L);
         });
   }
 
@@ -126,7 +177,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/api/v2/matches?order=match-time")
+        .uri("/api/v2/matches?order=match-time-desc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(MatchResponse.class)
@@ -143,7 +194,7 @@ class MatchControllerTest {
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/api/v2/matches?order=round-time")
+        .uri("/api/v2/matches?order=round-time-desc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(MatchResponse.class)
@@ -157,10 +208,11 @@ class MatchControllerTest {
 
   @Test
   void shouldGetUpcomingMatchesOrderedByMatchTimeDesc() {
+    mockFindUpcomingMatchesBy(true);
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/api/v2/matches/upcoming?startTime=desc")
+        .uri("/api/v2/matches/upcoming?order=match-time-desc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(MatchResponse.class)
@@ -172,10 +224,11 @@ class MatchControllerTest {
 
   @Test
   void shouldGetUpcomingMatchesOrderedByMatchTimeAsc() {
+    mockFindUpcomingMatchesBy(false);
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
-        .uri("/api/v2/matches/upcoming?startTime=asc")
+        .uri("/api/v2/matches/upcoming?order=match-time-asc")
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(MatchResponse.class)
@@ -187,6 +240,7 @@ class MatchControllerTest {
 
   @Test
   void shouldGetOngoingMatches() {
+    mockOngoingMatches();
     webClient
         .mutateWith(mockUser().authorities(BET_ADMIN))
         .get()
@@ -213,22 +267,14 @@ class MatchControllerTest {
         .value(match -> assertThat(match.id()).isEqualTo(id));
   }
 
-  private void mockFindById(Long id) {
-    Match match = PERSISTED_MATCHES.stream()
-        .filter(m -> Objects.equals(id, m.id()))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Match with this id does not exist"));
-    when(matchRepository.findById(id)).thenReturn(Mono.just(match));
-  }
-
   @Test
   @WithMockUser
   void shouldSaveMatch() {
     var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.now())
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .startTime(now())
+        .round(new MatchRound("LaLiga round 11", now()))
         .build();
 
     mockSequenceGeneratorServiceCreateId();
@@ -242,27 +288,6 @@ class MatchControllerTest {
         .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isOk();
-  }
-
-  private void mockSequenceGeneratorServiceCreateId() {
-    var randomId = new Random().nextLong();
-    when(sequenceGeneratorService.generateSequenceMatchId(Match.SEQUENCE_NAME)).thenReturn(
-        Mono.just(randomId));
-  }
-
-  private void mockSavingMatchEventByProducer() {
-    when(matchKafkaProducer.sendSaveMatchEvent(any(MatchEvent.class))).thenAnswer(
-        answer -> answer.getArgument(0, MatchEvent.class));
-  }
-
-  private WebTestClientConfigurer mockBearerToken() {
-    Consumer<Map<String, Object>> attributesConsumer = attributes -> {
-      attributes.put("name", "Arya Stark");
-      attributes.put("username", "needle");
-    };
-    return mockOpaqueToken()
-        .authorities(new SimpleGrantedAuthority(BET_ADMIN))
-        .attributes(attributesConsumer);
   }
 
   @Test
@@ -296,8 +321,8 @@ class MatchControllerTest {
     var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Athletic Bilbao")
-        .startTime(LocalDateTime.now())
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .startTime(now())
+        .round(new MatchRound("LaLiga round 11", now()))
         .build();
 
     mockFindById(id);
@@ -318,8 +343,8 @@ class MatchControllerTest {
     var matchRequest = MatchRequest.builder()
         .homeTeam("FC Barcelona")
         .awayTeam("Girona")
-        .startTime(LocalDateTime.now())
-        .round(new MatchRound("LaLiga round 11", LocalDateTime.now()))
+        .startTime(now())
+        .round(new MatchRound("LaLiga round 11", now()))
         .build();
 
     mockNotFoundById(nonExistingId);
@@ -331,10 +356,6 @@ class MatchControllerTest {
         .body(Mono.just(matchRequest), MatchRequest.class)
         .exchange()
         .expectStatus().isNotFound();
-  }
-
-  private void mockNotFoundById(long nonExistingId) {
-    when(matchRepository.findById(nonExistingId)).thenReturn(Mono.empty());
   }
 
   @Test

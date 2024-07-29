@@ -1,18 +1,21 @@
 package com.piter.match.api.service;
 
-import static java.util.function.Predicate.not;
-
 import com.piter.api.commons.event.MatchEvent;
 import com.piter.api.commons.model.Match;
 import com.piter.api.commons.model.MatchResult;
 import com.piter.match.api.exception.MatchNotFoundException;
 import com.piter.match.api.producer.MatchKafkaProducer;
 import com.piter.match.api.repository.MatchRepository;
+import com.piter.match.api.web.RequestParams;
+import com.piter.match.api.web.RequestParams.Order;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,44 +27,31 @@ public class MatchService {
   private final MatchRepository matchRepository;
   private final MatchKafkaProducer matchProducer;
   private final SequenceGeneratorService sequenceGeneratorService;
+  private final Map<Order, Sort> sortMap = Map.of(
+      Order.MATCH_TIME_ASC, Sort.by("startTime").ascending(),
+      Order.MATCH_TIME_DESC, Sort.by("startTime").descending(),
+      Order.ROUND_TIME_ASC, Sort.by("round.startTime").ascending(),
+      Order.ROUND_TIME_DESC, Sort.by("round.startTime").descending()
+  );
 
-  public Flux<Match> findAll() {
-    return matchRepository.findAll();
+  public Flux<Match> findAllBy(RequestParams requestParams) {
+    Pageable page = createPageFrom(requestParams);
+    return matchRepository.findAllBy(page);
   }
 
-  public Flux<Match> findAllByOrderByMatchStartTime() {
-    return matchRepository.findAllByOrderByStartTimeDesc();
+  private Pageable createPageFrom(RequestParams requestParams) {
+    Sort sort = sortMap.get(requestParams.order());
+    return PageRequest.of(requestParams.page(), requestParams.size(), sort);
   }
 
-  public Flux<Match> findAllByOrderByMatchRoundStartTime() {
-    return matchRepository.findAllByOrderByRoundStartTimeDesc();
+  public Flux<Match> findAllUpcomingBy(RequestParams requestParams) {
+    Pageable page = createPageFrom(requestParams);
+    return matchRepository.findByStartTimeAfter(LocalDateTime.now(), page);
   }
 
-  public Flux<Match> findAllUpcomingOrderByStartTimeDesc() {
-    return matchRepository.findAllByOrderByStartTimeDesc()
-        .filter(not(this::isStarted));
-  }
-
-  public Flux<Match> findAllUpcomingOrderByStartTimeAsc() {
-    return matchRepository.findAllByOrderByStartTimeAsc()
-        .filter(not(this::isStarted));
-  }
-
-  public Flux<Match> findAllOngoing() {
-    return matchRepository.findAll()
-        .filter(this::isStarted)
-        .filter(this::notFinished);
-  }
-
-  private boolean isStarted(Match match) {
-    return Optional.ofNullable(match.startTime())
-        .map(startTime -> LocalDateTime.now().isAfter(startTime))
-        .orElse(false);
-  }
-
-  private boolean notFinished(Match match) {
-    return Optional.ofNullable(match.result())
-        .isEmpty();
+  public Flux<Match> findAllOngoingBy(RequestParams requestParams) {
+    Pageable page = createPageFrom(requestParams);
+    return matchRepository.findByStartTimeBeforeAndResultIsNull(LocalDateTime.now(), page);
   }
 
   @Cacheable(value = "matches", key = "#id")

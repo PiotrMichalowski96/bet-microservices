@@ -5,7 +5,7 @@ Contract.make {
 
     request {
         method GET()
-        url("/api/v2/matches?order=match-time")
+        url("/api/v2/matches?order=match-time-asc")
     }
 
     response {
@@ -16,19 +16,19 @@ Contract.make {
         body("""
                     [
                       {
-                        "id": 1,
-                        "home_team": "Argentina",
+                        "id": 3,
+                        "home_team": "Marocco",
                         "away_team": "France",
-                        "start_time": "2022-12-18 16:00:00",
+                        "start_time": "2022-12-14 20:00:00",
                         "result": {
-                          "home_team_goals": 3,
-                          "away_team_goals": 3
+                          "home_team_goals": 2,
+                          "away_team_goals": 0
                         },
                         "round": {
-                          "round_name": "Final",
-                          "start_time": "2022-12-18 16:00:00"
+                          "round_name": "Semi-finals",
+                          "start_time": "2022-12-13 20:00:00"
                         }
-                      },
+                      }, 
                       {
                         "id": 2,
                         "home_team": "Argentina",
@@ -44,17 +44,17 @@ Contract.make {
                         }
                       },
                       {
-                        "id": 3,
-                        "home_team": "Marocco",
+                        "id": 1,
+                        "home_team": "Argentina",
                         "away_team": "France",
-                        "start_time": "2022-12-14 20:00:00",
+                        "start_time": "2022-12-18 16:00:00",
                         "result": {
-                          "home_team_goals": 2,
-                          "away_team_goals": 0
+                          "home_team_goals": 3,
+                          "away_team_goals": 3
                         },
                         "round": {
-                          "round_name": "Semi-finals",
-                          "start_time": "2022-12-13 20:00:00"
+                          "round_name": "Final",
+                          "start_time": "2022-12-18 16:00:00"
                         }
                       }
                     ]

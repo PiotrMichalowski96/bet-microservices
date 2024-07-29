@@ -2,6 +2,7 @@ package com.piter.match.api.web;
 
 import com.piter.api.commons.model.Match;
 import com.piter.match.api.service.MatchService;
+import com.piter.match.api.web.RequestParams.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -11,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -31,41 +32,37 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v2")
+@RequiredArgsConstructor
 class MatchController {
 
   private static final String MATCH_TIME_PARAM_VALUE = "match-time";
   private static final String ROUND_TIME_PARAM_VALUE = "round-time";
-  private static final String ASC_ORDER_UPCOMING_MATCHES = "asc";
-  private static final String DESC_ORDER_UPCOMING_MATCHES = "desc";
+  private static final String ASC = "-asc";
+  private static final String DESC = "-desc";
 
   private final MatchService matchService;
   private final Validator validator;
-  private final Map<String, Supplier<Flux<Match>>> findAllMapSuppliers;
-  private final Map<String, Supplier<Flux<Match>>> findUpcomingMapSuppliers;
+  private final Map<String, Order> orderMap = Map.of(
+      MATCH_TIME_PARAM_VALUE + ASC, Order.MATCH_TIME_ASC,
+      MATCH_TIME_PARAM_VALUE + DESC, Order.MATCH_TIME_DESC,
+      ROUND_TIME_PARAM_VALUE + ASC, Order.ROUND_TIME_ASC,
+      ROUND_TIME_PARAM_VALUE + DESC, Order.ROUND_TIME_DESC
+  );
 
-  MatchController(MatchService matchService, Validator validator) {
-    this.matchService = matchService;
-    this.validator = validator;
-    this.findAllMapSuppliers = Map.of(
-        MATCH_TIME_PARAM_VALUE, matchService::findAllByOrderByMatchStartTime,
-        ROUND_TIME_PARAM_VALUE, matchService::findAllByOrderByMatchRoundStartTime
-    );
-    this.findUpcomingMapSuppliers = Map.of(
-        ASC_ORDER_UPCOMING_MATCHES, matchService::findAllUpcomingOrderByStartTimeAsc,
-        DESC_ORDER_UPCOMING_MATCHES, matchService::findAllUpcomingOrderByStartTimeDesc
-    );
-  }
 
   @Operation(summary = "Find all matches ordered")
   @ApiResponse(responseCode = "200", description = "successful found match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches")
   Flux<MatchResponse> findAll(
-      @Parameter(in = ParameterIn.QUERY, name = "order", example = "match-time, round-time")
-      @RequestParam Optional<String> order) {
+      @Parameter(in = ParameterIn.QUERY, name = "page", example = "0")
+      @RequestParam(required = false) Integer page,
+      @Parameter(in = ParameterIn.QUERY, name = "size", example = "50")
+      @RequestParam(required = false) Integer size,
+      @Parameter(in = ParameterIn.QUERY, name = "order", example = "match-time-desc")
+      @RequestParam(required = false) String order) {
 
-    return order.map(findAllMapSuppliers::get)
-        .map(Supplier::get)
-        .orElse(matchService.findAll())
+    RequestParams requestParams = createRequestParamsFrom(page, size, order);
+    return matchService.findAllBy(requestParams)
         .map(MatchResponse::of);
   }
 
@@ -73,20 +70,31 @@ class MatchController {
   @ApiResponse(responseCode = "200", description = "successful found upcoming match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches/upcoming")
   Flux<MatchResponse> findUpcoming(
-      @Parameter(in = ParameterIn.QUERY, name = "startTime", example = "desc, asc")
-      @RequestParam Optional<String> startTime) {
+      @Parameter(in = ParameterIn.QUERY, name = "page", example = "0")
+      @RequestParam(required = false) Integer page,
+      @Parameter(in = ParameterIn.QUERY, name = "size", example = "50")
+      @RequestParam(required = false) Integer size,
+      @Parameter(in = ParameterIn.QUERY, name = "order", example = "match-time-desc")
+      @RequestParam(required = false) String order) {
 
-    return startTime.map(findUpcomingMapSuppliers::get)
-        .map(Supplier::get)
-        .orElse(matchService.findAllUpcomingOrderByStartTimeAsc())
+    RequestParams requestParams = createRequestParamsFrom(page, size, order);
+    return matchService.findAllUpcomingBy(requestParams)
         .map(MatchResponse::of);
   }
 
   @Operation(summary = "Find all matches that have been started but not finished yet")
   @ApiResponse(responseCode = "200", description = "successful found ongoing match list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Match.class))))
   @GetMapping("/matches/ongoing")
-  Flux<MatchResponse> findOngoing() {
-    return matchService.findAllOngoing()
+  Flux<MatchResponse> findOngoing(
+      @Parameter(in = ParameterIn.QUERY, name = "page", example = "0")
+      @RequestParam(required = false) Integer page,
+      @Parameter(in = ParameterIn.QUERY, name = "size", example = "50")
+      @RequestParam(required = false) Integer size,
+      @Parameter(in = ParameterIn.QUERY, name = "order", example = "match-time-desc")
+      @RequestParam(required = false) String order) {
+
+    RequestParams requestParams = createRequestParamsFrom(page, size, order);
+    return matchService.findAllOngoingBy(requestParams)
         .map(MatchResponse::of);
   }
 
@@ -153,6 +161,13 @@ class MatchController {
       @PathVariable Long id) {
 
     return matchService.deleteMatch(id);
+  }
+
+  private RequestParams createRequestParamsFrom(Integer page, Integer size, String order) {
+    Order orderParam = Optional.ofNullable(order)
+        .map(orderMap::get)
+        .orElse(Order.MATCH_TIME_DESC);
+    return new RequestParams(page, size, orderParam);
   }
 
   private <T> void validate(String name, T objectToValidate) {
